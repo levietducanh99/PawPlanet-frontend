@@ -9,7 +9,7 @@
 import axios from 'axios';
 
 // Get base URL from environment variables
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://pawplanet-ae61a47d7179.herokuapp.com/api';
 
 // Create axios instance with default configuration
 export const apiClient = axios.create({

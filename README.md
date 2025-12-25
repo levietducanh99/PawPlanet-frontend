@@ -66,7 +66,7 @@ cp .env.example .env
 Edit `.env` to set your API base URL and other configurations:
 
 ```env
-VITE_API_BASE_URL=http://localhost:8080/api
+VITE_API_BASE_URL=https://pawplanet-ae61a47d7179.herokuapp.com/api
 VITE_APP_TITLE=PawpPanet
 ```
 

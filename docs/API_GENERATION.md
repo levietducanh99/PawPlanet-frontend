@@ -70,7 +70,7 @@ If you have the OpenAPI spec locally:
 If your backend exposes the spec via HTTP:
 
 ```json
-"gen:api": "curl -o openapi.yaml http://localhost:8080/v3/api-docs.yaml && openapi-generator-cli generate -i openapi.yaml -g typescript-axios -o src/services/api --skip-validate-spec --additional-properties=useSingleRequestParameter=true && rm openapi.yaml"
+"gen:api": "curl -o openapi.yaml https://pawplanet-ae61a47d7179.herokuapp.com/v3/api-docs.yaml && openapi-generator-cli generate -i openapi.yaml -g typescript-axios -o src/services/api --skip-validate-spec --additional-properties=useSingleRequestParameter=true && rm openapi.yaml"
 ```
 
 ## Generated Files
