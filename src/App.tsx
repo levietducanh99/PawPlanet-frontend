@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import { theme } from './theme/antdConfig';
 import './styles/App.css';
