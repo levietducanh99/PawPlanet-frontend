@@ -1,0 +1,34 @@
+/* Global design tokens mapped from project Copilot instructions */
+:root {
+  /* Primary */
+  --color-primary: #1890FF;
+  --color-primary-hover: #40A9FF;
+  --color-primary-bg: #E6F7FF;
+
+  /* Accents */
+  --accent-warning: #F2994A;
+  --accent-success: #27AE60;
+  --accent-error: #EB5757;
+  --info-pastel: #E3F2FD;
+
+  /* Neutrals */
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+  --border: #E5E7EB;
+  --bg-body: #F3F4F6;
+  --bg-white: #FFFFFF;
+
+  /* Radii & shadows */
+  --radius-card: 16px;
+  --radius-button: 8px;
+  --shadow-soft: 0 4px 12px rgba(0,0,0,0.05);
+  --shadow-cta: 0 2px 5px rgba(24,144,255,0.2);
+
+  /* Typography */
+  --font-heading: 'Inter', Nunito, sans-serif;
+  --font-sans: 'Inter', Nunito, sans-serif;
+
+  /* Sizes */
+  --max-width: 1200px;
+}
+

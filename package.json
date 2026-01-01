@@ -11,9 +11,10 @@
     "gen:api": "curl -o openapi.yaml https://raw.githubusercontent.com/levietducanh99/PawpPanet-backend/main/src/main/resources/openapi.yaml && openapi-generator-cli generate -i openapi.yaml -g typescript-axios -o src/services/api --skip-validate-spec --additional-properties=useSingleRequestParameter=true && rm openapi.yaml"
   },
   "dependencies": {
+    "axios": "^1.6.0",
+    "framer-motion": "^12.23.26",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "axios": "^1.6.0",
     "react-router-dom": "^6.20.0"
   },
   "devDependencies": {
