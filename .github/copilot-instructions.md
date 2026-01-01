@@ -218,15 +218,33 @@ export const modalVariants = {
 
 ## Icons & Assets
 
-- **Icon Library**: Phosphor Icons (React) hoặc @ant-design/icons
-- **Style**: Outline cho normal state, Filled cho active state
+- **Icon Library**: @ant-design/icons (primary choice)
+- **Style**: Outlined cho normal state, Filled cho active state
 - **Container**: Icons trong hình tròn với nền #E6F7FF
 - **Avatars**: Luôn borderRadius 50%
 
 ```tsx
-import { Heart, PawPrint } from '@phosphor-icons/react';
-// hoặc
-import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import { HeartOutlined, HeartFilled, UserOutlined, HomeOutlined } from '@ant-design/icons';
+
+// Usage:
+// Normal state
+<HeartOutlined style={{ fontSize: '24px', color: '#6B7280' }} />
+
+// Active/Filled state
+<HeartFilled style={{ fontSize: '24px', color: '#1890FF' }} />
+
+// Icon với container tròn
+<div style={{ 
+  width: 40, 
+  height: 40, 
+  borderRadius: '50%', 
+  background: '#E6F7FF',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
+}}>
+  <UserOutlined style={{ fontSize: '20px', color: '#1890FF' }} />
+</div>
 ```
 
 ---
@@ -311,15 +329,51 @@ import { motion } from 'motion/react';
 ```tsx
 // Sử dụng color: #EB5757
 import { Alert } from 'antd';
+import { CloseCircleOutlined } from '@ant-design/icons';
 
-<Alert type="error" message="Error message" showIcon />
+// Với Ant Design Alert
+<Alert 
+  type="error" 
+  message="Error message" 
+  showIcon 
+  style={{ borderRadius: 12 }}
+/>
+
+// Custom error với icon
+<div style={{ color: '#EB5757', display: 'flex', alignItems: 'center', gap: 8 }}>
+  <CloseCircleOutlined />
+  <span>Error occurred</span>
+</div>
 ```
 
 ### Success Tags
 ```tsx
-<Tag color="#27AE60" style={{ borderRadius: 20 }}>Public</Tag>
-<Tag color="#F2994A" style={{ borderRadius: 20 }}>For Adoption</Tag>
-<Tag color="#EB5757" style={{ borderRadius: 20 }}>Venomous</Tag>
+import { Tag } from 'antd';
+import { CheckCircleOutlined, WarningOutlined, InfoCircleOutlined } from '@ant-design/icons';
+
+// Tags với màu sắc theo Design System
+<Tag color="success" icon={<CheckCircleOutlined />} style={{ borderRadius: 20 }}>
+  Public
+</Tag>
+
+<Tag color="warning" icon={<WarningOutlined />} style={{ borderRadius: 20 }}>
+  For Adoption
+</Tag>
+
+<Tag color="error" icon={<InfoCircleOutlined />} style={{ borderRadius: 20 }}>
+  Venomous
+</Tag>
+
+// Hoặc custom màu chính xác
+<Tag style={{ borderRadius: 20, backgroundColor: '#27AE60', color: '#fff', border: 'none' }}>
+  Public
+</Tag>
+<Tag style={{ borderRadius: 20, backgroundColor: '#F2994A', color: '#fff', border: 'none' }}>
+  For Adoption
+</Tag>
+<Tag style={{ borderRadius: 20, backgroundColor: '#EB5757', color: '#fff', border: 'none' }}>
+  Venomous
+</Tag>
 ```
 
 ---
@@ -348,5 +402,5 @@ import { Alert } from 'antd';
 ---
 
 **Version**: 1.0  
-**Last Updated**: 31/12/2025  
+**Last Updated**: 02/01/2026  
 **Maintained by**: PawPlanet Frontend Team

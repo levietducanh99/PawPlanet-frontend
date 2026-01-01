@@ -1,0 +1,85 @@
+/* HomePage styles following PawPlanet Design System */
+
+.homePage {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--bg-body);
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.iconContainer {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #E6F7FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.icon {
+  font-size: 28px;
+  color: #1890FF;
+}
+
+.card {
+  border-radius: 16px;
+  height: 100%;
+  text-align: center;
+}
+
+.cardDescription {
+  color: var(--text-secondary);
+}
+
+.ctaSection {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.primaryButton {
+  margin-right: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .homePage {
+    padding: 24px 16px;
+  }
+
+  .header {
+    margin-bottom: 32px;
+  }
+
+  .ctaSection {
+    margin-top: 32px;
+  }
+
+  .primaryButton {
+    margin-right: 0;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+
+  .ctaSection .ant-btn {
+    width: 100%;
+  }
+}
+

@@ -1,0 +1,199 @@
+@import './auth.css';
+
+/* Page-level adjustments */
+.register-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 32px 24px; /* giảm padding ngang để input dài hơn */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Override auth.css default width:100% */
+/* width responsive được set ở auth.css (clamp). Ở đây chỉ giữ max-width và canh giữa */
+.register-page .register-form,
+.register-form {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ant Design Form customization */
+.register-form {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.register-form .ant-form-item,
+.register-form__socials,
+.register-form__signin {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.register-form .ant-form-item {
+  margin-bottom: 28px;
+}
+
+.register-form .ant-form-item-label > label {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 10px !important;
+}
+
+.register-form .ant-input,
+.register-form .ant-input-password {
+  border-radius: 12px;
+  height: 52px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+}
+
+.register-form .ant-input:focus,
+.register-form .ant-input-password:focus,
+.register-form .ant-input-focused,
+.register-form .ant-input-affix-wrapper-focused {
+  background: #FFFFFF;
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+.register-form .ant-input-password .ant-input {
+  border-radius: 0;
+  background: transparent;
+  border: none;
+}
+
+.register-form .ant-input-affix-wrapper {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+}
+
+.register-form .ant-input-affix-wrapper:focus,
+.register-form .ant-input-affix-wrapper-focused {
+  background: #FFFFFF;
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+/* Submit button */
+.register-form__submit-btn {
+  border-radius: 24px;
+  height: 54px;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.register-form__submit-btn .anticon {
+  font-size: 18px;
+}
+
+.register-form__submit-btn:hover {
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+  transform: translateY(-1px);
+  transition: all 0.3s ease;
+}
+
+/* Divider styling */
+.register-form__divider {
+  margin: 24px 0 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.register-form__divider::before,
+.register-form__divider::after {
+  border-top: 1px solid #E5E7EB !important;
+}
+
+/* Social buttons grid */
+.register-form__socials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.register-form__socials .social-btn,
+.register-form__socials .ant-btn {
+  border-radius: 12px;
+  height: 48px;
+  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.register-form__socials .ant-btn:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+  background: #F0F9FF;
+}
+
+.register-form__socials .ant-btn .anticon {
+  font-size: 18px;
+}
+
+/* Footer signin link */
+.register-form__signin {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+}
+
+.register-form__signin .muted {
+  color: var(--text-secondary);
+  margin-right: 8px;
+}
+
+.register-form__signin .link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  font-size: 14px;
+}
+
+.register-form__signin .link:hover {
+  text-decoration: underline;
+}
+
+/* Ant Design Checkbox customization */
+.register-form .ant-checkbox-wrapper {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.register-form .ant-checkbox-wrapper a {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.register-form .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #1890FF;
+  border-color: #1890FF;
+}
+
+/* Small responsive tweak */
+@media (max-width: 480px) {
+  .register-form__socials {
+    gap: 8px;
+  }
+}
