@@ -1,7 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { ConfigProvider } from 'antd';
+import { theme } from './theme/antdConfig';
 import './styles/App.css';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { HomePage } from './pages/HomePage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -15,13 +18,15 @@ function RegisterRouteWrapper() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="/login" element={<LoginRouteWrapper />} />
-        <Route path="/register" element={<RegisterRouteWrapper />} />
-      </Routes>
-    </BrowserRouter>
+    <ConfigProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginRouteWrapper />} />
+          <Route path="/register" element={<RegisterRouteWrapper />} />
+        </Routes>
+      </BrowserRouter>
+    </ConfigProvider>
   );
 }
 

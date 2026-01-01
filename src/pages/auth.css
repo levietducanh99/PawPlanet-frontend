@@ -2,7 +2,13 @@
 
 /* Container adjustments for card children */
 .login-page, .register-page { display: flex; flex-direction: column; gap: 20px; align-items: center; }
-.login-form, .register-form { display: flex; flex-direction: column; gap: 16px; width: 100%; }
+
+/* Make forms responsive without being too narrow:
+   - min: 460px (đỡ bị hẹp trên desktop)
+   - preferred: 36vw (co giãn theo màn hình)
+   - max: 560px (không quá to)
+*/
+.login-form, .register-form { display: flex; flex-direction: column; gap: 16px; width: clamp(460px, 36vw, 560px); }
 
 /* Avatar ring */
 .simple-avatar { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; position: relative; }

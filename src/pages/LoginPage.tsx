@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { motion } from "framer-motion";
+import { motion } from 'motion/react';
+import { Form, Input, Button, Checkbox, Divider, message } from 'antd';
+import { MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined, LoginOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
-import { InputField } from '@/components';
-import { Button } from '@/components';
-import { Divider } from '@/components';
-import { SocialButton } from '@/components';
+import { fadeInUp } from '@/animations/variants';
 import './auth.css';
 import './login.css';
 
@@ -13,20 +12,32 @@ interface LoginPageProps {
   onSwitchToRegister: () => void;
 }
 
+interface LoginFormValues {
+  email: string;
+  password: string;
+  remember?: boolean;
+}
+
 export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [remember, setRemember] = useState(false);
+  const [form] = Form.useForm();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (values: LoginFormValues) => {
     setLoading(true);
-    setTimeout(() => {
-      alert('Login successful!');
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      message.success('Login successful!');
+      console.log('Login values:', values);
+    } catch (error) {
+      message.error('Login failed. Please try again.');
+    } finally {
       setLoading(false);
-      console.log({ email, password, remember });
-    }, 800);
+    }
+  };
+
+  const handleSocialLogin = (provider: string) => {
+    message.info(`${provider} login coming soon!`);
   };
 
   return (
@@ -34,69 +45,91 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
       <div className="login-page">
         <SimpleAvatar />
 
-        <motion.div initial={{ y: 12, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.45 }}>
-          <form onSubmit={handleSubmit} className="login-form">
-            <InputField
-              id="email"
+        <motion.div {...fadeInUp}>
+          <Form
+            form={form}
+            onFinish={handleSubmit}
+            layout="vertical"
+            className="login-form"
+            requiredMark={false}
+          >
+            <Form.Item
+              name="email"
               label="Email"
-              type="email"
-              value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-              placeholder="your.email@example.com"
-              icon={(
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 6.5L12 13l9-6.5" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  <rect x="3" y="5" width="18" height="14" rx="2" stroke="#6B7280" strokeWidth="1.5" />
-                </svg>
-              )}
-              required
-            />
+              rules={[
+                { required: true, message: 'Please input your email!' },
+                { type: 'email', message: 'Please enter a valid email!' }
+              ]}
+            >
+              <Input
+                prefix={<MailOutlined style={{ color: '#6B7280' }} />}
+                placeholder="your.email@example.com"
+                size="large"
+              />
+            </Form.Item>
 
-            <InputField
-              id="password"
+            <Form.Item
+              name="password"
               label="Password"
-              type="password"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              icon={(
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="3" y="11" width="18" height="10" rx="2" stroke="#6B7280" strokeWidth="1.5" />
-                  <path d="M7 11V8a5 5 0 0110 0v3" stroke="#6B7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
-              required
-            />
+              rules={[{ required: true, message: 'Please input your password!' }]}
+            >
+              <Input.Password
+                prefix={<LockOutlined style={{ color: '#6B7280' }} />}
+                placeholder="Enter your password"
+                size="large"
+              />
+            </Form.Item>
 
             <div className="login-form__row">
-              <label className="login-form__remember">
-                <input type="checkbox" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                <span>Remember me</span>
-              </label>
+              <Form.Item name="remember" valuePropName="checked" noStyle>
+                <Checkbox>Remember me</Checkbox>
+              </Form.Item>
 
               <a href="#" className="login-form__forgot">Forgot password?</a>
             </div>
 
-            <Button type="submit" className="btn--primary login-form__submit" disabled={loading}>
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={loading}
+                block
+                size="large"
+                icon={<LoginOutlined />}
+                className="login-form__submit-btn"
+              >
+                Sign In
+              </Button>
+            </Form.Item>
 
-            <Divider />
+            <Divider plain className="login-form__divider">OR CONTINUE WITH</Divider>
 
             <div className="login-form__socials">
-              <SocialButton label="Google" onClick={() => console.log('Google')}>
-                <svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#4285F4" /></svg>
-              </SocialButton>
-              <SocialButton label="Facebook" onClick={() => console.log('Facebook')}>
-                <svg width="20" height="20" viewBox="0 0 24 24"><rect x="0" y="0" width="24" height="24" fill="#1877F2" /></svg>
-              </SocialButton>
+              <Button
+                icon={<GoogleOutlined />}
+                onClick={() => handleSocialLogin('Google')}
+                size="large"
+                className="social-btn"
+              >
+                Google
+              </Button>
+              <Button
+                icon={<FacebookOutlined />}
+                onClick={() => handleSocialLogin('Facebook')}
+                size="large"
+                className="social-btn"
+              >
+                Facebook
+              </Button>
             </div>
 
             <div className="login-form__signup">
               <span className="muted">Don't have an account?</span>
-              <button type="button" className="link" onClick={onSwitchToRegister}>Sign up</button>
+              <button type="button" className="link" onClick={onSwitchToRegister}>
+                Sign up
+              </button>
             </div>
-          </form>
+          </Form>
         </motion.div>
       </div>
     </AuthLayout>

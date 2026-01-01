@@ -1,10 +1,16 @@
 @import '../../styles/variables.css';
 
 .simple-avatar {
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   overflow: hidden;
-  display: inline-block;
-  box-shadow: var(--shadow-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FFFFFF;
+  border: 3px solid #1890FF;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
 }
 
 .simple-avatar img {
