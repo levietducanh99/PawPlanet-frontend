@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { AuthLayout } from '../components/AuthLayout/AuthLayout';
-import { SimpleAvatar } from '../components/SimpleAvatar/SimpleAvatar';
-import { InputField } from '../components/InputField/InputField';
-import { Button } from '../components/Button/Button';
-import { Divider } from '../components/Divider/Divider';
-import { SocialButton } from '../components/SocialButton/SocialButton';
+import { AuthLayout } from '@/components';
+import { SimpleAvatar } from '@/components';
+import { InputField } from '@/components';
+import { Button } from '@/components';
+import { Divider } from '@/components';
+import { SocialButton } from '@/components';
 import './auth.css';
 import './register.css';
 

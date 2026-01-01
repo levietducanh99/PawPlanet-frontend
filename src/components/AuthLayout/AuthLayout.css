@@ -8,8 +8,8 @@
 }
 
 .auth-logo {
-  height: 36.184px;   /* tương đương h-[36.184px] */
-  width: 172.272px;   /* tương đương w-[172.272px] */
+  height: 36px;   /* tương đương h-[36.184px] */
+  width: 172px;   /* tương đương w-[172.272px] */
 }
 
 .logo-wrapper {
@@ -49,7 +49,7 @@
 }
 
 .auth-layout__title {
-  font-family: var(--font-heading);
+  font-family: var(--font-heading), serif;
   color: var(--text-primary);
   font-size: 28px;
   margin: 0 0 8px 0;
@@ -109,7 +109,7 @@
 .auth-layout__heading h2 {
   margin: 0 0 8px 0;
   font-size: 24px;
-  font-family: var(--font-heading);
+  font-family: var(--font-heading), serif;
   color: var(--text-primary);
 }
 
