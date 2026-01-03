@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "gen:api": "curl -o openapi.yaml https://raw.githubusercontent.com/levietducanh99/PawpPanet-backend/main/src/main/resources/openapi.yaml && openapi-generator-cli generate -i openapi.yaml -g typescript-axios -o src/services/api --skip-validate-spec --additional-properties=useSingleRequestParameter=true && rm openapi.yaml"
+    "api:generate": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-api.ps1",
+    "api:generate:bash": "bash ./scripts/generate-api.sh"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",

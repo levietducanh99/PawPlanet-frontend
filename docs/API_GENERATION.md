@@ -12,40 +12,87 @@ The frontend uses `@openapitools/openapi-generator-cli` to automatically generat
 - Backend repository exists with an OpenAPI specification file
 - Internet connection to download the OpenAPI spec
 
+## Project Structure
+
+```
+frontend/
+ ├─ openapi/
+ │   └─ openapi.yaml        ← Downloaded OpenAPI spec from backend
+ ├─ scripts/
+ │   ├─ generate-api.sh     ← Bash script for Linux/Mac
+ │   ├─ generate-api.ps1    ← PowerShell script for Windows
+ │   └─ README.md           ← Detailed documentation
+ └─ src/
+     └─ services/
+         └─ api/            ← Generated API client code
+```
+
+## Usage
+
+### Windows Users (PowerShell - Default)
+
+```bash
+npm run api:generate
+```
+
+### Linux/Mac Users (Bash)
+
+```bash
+npm run api:generate:bash
+```
+
 ## Configuration
 
 The API generation is configured in `package.json`:
 
 ```json
-"gen:api": "curl -o openapi.yaml https://raw.githubusercontent.com/levietducanh99/PawpPanet-backend/main/src/main/resources/openapi.yaml && openapi-generator-cli generate -i openapi.yaml -g typescript-axios -o src/services/api --skip-validate-spec --additional-properties=useSingleRequestParameter=true && rm openapi.yaml"
+{
+  "scripts": {
+    "api:generate": "powershell -ExecutionPolicy Bypass -File ./scripts/generate-api.ps1",
+    "api:generate:bash": "bash ./scripts/generate-api.sh"
+  }
+}
 ```
 
-### What this script does:
+### What the scripts do:
 
-1. **Downloads the OpenAPI spec** from the backend GitHub repository using curl
-2. **Generates TypeScript client** using openapi-generator-cli with:
-   - Input: `openapi.yaml` (downloaded file)
+1. **Download OpenAPI spec** from backend repository
+   - Source: `https://raw.githubusercontent.com/levietducanh99/PawpPanet-backend/main/src/main/resources/openapi.yaml`
+   - Destination: `openapi/openapi.yaml`
+
+2. **Generate TypeScript client** using openapi-generator-cli with:
+   - Input: `openapi/openapi.yaml`
    - Generator: `typescript-axios` (TypeScript + Axios)
    - Output: `src/services/api/` directory
    - Options: 
      - `--skip-validate-spec`: Skips OpenAPI spec validation
      - `--additional-properties=useSingleRequestParameter=true`: Uses single parameter for request data
-3. **Cleans up** the temporary `openapi.yaml` file
 
-## Usage
-
-To generate or regenerate the API client:
-
-```bash
-npm run gen:api
-```
+3. **Keep the spec file** in `openapi/` directory for version tracking
 
 ### When to regenerate:
 
-- After backend API changes
-- When new endpoints are added
-- When request/response types change
-- During initial setup
+- ✅ After backend PR merge with API changes
+- ✅ When you pull and see `openapi/openapi.yaml` changed
+- ✅ When starting new features that use new endpoints
+- ✅ During initial project setup
+
+## Benefits of This Approach
+
+### ✅ No Backend Dependency
+- Script fetches spec from GitHub, NOT from running backend
+- Works even if backend server is down
+- Always gets the latest merged/committed spec
+
+### ✅ Version Control
+- `openapi.yaml` is tracked in git
+- Team can see API changes in PRs
+- Easy to rollback if needed
+
+### ✅ Controlled Regeneration
+- Manual trigger prevents unexpected changes
+- Review generated code before committing
+- Clear when API contracts change
 
 ## Customizing the Source
 
