@@ -1,4 +1,4 @@
-@import './auth.css';
+@import '../LoginPage/auth.css';
 
 /* Page-level adjustments */
 .register-page {

@@ -4,8 +4,8 @@ import { Form, Input, Button, Checkbox, Divider, message } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
-import { fadeInUp } from '@/animations/variants';
-import './auth.css';
+import { fadeInUp } from '@/animations/variants.ts';
+import '../LoginPage/auth.css';
 import './register.css';
 
 interface RegisterPageProps {

@@ -1,4 +1,4 @@
-@import '../styles/variables.css';
+@import '../../styles/variables.css';
 
 /* Container adjustments for card children */
 .login-page, .register-page { display: flex; flex-direction: column; gap: 20px; align-items: center; }
