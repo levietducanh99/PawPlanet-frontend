@@ -1,20 +1,33 @@
-import { useState } from 'react'
-import './styles/App.css'
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import { ConfigProvider } from 'antd';
+import { theme } from './theme/antdConfig';
+import './styles/App.css';
+import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
+import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
+import { HomePage } from './pages/HomePage/HomePage.tsx';
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>Welcome to PawPlanet</h1>
-        <p>Frontend is ready!</p>
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-      </header>
-    </div>
-  )
+function LoginRouteWrapper() {
+  const navigate = useNavigate();
+  return <LoginPage onSwitchToRegister={() => navigate('/register')} />;
 }
 
-export default App
+function RegisterRouteWrapper() {
+  const navigate = useNavigate();
+  return <RegisterPage onSwitchToLogin={() => navigate('/login')} />;
+}
+
+function App() {
+  return (
+    <ConfigProvider theme={theme}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginRouteWrapper />} />
+          <Route path="/register" element={<RegisterRouteWrapper />} />
+        </Routes>
+      </BrowserRouter>
+    </ConfigProvider>
+  );
+}
+
+export default App;

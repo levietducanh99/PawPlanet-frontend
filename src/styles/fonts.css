@@ -1,0 +1,14 @@
+/* Basic font imports and body defaults */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans), serif;
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+}
+

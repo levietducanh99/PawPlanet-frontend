@@ -1,0 +1,26 @@
+@import '../../styles/variables.css';
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 16px 0;
+}
+
+.divider__line {
+  display: block;
+  height: 1px;
+  background: var(--border);
+  width: 100%;
+}
+
+.divider__label {
+  position: relative;
+  display: inline-block;
+  padding: 0 8px;
+  background: var(--bg-body);
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-top: -8px;
+}
+

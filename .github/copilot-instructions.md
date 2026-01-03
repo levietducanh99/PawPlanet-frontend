@@ -218,15 +218,33 @@ export const modalVariants = {
 
 ## Icons & Assets
 
-- **Icon Library**: Phosphor Icons (React) hoặc @ant-design/icons
-- **Style**: Outline cho normal state, Filled cho active state
+- **Icon Library**: @ant-design/icons (primary choice)
+- **Style**: Outlined cho normal state, Filled cho active state
 - **Container**: Icons trong hình tròn với nền #E6F7FF
 - **Avatars**: Luôn borderRadius 50%
 
 ```tsx
-import { Heart, PawPrint } from '@phosphor-icons/react';
-// hoặc
-import { HeartOutlined, HeartFilled } from '@ant-design/icons';
+import { HeartOutlined, HeartFilled, UserOutlined, HomeOutlined } from '@ant-design/icons';
+
+// Usage:
+// Normal state
+<HeartOutlined style={{ fontSize: '24px', color: '#6B7280' }} />
+
+// Active/Filled state
+<HeartFilled style={{ fontSize: '24px', color: '#1890FF' }} />
+
+// Icon với container tròn
+<div style={{ 
+  width: 40, 
+  height: 40, 
+  borderRadius: '50%', 
+  background: '#E6F7FF',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center'
+}}>
+  <UserOutlined style={{ fontSize: '20px', color: '#1890FF' }} />
+</div>
 ```
 
 ---
@@ -311,15 +329,51 @@ import { motion } from 'motion/react';
 ```tsx
 // Sử dụng color: #EB5757
 import { Alert } from 'antd';
+import { CloseCircleOutlined } from '@ant-design/icons';
 
-<Alert type="error" message="Error message" showIcon />
+// Với Ant Design Alert
+<Alert 
+  type="error" 
+  message="Error message" 
+  showIcon 
+  style={{ borderRadius: 12 }}
+/>
+
+// Custom error với icon
+<div style={{ color: '#EB5757', display: 'flex', alignItems: 'center', gap: 8 }}>
+  <CloseCircleOutlined />
+  <span>Error occurred</span>
+</div>
 ```
 
 ### Success Tags
 ```tsx
-<Tag color="#27AE60" style={{ borderRadius: 20 }}>Public</Tag>
-<Tag color="#F2994A" style={{ borderRadius: 20 }}>For Adoption</Tag>
-<Tag color="#EB5757" style={{ borderRadius: 20 }}>Venomous</Tag>
+import { Tag } from 'antd';
+import { CheckCircleOutlined, WarningOutlined, InfoCircleOutlined } from '@ant-design/icons';
+
+// Tags với màu sắc theo Design System
+<Tag color="success" icon={<CheckCircleOutlined />} style={{ borderRadius: 20 }}>
+  Public
+</Tag>
+
+<Tag color="warning" icon={<WarningOutlined />} style={{ borderRadius: 20 }}>
+  For Adoption
+</Tag>
+
+<Tag color="error" icon={<InfoCircleOutlined />} style={{ borderRadius: 20 }}>
+  Venomous
+</Tag>
+
+// Hoặc custom màu chính xác
+<Tag style={{ borderRadius: 20, backgroundColor: '#27AE60', color: '#fff', border: 'none' }}>
+  Public
+</Tag>
+<Tag style={{ borderRadius: 20, backgroundColor: '#F2994A', color: '#fff', border: 'none' }}>
+  For Adoption
+</Tag>
+<Tag style={{ borderRadius: 20, backgroundColor: '#EB5757', color: '#fff', border: 'none' }}>
+  Venomous
+</Tag>
 ```
 
 ---
@@ -345,8 +399,151 @@ import { Alert } from 'antd';
 4. **Mobile-first approach** - viết responsive từ đầu
 5. **Performance**: Lazy load images, code splitting cho routes
 
----
+When the backend API changes → OpenAPI client is regenerated → the frontend fails at compile-time ONLY in the correct adapter locations (services / mappers), never in UI components.
 
-**Version**: 1.0  
-**Last Updated**: 31/12/2025  
-**Maintained by**: PawPlanet Frontend Team
+UI code must remain stable and isolated from backend changes.
+
+Mandatory Architecture Rules (DO NOT VIOLATE)
+Rule 1 – Generated code is NOT handwritten code
+
+All OpenAPI-generated code lives under:
+
+services/api/.openapi-generator/
+
+
+Generated code:
+
+MUST NOT be manually edited
+
+MUST NOT be imported directly in React components, hooks, or pages
+
+Generated code may ONLY be used inside the service layer
+
+Violating this rule will make regeneration unsafe and must be avoided.
+
+Rule 2 – UI must be backend-agnostic
+
+UI components and hooks:
+
+MUST NOT know:
+
+backend endpoints
+
+backend DTO names
+
+backend pagination formats
+
+backend field names
+
+UI should only express intent, e.g.:
+
+“Get my profile”
+
+“Fetch pet list”
+
+Never expose backend response shapes to UI.
+
+Folder Structure (Regenerate-safe)
+
+Always follow this structure:
+
+src/
+├─ services/
+│   ├─ api/
+│   │   └─ .openapi-generator/     ← AUTO-GENERATED (can be deleted & regenerated)
+│   │
+│   ├─ auth.service.ts             ← uses generated APIs
+│   ├─ user.service.ts
+│   ├─ pet.service.ts
+│   └─ media.service.ts
+│
+├─ domain/                         ← FRONTEND DOMAIN MODELS
+│   ├─ user.ts
+│   ├─ pet.ts
+│   └─ post.ts
+│
+├─ mappers/                        ← BACKEND DTO → FRONTEND DOMAIN
+│   ├─ user.mapper.ts
+│   └─ pet.mapper.ts
+│
+├─ hooks/
+│   ├─ useUser.ts
+│   └─ usePets.ts
+│
+└─ pages / components              ← UI (NO backend imports)
+
+
+Key invariant:
+
+Regeneration may only affect
+.openapi-generator → services → mappers
+UI must never be impacted.
+
+Data Flow Contract (Must Match Exactly)
+[Spring DTO]
+↓ Swagger
+[OpenAPI Spec]
+↓ Generator
+[.openapi-generator models]
+↓
+[service layer]
+↓ (mapping)
+[frontend domain models]
+↓
+[hooks / UI]
+
+How to Write Code (STRICT RULES)
+❌ Forbidden Pattern
+import { UserResponse } from "services/api/.openapi-generator";
+
+export const ProfilePage = () => {
+const user: UserResponse = ...
+};
+
+
+UI must NEVER depend on generated DTOs.
+
+✅ Required Pattern
+Frontend domain model
+// domain/user.ts
+export interface User {
+id: string;
+name: string;
+avatarUrl?: string;
+}
+
+Mapper (single point of breakage)
+// mappers/user.mapper.ts
+import { UserResponse } from "services/api/.openapi-generator";
+
+export const mapUser = (dto: UserResponse): User => ({
+id: dto.id!,
+name: dto.username!,
+avatarUrl: dto.avatarUrl,
+});
+
+Service layer (adapter boundary)
+// services/user.service.ts
+import { UserApi } from "services/api/.openapi-generator";
+import { mapUser } from "@/mappers/user.mapper";
+import { User } from "@/domain/user";
+
+const api = new UserApi();
+
+export const getMyProfile = async (): Promise<User> => {
+const res = await api.viewMyProfile();
+return mapUser(res.data);
+};
+
+
+Expected behavior on backend change:
+
+Backend renames username → displayName
+
+OpenAPI client is regenerated
+
+TypeScript error occurs only in user.mapper.ts
+
+UI code remains untouched
+
+This is the intended and required failure mode.

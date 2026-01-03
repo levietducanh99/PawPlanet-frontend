@@ -1,0 +1,215 @@
+@import 'auth.css';
+
+/* Page-level adjustments */
+.login-page {
+  margin-top: 8px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 32px 24px; /* giảm padding ngang để input dài hơn */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.simple-avatar {
+  margin-bottom: 24px;
+}
+
+/* Ant Design Form customization */
+/* width responsive được set ở auth.css (clamp). Ở đây chỉ style chi tiết */
+.login-form {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-page .login-form {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.login-form .ant-form-item {
+  margin-bottom: 28px;
+}
+
+.login-form .ant-form-item-label > label {
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 10px !important;
+}
+
+.login-form .ant-input,
+.login-form .ant-input-password {
+  border-radius: 12px;
+  height: 52px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+}
+
+.login-form .ant-input:focus,
+.login-form .ant-input-password:focus,
+.login-form .ant-input-focused,
+.login-form .ant-input-affix-wrapper-focused {
+  background: #FFFFFF;
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+.login-form .ant-input-password .ant-input {
+  border-radius: 0;
+  background: transparent;
+  border: none;
+}
+
+.login-form .ant-input-affix-wrapper {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+}
+
+.login-form .ant-input-affix-wrapper:focus,
+.login-form .ant-input-affix-wrapper-focused {
+  background: #FFFFFF;
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+/* Submit button with icon */
+.login-form__submit-btn {
+  border-radius: 24px;
+  height: 54px;
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+  margin-top: 12px;
+  text-transform: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-form__submit-btn .anticon {
+  font-size: 18px;
+}
+
+.login-form__submit-btn:hover {
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+  transform: translateY(-1px);
+  transition: all 0.3s ease;
+}
+
+/* Remember / Forgot row */
+.login-form__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.login-form__forgot {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.login-form__forgot:hover {
+  text-decoration: underline;
+}
+
+/* Divider styling */
+.login-form__divider {
+  margin: 24px 0 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.login-form__divider::before,
+.login-form__divider::after {
+  border-top: 1px solid #E5E7EB !important;
+}
+
+/* Social buttons grid */
+.login-form__socials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.login-form__socials .social-btn,
+.login-form__socials .ant-btn {
+  border-radius: 12px;
+  height: 48px;
+  border: 1px solid #E5E7EB;
+  background: #FFFFFF;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.login-form__socials .ant-btn:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+  background: #F0F9FF;
+}
+
+.login-form__socials .ant-btn .anticon {
+  font-size: 18px;
+}
+
+/* Footer signup link */
+.login-form__signup {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 14px;
+}
+
+.login-form__signup .muted {
+  color: var(--text-secondary);
+  margin-right: 8px;
+}
+
+.login-form__signup .link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-weight: 600;
+  padding: 0;
+  font-size: 14px;
+}
+
+.login-form__signup .link:hover {
+  text-decoration: underline;
+}
+
+/* Ant Design Checkbox customization */
+.login-form .ant-checkbox-wrapper {
+  font-size: 14px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.login-form .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #1890FF;
+  border-color: #1890FF;
+}
+
+/* Small responsive tweak */
+@media (max-width: 480px) {
+  .login-form__socials {
+    gap: 8px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .simple-avatar {
+    margin-bottom: 16px;
+  }
+}
