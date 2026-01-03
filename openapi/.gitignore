@@ -1,0 +1,12 @@
+# Keep this directory but ignore its contents by default
+# The openapi.yaml will be fetched by the generate-api script
+
+# Ignore all files
+*
+
+# Except this .gitignore
+!.gitignore
+
+# And the openapi.yaml (optional - commit this to track API changes)
+!openapi.yaml
+

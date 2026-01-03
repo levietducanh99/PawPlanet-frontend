@@ -28,8 +28,7 @@ dist-ssr
 .env.local
 .env.*.local
 
-# Generated API files (but keep README and .gitkeep)
-src/services/api/*
+# Generated API files (but keep README and .gitkeep
 !src/services/api/README.md
 !src/services/api/.gitkeep
 
