@@ -52,6 +52,12 @@ export interface AnimalClassResponse {
      * @type {string}
      * @memberof AnimalClassResponse
      */
+    'slug'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AnimalClassResponse
+     */
     'description'?: string;
     /**
      * 
@@ -620,6 +626,12 @@ export interface BreedDetailResponse {
      * @type {string}
      * @memberof BreedDetailResponse
      */
+    'slug'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BreedDetailResponse
+     */
     'origin'?: string;
     /**
      * 
@@ -688,6 +700,12 @@ export interface BreedResponse {
      * @memberof BreedResponse
      */
     'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BreedResponse
+     */
+    'slug'?: string;
     /**
      * 
      * @type {string}
@@ -1613,6 +1631,12 @@ export interface SpeciesDetailResponse {
      * @type {string}
      * @memberof SpeciesDetailResponse
      */
+    'slug'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SpeciesDetailResponse
+     */
     'scientificName'?: string;
     /**
      * 
@@ -1675,6 +1699,12 @@ export interface SpeciesResponse {
      * @memberof SpeciesResponse
      */
     'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SpeciesResponse
+     */
+    'slug'?: string;
     /**
      * 
      * @type {string}

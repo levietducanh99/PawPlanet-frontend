@@ -4,7 +4,7 @@ set -e
 echo "🔄 Fetching OpenAPI spec from backend repo..."
 
 curl -L \
-  https://raw.githubusercontent.com/levietducanh99/PawpPanet-backend/main/src/main/resources/openapi.yaml \
+  https://raw.githubusercontent.com/levietducanh99/Pawplanet-backend/main/src/main/resources/openapi.yaml \
   -o openapi/openapi.yaml
 
 echo "✅ OpenAPI spec downloaded successfully."
