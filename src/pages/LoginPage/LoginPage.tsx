@@ -4,7 +4,7 @@ import { Form, Input, Button, Checkbox, Divider, message } from 'antd';
 import { MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined, LoginOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
-import { fadeInUp } from '@/animations/variants';
+import { fadeInUp } from '@/animations/variants.ts';
 import './auth.css';
 import './login.css';
 

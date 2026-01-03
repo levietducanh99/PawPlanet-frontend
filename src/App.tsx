@@ -2,9 +2,9 @@ import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import { theme } from './theme/antdConfig';
 import './styles/App.css';
-import { LoginPage } from './pages/LoginPage';
-import { RegisterPage } from './pages/RegisterPage';
-import { HomePage } from './pages/HomePage';
+import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
+import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
+import { HomePage } from './pages/HomePage/HomePage.tsx';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();

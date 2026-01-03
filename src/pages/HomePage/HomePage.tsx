@@ -2,10 +2,10 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Row, Col, Card, Typography, Button } from 'antd';
 import { HeartOutlined, UserOutlined, EnvironmentOutlined } from '@ant-design/icons';
-import { pageVariants, cardHoverVariants } from '@/animations/variants';
+import { pageVariants, cardHoverVariants } from '@/animations/variants.ts';
 import styles from './HomePage.module.css';
-import '../styles/variables.css';
-import '../styles/fonts.css';
+import '../../styles/variables.css';
+import '../../styles/fonts.css';
 
 const { Title, Paragraph } = Typography;
 
