@@ -1,0 +1,15 @@
+<svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Paw Icon -->
+  <circle cx="12" cy="8" r="3" fill="#1890FF"/>
+  <circle cx="6" cy="14" r="2.5" fill="#1890FF"/>
+  <circle cx="18" cy="14" r="2.5" fill="#1890FF"/>
+  <circle cx="8" cy="20" r="2" fill="#1890FF"/>
+  <circle cx="16" cy="20" r="2" fill="#1890FF"/>
+  <ellipse cx="12" cy="16" rx="4" ry="5" fill="#1890FF"/>
+
+  <!-- Text "PAW BUDDY" -->
+  <text x="30" y="22" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1F2937">
+    PAW BUDDY
+  </text>
+</svg>
+
