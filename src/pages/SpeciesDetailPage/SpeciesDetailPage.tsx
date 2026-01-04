@@ -7,6 +7,7 @@ import {
   ColumnHeightOutlined,
   ThunderboltOutlined,
   ClockCircleOutlined,
+  InboxOutlined,
 } from '@ant-design/icons';
 import { pageVariants, cardHoverVariants } from '@/animations/variants';
 import styles from './SpeciesDetailPage.module.css';
@@ -157,7 +158,7 @@ const getAttributeIcon = (iconType: string) => {
       return <ColumnHeightOutlined />;
     case 'weight-male':
     case 'weight-female':
-      return <span className={styles.weightIcon}>⚖</span>;
+      return <InboxOutlined />;
     case 'lifespan':
       return <ClockCircleOutlined />;
     case 'speed':

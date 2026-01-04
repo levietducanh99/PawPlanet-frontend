@@ -157,10 +157,6 @@
   color: var(--color-primary);
 }
 
-.weightIcon {
-  font-size: 18px;
-}
-
 .attributeLabel {
   font-size: 13px;
   color: var(--text-secondary);

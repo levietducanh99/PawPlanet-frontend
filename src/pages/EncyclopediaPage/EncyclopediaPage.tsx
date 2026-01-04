@@ -34,7 +34,7 @@ const animalClasses = [
   {
     id: 'amphibian',
     name: 'Amphibian',
-    description: 'Animals that can live both in water and on...',
+    description: 'Animals that can live both in water and on land.',
     image: 'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=800',
     size: 'small',
   },
@@ -55,14 +55,14 @@ const animalClasses = [
   {
     id: 'mollusk',
     name: 'Mollusk',
-    description: 'Invertebrate animals with soft bodies (e.g.,...',
+    description: 'Invertebrate animals with soft bodies, often with shells.',
     image: 'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10?w=800',
     size: 'small',
   },
   {
     id: 'other',
     name: 'Other',
-    description: 'Other animal types not included in the above...',
+    description: 'Other animal types not included in the above categories.',
     image: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?w=800',
     size: 'small',
   },
