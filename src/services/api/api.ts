@@ -26,50 +26,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
- * @interface AddPetMediaRequest
- */
-export interface AddPetMediaRequest {
-    /**
-     * 
-     * @type {Array<MediaItem>}
-     * @memberof AddPetMediaRequest
-     */
-    'mediaItems': Array<MediaItem>;
-}
-/**
- * 
- * @export
- * @interface AddPetMediaResponse
- */
-export interface AddPetMediaResponse {
-    /**
-     * 
-     * @type {number}
-     * @memberof AddPetMediaResponse
-     */
-    'petId'?: number;
-    /**
-     * 
-     * @type {Array<PetMediaDTO>}
-     * @memberof AddPetMediaResponse
-     */
-    'addedMedia'?: Array<PetMediaDTO>;
-    /**
-     * 
-     * @type {number}
-     * @memberof AddPetMediaResponse
-     */
-    'totalGalleryCount'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof AddPetMediaResponse
-     */
-    'message'?: string;
-}
-/**
- * 
- * @export
  * @interface AnimalClassResponse
  */
 export interface AnimalClassResponse {
@@ -1119,25 +1075,6 @@ export interface LogoutRequest {
 /**
  * 
  * @export
- * @interface MediaItem
- */
-export interface MediaItem {
-    /**
-     * 
-     * @type {string}
-     * @memberof MediaItem
-     */
-    'publicId': string;
-    /**
-     * 
-     * @type {string}
-     * @memberof MediaItem
-     */
-    'type': string;
-}
-/**
- * 
- * @export
  * @interface MediaSignRequest
  */
 export interface MediaSignRequest {
@@ -1169,7 +1106,6 @@ export interface MediaSignRequest {
 
 export const MediaSignRequestContextEnum = {
     UserAvatar: 'USER_AVATAR',
-    UserCover: 'USER_COVER',
     PetAvatar: 'PET_AVATAR',
     PetGallery: 'PET_GALLERY',
     PostMedia: 'POST_MEDIA',
@@ -2019,7 +1955,7 @@ export interface UpdatePetRequestDTO {
      * @type {string}
      * @memberof UpdatePetRequestDTO
      */
-    'avatarPublicId'?: string;
+    'url'?: string;
     /**
      * 
      * @type {number}
@@ -2093,19 +2029,7 @@ export interface UpdateProfileRequestDTO {
      * @type {string}
      * @memberof UpdateProfileRequestDTO
      */
-    'fullName'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateProfileRequestDTO
-     */
-    'avatarPublicId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UpdateProfileRequestDTO
-     */
-    'coverImagePublicId'?: string;
+    'avatarUrl'?: string;
     /**
      * 
      * @type {string}
@@ -2154,31 +2078,7 @@ export interface UserEntity {
      * @type {string}
      * @memberof UserEntity
      */
-    'fullName'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserEntity
-     */
-    'avatarPublicId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserEntity
-     */
     'avatarUrl'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserEntity
-     */
-    'coverImagePublicId'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserEntity
-     */
-    'coverImageUrl'?: string;
     /**
      * 
      * @type {string}
@@ -2233,12 +2133,6 @@ export interface UserProfileDTO {
      * @type {string}
      * @memberof UserProfileDTO
      */
-    'fullName'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserProfileDTO
-     */
     'role'?: string;
     /**
      * 
@@ -2246,12 +2140,6 @@ export interface UserProfileDTO {
      * @memberof UserProfileDTO
      */
     'avatarUrl'?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof UserProfileDTO
-     */
-    'coverImageUrl'?: string;
     /**
      * 
      * @type {string}
@@ -2288,30 +2176,6 @@ export interface UserProfileDTO {
      * @memberof UserProfileDTO
      */
     'petsCount'?: number;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UserProfileDTO
-     */
-    'isMe'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UserProfileDTO
-     */
-    'isFollowing'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UserProfileDTO
-     */
-    'isFollowedBy'?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof UserProfileDTO
-     */
-    'canFollow'?: boolean;
 }
 /**
  * 
@@ -5841,49 +5705,6 @@ export const PetControllerApiAxiosParamCreator = function (configuration?: Confi
     return {
         /**
          * 
-         * @param {number} id 
-         * @param {AddPetMediaRequest} addPetMediaRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addMediaToGallery: async (id: number, addPetMediaRequest: AddPetMediaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('addMediaToGallery', 'id', id)
-            // verify required parameter 'addPetMediaRequest' is not null or undefined
-            assertParamExists('addMediaToGallery', 'addPetMediaRequest', addPetMediaRequest)
-            const localVarPath = `/api/v1/pets/{id}/gallery`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication bearerAuth required
-            // http bearer authentication required
-            await setBearerAuthToObject(localVarHeaderParameter, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(addPetMediaRequest, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @param {CreatePetRequestDTO} createPetRequestDTO 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6013,19 +5834,6 @@ export const PetControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {number} id 
-         * @param {AddPetMediaRequest} addPetMediaRequest 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async addMediaToGallery(id: number, addPetMediaRequest: AddPetMediaRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AddPetMediaResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addMediaToGallery(id, addPetMediaRequest, options);
-            const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['PetControllerApi.addMediaToGallery']?.[index]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
-        },
-        /**
-         * 
          * @param {CreatePetRequestDTO} createPetRequestDTO 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6073,15 +5881,6 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
     return {
         /**
          * 
-         * @param {PetControllerApiAddMediaToGalleryRequest} requestParameters Request parameters.
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        addMediaToGallery(requestParameters: PetControllerApiAddMediaToGalleryRequest, options?: RawAxiosRequestConfig): AxiosPromise<AddPetMediaResponse> {
-            return localVarFp.addMediaToGallery(requestParameters.id, requestParameters.addPetMediaRequest, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @param {PetControllerApiCreatePetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6109,27 +5908,6 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
         },
     };
 };
-
-/**
- * Request parameters for addMediaToGallery operation in PetControllerApi.
- * @export
- * @interface PetControllerApiAddMediaToGalleryRequest
- */
-export interface PetControllerApiAddMediaToGalleryRequest {
-    /**
-     * 
-     * @type {number}
-     * @memberof PetControllerApiAddMediaToGallery
-     */
-    readonly id: number
-
-    /**
-     * 
-     * @type {AddPetMediaRequest}
-     * @memberof PetControllerApiAddMediaToGallery
-     */
-    readonly addPetMediaRequest: AddPetMediaRequest
-}
 
 /**
  * Request parameters for createPet operation in PetControllerApi.
@@ -6187,17 +5965,6 @@ export interface PetControllerApiUpdatePetRequest {
  * @extends {BaseAPI}
  */
 export class PetControllerApi extends BaseAPI {
-    /**
-     * 
-     * @param {PetControllerApiAddMediaToGalleryRequest} requestParameters Request parameters.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof PetControllerApi
-     */
-    public addMediaToGallery(requestParameters: PetControllerApiAddMediaToGalleryRequest, options?: RawAxiosRequestConfig) {
-        return PetControllerApiFp(this.configuration).addMediaToGallery(requestParameters.id, requestParameters.addPetMediaRequest, options).then((request) => request(this.axios, this.basePath));
-    }
-
     /**
      * 
      * @param {PetControllerApiCreatePetRequest} requestParameters Request parameters.

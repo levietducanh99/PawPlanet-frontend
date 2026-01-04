@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Form, Input, Button, Checkbox, Divider, message } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
-import { useRegister } from '@/hooks';
 import { fadeInUp } from '@/animations/variants.ts';
 import '../LoginPage/auth.css';
 import './register.css';
@@ -22,17 +21,21 @@ interface RegisterFormValues {
 }
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin }) => {
+  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const { register, loading } = useRegister();
 
   const handleSubmit = async (values: RegisterFormValues) => {
-    await register({
-      fullName: values.fullName,
-      email: values.email,
-      password: values.password,
-      confirmPassword: values.confirmPassword,
-      agree: values.agree
-    });
+    setLoading(true);
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      message.success('Registration successful! Welcome to PawPlanet!');
+      console.log('Register values:', values);
+    } catch (error) {
+      message.error('Registration failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSocialSignup = (provider: string) => {

@@ -8,5 +8,4 @@ export {
   useCreatePost,
   usePostComments
 } from './usePost';
-// Authentication Hooks
-export { useLogin, useRegister, useAuth, useAuthGuard } from './useAuth';
+
