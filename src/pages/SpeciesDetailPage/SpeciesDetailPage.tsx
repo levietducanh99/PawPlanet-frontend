@@ -1,20 +1,38 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Typography, Tag, Row, Col, Card } from 'antd';
+import { Typography, Row, Col, Card } from 'antd';
+import { pageVariants } from '@/animations/variants';
 import {
-  ColumnWidthOutlined,
-  ColumnHeightOutlined,
-  ThunderboltOutlined,
-  ClockCircleOutlined,
-  InboxOutlined,
-} from '@ant-design/icons';
-import { pageVariants, cardHoverVariants } from '@/animations/variants';
+  HeroBanner,
+  PillTabs,
+  TabItem,
+  AttributeCard,
+  AttributeData,
+  PhotoGallery,
+  SpeciesCard,
+  SpeciesCardData,
+} from '@/components/Encyclopedia';
 import styles from './SpeciesDetailPage.module.css';
 
 const { Title, Paragraph } = Typography;
 
 // Mock data for species
+interface SpeciesInfo {
+  id: string;
+  commonName: string;
+  scientificName: string;
+  status: string;
+  statusColor: string;
+  heroImage: string;
+  overview: string;
+  attributes: AttributeData[];
+  appearance: { title: string; content: string };
+  behavior: { title: string; content: string };
+  gallery: string[];
+  breeds: SpeciesCardData[];
+}
+
 const speciesData: Record<string, SpeciesInfo> = {
   lion: {
     id: 'lion',
@@ -46,7 +64,7 @@ const speciesData: Record<string, SpeciesInfo> = {
       'https://images.unsplash.com/photo-1575550959106-5a7defe28b56?w=600',
       'https://images.unsplash.com/photo-1552410260-0fd9e8f8e0c2?w=600',
     ],
-    subspecies: [
+    breeds: [
       {
         id: 'asiatic-lion',
         name: 'Asiatic Lion',
@@ -75,7 +93,7 @@ const speciesData: Record<string, SpeciesInfo> = {
     overview: `The king cobra is the world's longest venomous snake, with a length up to 5.85 m (19.2 ft). This species is native to the Indian subcontinent and Southeast Asia. Despite the word "cobra" in its common name, this species does not belong to the genus Naja but is the sole member of its own genus.`,
     attributes: [
       { icon: 'length', label: 'Length', value: '3-5.8 m' },
-      { icon: 'weight-male', label: 'Weight', value: '6 kg' },
+      { icon: 'weight', label: 'Weight', value: '6 kg' },
       { icon: 'lifespan', label: 'Life Span', value: '20 years' },
       { icon: 'speed', label: 'Strike Speed', value: '2.4 m/s' },
     ],
@@ -91,7 +109,7 @@ const speciesData: Record<string, SpeciesInfo> = {
       'https://images.unsplash.com/photo-1531386151447-fd76ad50012f?w=600',
       'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=600',
     ],
-    subspecies: [],
+    breeds: [],
   },
   jellyfish: {
     id: 'jellyfish',
@@ -116,73 +134,30 @@ const speciesData: Record<string, SpeciesInfo> = {
     gallery: [
       'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10?w=600',
     ],
-    subspecies: [],
+    breeds: [],
   },
 };
 
-interface Attribute {
-  icon: string;
-  label: string;
-  value: string;
-}
-
-interface Subspecies {
-  id: string;
-  name: string;
-  scientificName: string;
-  status: string;
-  statusColor: string;
-  image: string;
-}
-
-interface SpeciesInfo {
-  id: string;
-  commonName: string;
-  scientificName: string;
-  status: string;
-  statusColor: string;
-  heroImage: string;
-  overview: string;
-  attributes: Attribute[];
-  appearance: { title: string; content: string };
-  behavior: { title: string; content: string };
-  gallery: string[];
-  subspecies: Subspecies[];
-}
-
-const getAttributeIcon = (iconType: string) => {
-  switch (iconType) {
-    case 'length':
-      return <ColumnWidthOutlined />;
-    case 'height':
-      return <ColumnHeightOutlined />;
-    case 'weight-male':
-    case 'weight-female':
-      return <InboxOutlined />;
-    case 'lifespan':
-      return <ClockCircleOutlined />;
-    case 'speed':
-      return <ThunderboltOutlined />;
-    default:
-      return <span>•</span>;
-  }
-};
+const tabs: TabItem[] = [
+  { key: 'overview', label: 'Overview' },
+  { key: 'attributes', label: 'Attributes' },
+  { key: 'appearance', label: 'Appearance & Habits' },
+  { key: 'habitat', label: 'Habitat' },
+  { key: 'gallery', label: 'Gallery' },
+  { key: 'breeds', label: 'Breeds' },
+  { key: 'related', label: 'Related Species' },
+];
 
 export const SpeciesDetailPage: React.FC = () => {
   const { speciesId } = useParams<{ speciesId: string }>();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
   const species = speciesData[speciesId || 'lion'] || speciesData.lion;
 
-  const tabs = [
-    { key: 'overview', label: 'Overview' },
-    { key: 'attributes', label: 'Attributes' },
-    { key: 'appearance', label: 'Appearance & Habits' },
-    { key: 'habitat', label: 'Habitat' },
-    { key: 'gallery', label: 'Gallery' },
-    { key: 'subspecies', label: 'Subspecies' },
-    { key: 'related', label: 'Related Species' },
-  ];
+  const handleBreedClick = (breed: SpeciesCardData) => {
+    navigate(`/encyclopedia/breed/${breed.id}`);
+  };
 
   return (
     <motion.div
@@ -192,44 +167,25 @@ export const SpeciesDetailPage: React.FC = () => {
       animate="animate"
     >
       {/* Hero Section */}
-      <div
-        className={styles.heroSection}
-        style={{ backgroundImage: `url(${species.heroImage})` }}
-      >
-        <div className={styles.heroOverlay}>
-          <Tag
-            className={styles.statusTag}
-            style={{ backgroundColor: species.statusColor }}
-          >
-            {species.status}
-          </Tag>
-          <Title level={2} className={styles.heroTitle}>
-            {species.commonName}
-          </Title>
-          <Paragraph className={styles.heroScientificName}>
-            {species.scientificName}
-          </Paragraph>
-        </div>
-      </div>
+      <HeroBanner
+        image={species.heroImage}
+        status={species.status}
+        statusColor={species.statusColor}
+        title={species.commonName}
+        subtitle={species.scientificName}
+      />
 
       {/* Tab Navigation */}
-      <div className={styles.tabNavigation}>
-        <div className={styles.tabContainer}>
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ''}`}
-              onClick={() => setActiveTab(tab.key)}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-      </div>
+      <PillTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        sticky
+      />
 
       {/* Content Sections */}
       <div className={styles.contentContainer}>
-        {/* Overview Section - Always visible on overview tab */}
+        {/* Overview Tab */}
         {activeTab === 'overview' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -253,13 +209,7 @@ export const SpeciesDetailPage: React.FC = () => {
               <Row gutter={[16, 16]}>
                 {species.attributes.map((attr, index) => (
                   <Col xs={12} sm={8} md={4} key={index}>
-                    <Card bordered={false} className={styles.attributeCard}>
-                      <div className={styles.attributeIcon}>
-                        {getAttributeIcon(attr.icon)}
-                      </div>
-                      <div className={styles.attributeLabel}>{attr.label}</div>
-                      <div className={styles.attributeValue}>{attr.value}</div>
-                    </Card>
+                    <AttributeCard attribute={attr} />
                   </Col>
                 ))}
               </Row>
@@ -291,61 +241,24 @@ export const SpeciesDetailPage: React.FC = () => {
             </Card>
 
             {/* Photo Gallery */}
-            <section className={styles.section}>
-              <Title level={4} className={styles.sectionTitleBlue}>
-                Photo Gallery
-              </Title>
-              <div className={styles.galleryGrid}>
-                {species.gallery.map((image, index) => (
-                  <motion.div
-                    key={index}
-                    className={styles.galleryItem}
-                    variants={cardHoverVariants}
-                    initial="rest"
-                    whileHover="hover"
-                  >
-                    <img src={image} alt={`${species.commonName} ${index + 1}`} />
-                  </motion.div>
-                ))}
-              </div>
-            </section>
+            <PhotoGallery
+              images={species.gallery}
+              altPrefix={species.commonName}
+            />
 
-            {/* Subspecies */}
-            {species.subspecies.length > 0 && (
+            {/* Breeds */}
+            {species.breeds.length > 0 && (
               <section className={styles.section}>
                 <Title level={4} className={styles.sectionTitle}>
-                  Subspecies
+                  Breeds
                 </Title>
                 <Row gutter={[16, 16]}>
-                  {species.subspecies.map((sub) => (
-                    <Col xs={24} sm={12} md={8} lg={6} key={sub.id}>
-                      <motion.div
-                        variants={cardHoverVariants}
-                        initial="rest"
-                        whileHover="hover"
-                      >
-                        <Card bordered={false} className={styles.subspeciesCard}>
-                          <div
-                            className={styles.subspeciesImage}
-                            style={{ backgroundImage: `url(${sub.image})` }}
-                          >
-                            <Tag
-                              className={styles.subspeciesTag}
-                              style={{ backgroundColor: sub.statusColor }}
-                            >
-                              {sub.status}
-                            </Tag>
-                          </div>
-                          <div className={styles.subspeciesInfo}>
-                            <Title level={5} className={styles.subspeciesName}>
-                              {sub.name}
-                            </Title>
-                            <Paragraph className={styles.subspeciesScientific}>
-                              {sub.scientificName}
-                            </Paragraph>
-                          </div>
-                        </Card>
-                      </motion.div>
+                  {species.breeds.map((breed) => (
+                    <Col xs={24} sm={12} md={8} lg={6} key={breed.id}>
+                      <SpeciesCard
+                        species={breed}
+                        onClick={handleBreedClick}
+                      />
                     </Col>
                   ))}
                 </Row>
@@ -368,13 +281,7 @@ export const SpeciesDetailPage: React.FC = () => {
               <Row gutter={[16, 16]}>
                 {species.attributes.map((attr, index) => (
                   <Col xs={12} sm={8} md={6} lg={4} key={index}>
-                    <Card bordered={false} className={styles.attributeCard}>
-                      <div className={styles.attributeIcon}>
-                        {getAttributeIcon(attr.icon)}
-                      </div>
-                      <div className={styles.attributeLabel}>{attr.label}</div>
-                      <div className={styles.attributeValue}>{attr.value}</div>
-                    </Card>
+                    <AttributeCard attribute={attr} />
                   </Col>
                 ))}
               </Row>
@@ -420,29 +327,15 @@ export const SpeciesDetailPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <section className={styles.section}>
-              <Title level={4} className={styles.sectionTitleBlue}>
-                Photo Gallery
-              </Title>
-              <div className={styles.galleryGrid}>
-                {species.gallery.map((image, index) => (
-                  <motion.div
-                    key={index}
-                    className={styles.galleryItem}
-                    variants={cardHoverVariants}
-                    initial="rest"
-                    whileHover="hover"
-                  >
-                    <img src={image} alt={`${species.commonName} ${index + 1}`} />
-                  </motion.div>
-                ))}
-              </div>
-            </section>
+            <PhotoGallery
+              images={species.gallery}
+              altPrefix={species.commonName}
+            />
           </motion.div>
         )}
 
-        {/* Subspecies Tab */}
-        {activeTab === 'subspecies' && (
+        {/* Breeds Tab */}
+        {activeTab === 'breeds' && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -450,45 +343,22 @@ export const SpeciesDetailPage: React.FC = () => {
           >
             <section className={styles.section}>
               <Title level={4} className={styles.sectionTitle}>
-                Subspecies
+                Breeds
               </Title>
-              {species.subspecies.length > 0 ? (
+              {species.breeds.length > 0 ? (
                 <Row gutter={[16, 16]}>
-                  {species.subspecies.map((sub) => (
-                    <Col xs={24} sm={12} md={8} lg={6} key={sub.id}>
-                      <motion.div
-                        variants={cardHoverVariants}
-                        initial="rest"
-                        whileHover="hover"
-                      >
-                        <Card bordered={false} className={styles.subspeciesCard}>
-                          <div
-                            className={styles.subspeciesImage}
-                            style={{ backgroundImage: `url(${sub.image})` }}
-                          >
-                            <Tag
-                              className={styles.subspeciesTag}
-                              style={{ backgroundColor: sub.statusColor }}
-                            >
-                              {sub.status}
-                            </Tag>
-                          </div>
-                          <div className={styles.subspeciesInfo}>
-                            <Title level={5} className={styles.subspeciesName}>
-                              {sub.name}
-                            </Title>
-                            <Paragraph className={styles.subspeciesScientific}>
-                              {sub.scientificName}
-                            </Paragraph>
-                          </div>
-                        </Card>
-                      </motion.div>
+                  {species.breeds.map((breed) => (
+                    <Col xs={24} sm={12} md={8} lg={6} key={breed.id}>
+                      <SpeciesCard
+                        species={breed}
+                        onClick={handleBreedClick}
+                      />
                     </Col>
                   ))}
                 </Row>
               ) : (
                 <div className={styles.emptyState}>
-                  <Paragraph>No subspecies information available.</Paragraph>
+                  <Paragraph>No breed information available.</Paragraph>
                 </div>
               )}
             </section>

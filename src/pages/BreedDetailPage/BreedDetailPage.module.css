@@ -1,6 +1,6 @@
-/* Species Detail Page Styles */
+/* Breed Detail Page Styles */
 
-.speciesPage {
+.breedPage {
   background: var(--bg-body);
   min-height: 100vh;
 }
@@ -45,30 +45,38 @@
 
 .cardTitle {
   color: var(--text-primary) !important;
-  font-size: 22px !important;
+  font-size: 20px !important;
   font-weight: 600 !important;
-  margin-bottom: 28px !important;
+  margin-bottom: 16px !important;
 }
 
-.subsection {
-  margin-bottom: 28px;
+/* List Content */
+.listContent {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.subsection:last-child {
-  margin-bottom: 0;
-}
-
-.subsectionTitle {
-  color: var(--text-primary) !important;
-  font-size: 17px !important;
-  font-weight: 600 !important;
-  margin-bottom: 12px !important;
-}
-
-.subsectionContent {
+.listContent li {
+  position: relative;
+  padding-left: 24px;
+  margin-bottom: 12px;
   color: var(--text-primary);
   font-size: 16px;
-  line-height: 1.7;
+  line-height: 1.6;
+}
+
+.listContent li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: var(--color-primary);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.listContent li:last-child {
+  margin-bottom: 0;
 }
 
 /* Empty State */
@@ -78,22 +86,6 @@
   background: var(--bg-white);
   border-radius: 12px;
   box-shadow: var(--shadow-soft);
-}
-
-/* Placeholder Section */
-.placeholderSection {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-  background: var(--bg-white);
-  border-radius: 16px;
-  box-shadow: var(--shadow-soft);
-}
-
-.placeholderText {
-  color: var(--text-secondary);
-  font-size: 18px;
 }
 
 /* Responsive Styles */

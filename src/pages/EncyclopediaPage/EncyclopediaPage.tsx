@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Input, Tag, Modal, Button, Typography } from 'antd';
+import { Input, Tag, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { pageVariants, cardHoverVariants } from '@/animations/variants';
+import { pageVariants } from '@/animations/variants';
+import {
+  AnimalClassCard,
+  AnimalClassData,
+  ClassModal,
+  PillTabs,
+  TabItem,
+} from '@/components/Encyclopedia';
 import styles from './EncyclopediaPage.module.css';
 
-const { Title, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 // Mock data for animal classes
-const animalClasses = [
+const animalClasses: AnimalClassData[] = [
   {
     id: 'mammal',
     name: 'Mammal',
@@ -75,22 +82,20 @@ const demoSpecies = [
   { id: 'jellyfish', name: 'Demo: Jellyfish (Marine)', emoji: '🎐', color: '#1890FF' },
 ];
 
-interface AnimalClass {
-  id: string;
-  name: string;
-  description: string;
-  image: string;
-  size: string;
-}
+const tabs: TabItem[] = [
+  { key: 'animal-classes', label: 'Animal Classes' },
+  { key: 'popular', label: 'Popular Animals' },
+  { key: 'random', label: 'Random Discovery' },
+];
 
 export const EncyclopediaPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('animal-classes');
   const [searchValue, setSearchValue] = useState('');
-  const [selectedClass, setSelectedClass] = useState<AnimalClass | null>(null);
+  const [selectedClass, setSelectedClass] = useState<AnimalClassData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleClassClick = (animalClass: AnimalClass) => {
+  const handleClassClick = (animalClass: AnimalClassData) => {
     setSelectedClass(animalClass);
     setIsModalOpen(true);
   };
@@ -105,12 +110,6 @@ export const EncyclopediaPage: React.FC = () => {
   const handleDemoClick = (speciesId: string) => {
     navigate(`/encyclopedia/species/${speciesId}`);
   };
-
-  const tabs = [
-    { key: 'animal-classes', label: 'Animal Classes' },
-    { key: 'popular', label: 'Popular Animals' },
-    { key: 'random', label: 'Random Discovery' },
-  ];
 
   return (
     <motion.div
@@ -146,17 +145,11 @@ export const EncyclopediaPage: React.FC = () => {
       </div>
 
       {/* Tab Navigation */}
-      <div className={styles.tabContainer}>
-        {tabs.map((tab) => (
-          <button
-            key={tab.key}
-            className={`${styles.tab} ${activeTab === tab.key ? styles.tabActive : ''}`}
-            onClick={() => setActiveTab(tab.key)}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <PillTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+      />
 
       {/* Animal Classes Grid */}
       <AnimatePresence mode="wait">
@@ -173,28 +166,11 @@ export const EncyclopediaPage: React.FC = () => {
               {animalClasses
                 .filter((c) => c.size === 'large')
                 .map((animalClass) => (
-                  <motion.div
+                  <AnimalClassCard
                     key={animalClass.id}
-                    className={styles.largeCard}
-                    variants={cardHoverVariants}
-                    initial="rest"
-                    whileHover="hover"
-                    onClick={() => handleClassClick(animalClass)}
-                  >
-                    <div
-                      className={styles.cardImage}
-                      style={{ backgroundImage: `url(${animalClass.image})` }}
-                    >
-                      <div className={styles.cardOverlay}>
-                        <Title level={4} className={styles.cardTitle}>
-                          {animalClass.name}
-                        </Title>
-                        <Paragraph className={styles.cardDescription}>
-                          {animalClass.description}
-                        </Paragraph>
-                      </div>
-                    </div>
-                  </motion.div>
+                    animalClass={animalClass}
+                    onClick={handleClassClick}
+                  />
                 ))}
             </div>
 
@@ -203,28 +179,11 @@ export const EncyclopediaPage: React.FC = () => {
               {animalClasses
                 .filter((c) => c.size === 'small')
                 .map((animalClass) => (
-                  <motion.div
+                  <AnimalClassCard
                     key={animalClass.id}
-                    className={styles.smallCard}
-                    variants={cardHoverVariants}
-                    initial="rest"
-                    whileHover="hover"
-                    onClick={() => handleClassClick(animalClass)}
-                  >
-                    <div
-                      className={styles.cardImage}
-                      style={{ backgroundImage: `url(${animalClass.image})` }}
-                    >
-                      <div className={styles.cardOverlay}>
-                        <Title level={5} className={styles.cardTitle}>
-                          {animalClass.name}
-                        </Title>
-                        <Paragraph className={styles.cardDescriptionSmall}>
-                          {animalClass.description}
-                        </Paragraph>
-                      </div>
-                    </div>
-                  </motion.div>
+                    animalClass={animalClass}
+                    onClick={handleClassClick}
+                  />
                 ))}
             </div>
           </motion.div>
@@ -260,52 +219,12 @@ export const EncyclopediaPage: React.FC = () => {
       </AnimatePresence>
 
       {/* Class Detail Modal */}
-      <Modal
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        footer={null}
-        width={700}
-        className={styles.classModal}
-        centered
-        closeIcon={<span className={styles.closeIcon}>×</span>}
-      >
-        {selectedClass && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2 }}
-          >
-            <div
-              className={styles.modalImage}
-              style={{ backgroundImage: `url(${selectedClass.image})` }}
-            >
-              <div className={styles.modalOverlay}>
-                <Tag className={styles.modalTag}>{selectedClass.name.toUpperCase()}</Tag>
-                <Title level={2} className={styles.modalTitle}>
-                  {selectedClass.name} Class
-                </Title>
-                <Paragraph className={styles.modalSubtitle}>
-                  Discover the fascinating world of {selectedClass.name.toLowerCase()}s
-                </Paragraph>
-              </div>
-            </div>
-            <div className={styles.modalContent}>
-              <Paragraph className={styles.modalDescription}>
-                {selectedClass.description}
-              </Paragraph>
-              <Button
-                type="primary"
-                size="large"
-                block
-                className={styles.viewButton}
-                onClick={handleViewSpecies}
-              >
-                View All {selectedClass.name} Species
-              </Button>
-            </div>
-          </motion.div>
-        )}
-      </Modal>
+      <ClassModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onViewSpecies={handleViewSpecies}
+        selectedClass={selectedClass}
+      />
     </motion.div>
   );
 };
