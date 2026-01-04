@@ -1,0 +1,23 @@
+.stepIndicator {
+  position: absolute;
+  top: 48px;
+  right: 48px;
+  text-align: right;
+}
+
+.stepLabel {
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 4px;
+}
+
+.stepNumber {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.stepTotal {
+  color: #9CA3AF;
+}
+

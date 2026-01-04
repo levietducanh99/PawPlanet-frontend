@@ -5,6 +5,7 @@ import './styles/App.css';
 import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { HomePage } from './pages/HomePage/HomePage.tsx';
+import { CreatePetPage } from './pages/CreatePetPage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginRouteWrapper />} />
           <Route path="/register" element={<RegisterRouteWrapper />} />
+          <Route path="/create-pet" element={<CreatePetPage />} />
         </Routes>
       </BrowserRouter>
     </ConfigProvider>

@@ -1,7 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { Row, Col, Card, Typography, Button } from 'antd';
-import { HeartOutlined, UserOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { HeartOutlined, UserOutlined, EnvironmentOutlined, PlusOutlined } from '@ant-design/icons';
 import { pageVariants, cardHoverVariants } from '@/animations/variants.ts';
 import styles from './HomePage.module.css';
 import '../../styles/variables.css';
@@ -10,6 +11,7 @@ import '../../styles/fonts.css';
 const { Title, Paragraph } = Typography;
 
 export const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <motion.div
       className={styles.homePage}
@@ -83,11 +85,20 @@ export const HomePage: React.FC = () => {
       </Row>
 
       <div className={styles.ctaSection}>
-        <Button type="primary" size="large" className={styles.primaryButton}>
-          Get Started
+        <Button
+          type="primary"
+          size="large"
+          className={styles.primaryButton}
+          icon={<PlusOutlined />}
+          onClick={() => navigate('/create-pet')}
+        >
+          Create Pet Profile
         </Button>
-        <Button size="large">
-          Learn More
+        <Button
+          size="large"
+          onClick={() => navigate('/login')}
+        >
+          Login
         </Button>
       </div>
     </motion.div>

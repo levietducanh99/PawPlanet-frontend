@@ -1,0 +1,50 @@
+.wizardActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.secondaryButton {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+  color: #1890FF;
+  background-color: #F0F9FF;
+}
+
+.primaryButton {
+  background-color: #1890FF;
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 48px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(24, 144, 255, 0.2);
+}
+
+.primaryButton:hover {
+  background-color: #40A9FF;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.primaryButton:disabled {
+  background-color: #D1D5DB;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
