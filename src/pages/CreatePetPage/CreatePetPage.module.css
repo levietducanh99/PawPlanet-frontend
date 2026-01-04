@@ -1,0 +1,242 @@
+.pageContainer {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F3F4F6;
+}
+
+
+.mainContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  min-height: 100vh;
+}
+
+.formCard {
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 900px;
+  padding: 48px 64px;
+  position: relative;
+  min-height: 600px;
+}
+
+.backButton {
+  position: absolute;
+  top: 48px;
+  left: 48px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6B7280;
+  font-size: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.backButton:hover {
+  color: #1890FF;
+}
+
+
+.formHeader {
+  text-align: center;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
+
+.formTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 8px;
+}
+
+.formSubtitle {
+  font-size: 16px;
+  color: #6B7280;
+}
+
+
+.formContent {
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.avatarSection {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.avatarUpload {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background-color: #E5E7EB;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 3px dashed transparent;
+}
+
+.avatarUpload:hover {
+  border-color: #1890FF;
+  background-color: #F0F9FF;
+}
+
+.avatarUploadActive {
+  border: 3px dashed #1890FF;
+  background-color: #F0F9FF;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.questionText {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 8px;
+}
+
+.hintText {
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 24px;
+}
+
+.inputField {
+  width: 100%;
+  max-width: 420px;
+}
+
+.genderOptions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+.genderOption {
+  width: 120px;
+  height: 120px;
+  border: 2px solid #E5E7EB;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background-color: #FFFFFF;
+}
+
+.genderOption:hover {
+  border-color: #1890FF;
+  background-color: #F0F9FF;
+}
+
+.genderOptionSelected {
+  border-color: #1890FF;
+  background-color: #E6F7FF;
+}
+
+.genderIcon {
+  font-size: 36px;
+  color: #6B7280;
+}
+
+.genderOptionSelected .genderIcon {
+  color: #1890FF;
+}
+
+.genderLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.weightSection {
+  text-align: center;
+  width: 100%;
+  max-width: 700px;
+}
+
+.measurementGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-top: 24px;
+}
+
+.measurementItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.measurementLabel {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6B7280;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.weightDisplay {
+  font-size: 48px;
+  font-weight: 700;
+  color: #1890FF;
+  margin-bottom: 32px;
+}
+
+.weightSlider {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 24px;
+}
+
+.weightInputGroup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.weightInput {
+  width: 80px;
+  text-align: center;
+}
+
+
+@media (max-width: 768px) {
+  .formCard {
+    padding: 32px 24px;
+    margin: 20px;
+  }
+
+  .backButton {
+    top: 32px;
+    left: 24px;
+  }
+}
+

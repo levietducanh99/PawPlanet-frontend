@@ -444,6 +444,31 @@ export interface ApiResponsePagedResultSpeciesResponse {
 /**
  * 
  * @export
+ * @interface ApiResponseSearchResponse
+ */
+export interface ApiResponseSearchResponse {
+    /**
+     * 
+     * @type {SearchResponse}
+     * @memberof ApiResponseSearchResponse
+     */
+    'result'?: SearchResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiResponseSearchResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiResponseSearchResponse
+     */
+    'statusCode'?: number;
+}
+/**
+ * 
+ * @export
  * @interface ApiResponseSpeciesDetailResponse
  */
 export interface ApiResponseSpeciesDetailResponse {
@@ -865,6 +890,18 @@ export interface CreatePetRequestDTO {
      * @memberof CreatePetRequestDTO
      */
     'url'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreatePetRequestDTO
+     */
+    'weight'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CreatePetRequestDTO
+     */
+    'height'?: number;
 }
 /**
  * 
@@ -1357,10 +1394,40 @@ export interface PetProfileDTO {
     'ownerUsername'?: string;
     /**
      * 
+     * @type {number}
+     * @memberof PetProfileDTO
+     */
+    'weight'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PetProfileDTO
+     */
+    'height'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PetProfileDTO
+     */
+    'canFollow'?: boolean;
+    /**
+     * 
      * @type {Array<PetMediaDTO>}
      * @memberof PetProfileDTO
      */
     'media'?: Array<PetMediaDTO>;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PetProfileDTO
+     */
+    'owner'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PetProfileDTO
+     */
+    'following'?: boolean;
 }
 /**
  * 
@@ -1552,6 +1619,62 @@ export interface ResetPasswordRequest {
      * @memberof ResetPasswordRequest
      */
     'newPassword'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface SearchResponse
+ */
+export interface SearchResponse {
+    /**
+     * 
+     * @type {Array<SearchResultItem>}
+     * @memberof SearchResponse
+     */
+    'items'?: Array<SearchResultItem>;
+}
+/**
+ * 
+ * @export
+ * @interface SearchResultItem
+ */
+export interface SearchResultItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchResultItem
+     */
+    'type'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchResultItem
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchResultItem
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchResultItem
+     */
+    'slug'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchResultItem
+     */
+    'subtitle'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchResultItem
+     */
+    'avatarUrl'?: string;
 }
 /**
  * 
@@ -1833,6 +1956,18 @@ export interface UpdatePetRequestDTO {
      * @memberof UpdatePetRequestDTO
      */
     'url'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdatePetRequestDTO
+     */
+    'weight'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof UpdatePetRequestDTO
+     */
+    'height'?: number;
 }
 /**
  * 
@@ -4200,6 +4335,135 @@ export class EncyclopediaMediaApi extends BaseAPI {
 
 
 /**
+ * EncyclopediaSearchApi - axios parameter creator
+ * @export
+ */
+export const EncyclopediaSearchApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Tìm kiếm theo từ khoá across classes/species/breeds
+         * @param {string} q 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search1: async (q: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'q' is not null or undefined
+            assertParamExists('search1', 'q', q)
+            const localVarPath = `/api/v1/encyclopedia/search`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (q !== undefined) {
+                localVarQueryParameter['q'] = q;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * EncyclopediaSearchApi - functional programming interface
+ * @export
+ */
+export const EncyclopediaSearchApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = EncyclopediaSearchApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Tìm kiếm theo từ khoá across classes/species/breeds
+         * @param {string} q 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async search1(q: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseSearchResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.search1(q, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['EncyclopediaSearchApi.search1']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * EncyclopediaSearchApi - factory interface
+ * @export
+ */
+export const EncyclopediaSearchApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = EncyclopediaSearchApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Tìm kiếm theo từ khoá across classes/species/breeds
+         * @param {EncyclopediaSearchApiSearch1Request} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search1(requestParameters: EncyclopediaSearchApiSearch1Request, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseSearchResponse> {
+            return localVarFp.search1(requestParameters.q, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for search1 operation in EncyclopediaSearchApi.
+ * @export
+ * @interface EncyclopediaSearchApiSearch1Request
+ */
+export interface EncyclopediaSearchApiSearch1Request {
+    /**
+     * 
+     * @type {string}
+     * @memberof EncyclopediaSearchApiSearch1
+     */
+    readonly q: string
+}
+
+/**
+ * EncyclopediaSearchApi - object-oriented interface
+ * @export
+ * @class EncyclopediaSearchApi
+ * @extends {BaseAPI}
+ */
+export class EncyclopediaSearchApi extends BaseAPI {
+    /**
+     * 
+     * @summary Tìm kiếm theo từ khoá across classes/species/breeds
+     * @param {EncyclopediaSearchApiSearch1Request} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EncyclopediaSearchApi
+     */
+    public search1(requestParameters: EncyclopediaSearchApiSearch1Request, options?: RawAxiosRequestConfig) {
+        return EncyclopediaSearchApiFp(this.configuration).search1(requestParameters.q, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * EncyclopediaSpeciesApi - axios parameter creator
  * @export
  */
@@ -4292,6 +4556,57 @@ export const EncyclopediaSpeciesApiAxiosParamCreator = function (configuration?:
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary Tìm kiếm species theo từ khoá (name hoặc scientificName)
+         * @param {string} q 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search: async (q: string, page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'q' is not null or undefined
+            assertParamExists('search', 'q', q)
+            const localVarPath = `/api/v1/encyclopedia/species/search`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (q !== undefined) {
+                localVarQueryParameter['q'] = q;
+            }
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -4330,6 +4645,21 @@ export const EncyclopediaSpeciesApiFp = function(configuration?: Configuration) 
             const operationBasePath = operationServerMap['EncyclopediaSpeciesApi.list']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
+        /**
+         * 
+         * @summary Tìm kiếm species theo từ khoá (name hoặc scientificName)
+         * @param {string} q 
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async search(q: string, page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponsePagedResultSpeciesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.search(q, page, size, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['EncyclopediaSpeciesApi.search']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
     }
 };
 
@@ -4359,6 +4689,16 @@ export const EncyclopediaSpeciesApiFactory = function (configuration?: Configura
          */
         list(requestParameters: EncyclopediaSpeciesApiListRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponsePagedResultSpeciesResponse> {
             return localVarFp.list(requestParameters.page, requestParameters.size, requestParameters.classId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Tìm kiếm species theo từ khoá (name hoặc scientificName)
+         * @param {EncyclopediaSpeciesApiSearchRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search(requestParameters: EncyclopediaSpeciesApiSearchRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponsePagedResultSpeciesResponse> {
+            return localVarFp.search(requestParameters.q, requestParameters.page, requestParameters.size, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -4406,6 +4746,34 @@ export interface EncyclopediaSpeciesApiListRequest {
 }
 
 /**
+ * Request parameters for search operation in EncyclopediaSpeciesApi.
+ * @export
+ * @interface EncyclopediaSpeciesApiSearchRequest
+ */
+export interface EncyclopediaSpeciesApiSearchRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof EncyclopediaSpeciesApiSearch
+     */
+    readonly q: string
+
+    /**
+     * 
+     * @type {number}
+     * @memberof EncyclopediaSpeciesApiSearch
+     */
+    readonly page?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof EncyclopediaSpeciesApiSearch
+     */
+    readonly size?: number
+}
+
+/**
  * EncyclopediaSpeciesApi - object-oriented interface
  * @export
  * @class EncyclopediaSpeciesApi
@@ -4434,6 +4802,18 @@ export class EncyclopediaSpeciesApi extends BaseAPI {
      */
     public list(requestParameters: EncyclopediaSpeciesApiListRequest = {}, options?: RawAxiosRequestConfig) {
         return EncyclopediaSpeciesApiFp(this.configuration).list(requestParameters.page, requestParameters.size, requestParameters.classId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Tìm kiếm species theo từ khoá (name hoặc scientificName)
+     * @param {EncyclopediaSpeciesApiSearchRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EncyclopediaSpeciesApi
+     */
+    public search(requestParameters: EncyclopediaSpeciesApiSearchRequest, options?: RawAxiosRequestConfig) {
+        return EncyclopediaSpeciesApiFp(this.configuration).search(requestParameters.q, requestParameters.page, requestParameters.size, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
