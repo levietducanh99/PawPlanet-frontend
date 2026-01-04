@@ -1,0 +1,58 @@
+/* Species Card Styles */
+
+.speciesCard {
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg-white);
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+}
+
+.speciesCard :global(.ant-card-body) {
+  padding: 0;
+}
+
+.speciesImage {
+  width: 100%;
+  height: 180px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.speciesTag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white !important;
+}
+
+.speciesInfo {
+  padding: 16px;
+}
+
+.speciesName {
+  color: var(--text-primary) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  margin: 0 0 4px 0 !important;
+}
+
+.speciesScientific {
+  color: var(--text-secondary) !important;
+  font-size: 13px !important;
+  font-style: italic;
+  margin: 0 !important;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .speciesImage {
+    height: 150px;
+  }
+}

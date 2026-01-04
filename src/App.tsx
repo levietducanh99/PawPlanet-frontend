@@ -6,6 +6,9 @@ import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { HomePage } from './pages/HomePage/HomePage.tsx';
 import { CreatePetPage } from './pages/CreatePetPage';
+import { EncyclopediaPage } from './pages/EncyclopediaPage';
+import { SpeciesDetailPage } from './pages/SpeciesDetailPage';
+import { BreedDetailPage } from './pages/BreedDetailPage';
 import { ViewPetPage } from './pages/ViewPetPage';
 import { MyPetsPage } from './pages/MyPetsPage';
 import { EditPetPage } from './pages/EditPetPage';
@@ -32,6 +35,10 @@ function App() {
           <Route path="/users/:username/pets" element={<ViewPetPage />} />
           <Route path="/my-pets" element={<MyPetsPage />} />
           <Route path="/edit-pet/:id" element={<EditPetPage />} />
+          <Route path="/encyclopedia" element={<EncyclopediaPage />} />
+          <Route path="/encyclopedia/species/:speciesId" element={<SpeciesDetailPage />} />
+          <Route path="/encyclopedia/breed/:breedId" element={<BreedDetailPage />} />
+          <Route path="/encyclopedia/class/:classId" element={<EncyclopediaPage />} />
         </Routes>
       </BrowserRouter>
     </ConfigProvider>
