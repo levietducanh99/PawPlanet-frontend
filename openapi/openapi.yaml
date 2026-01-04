@@ -1965,6 +1965,12 @@
           },
           "url": {
             "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
           }
         }
       },
@@ -2034,11 +2040,26 @@
           "ownerUsername": {
             "type": "string"
           },
+          "weight": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "canFollow": {
+            "type": "boolean"
+          },
           "media": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PetMediaDTO"
             }
+          },
+          "owner": {
+            "type": "boolean"
+          },
+          "following": {
+            "type": "boolean"
           }
         }
       },
@@ -2119,6 +2140,12 @@
           },
           "url": {
             "type": "string"
+          },
+          "weight": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
           }
         }
       },
