@@ -1,17 +1,16 @@
 .pageContainer {
-  display: flex;
   min-height: 100vh;
   background-color: #F3F4F6;
 }
 
-
 .mainContent {
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
+  padding: 48px;
   min-height: 100vh;
+  margin-left: 340px; /* Width của sidebar */
+  padding-top: 72px; /* Height của header */
 }
 
 .formCard {
@@ -229,6 +228,12 @@
 
 
 @media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding: 24px;
+    padding-top: 96px; /* Header height + spacing */
+  }
+
   .formCard {
     padding: 32px 24px;
     margin: 20px;
