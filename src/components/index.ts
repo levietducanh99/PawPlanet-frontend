@@ -19,4 +19,12 @@ export { Loading } from './Loading';
 export { ErrorMessage } from './ErrorMessage';
 export { EditProfilePage } from './EditProfileExample';
 export { MediaUploadDemo } from './MediaUploadExamples';
+export { MockDataBanner } from './MockDataBanner';
+export { PostCard } from './PostCard';
 
+// Pet Edit Components
+export { PetPhotoUpload } from './PetPhotoUpload';
+export { PetBasicForm } from './PetBasicForm';
+export { PetImportantDates } from './PetImportantDates';
+export { PetAppearanceForm } from './PetAppearanceForm';
+export { PetProfileSettings } from './PetProfileSettings';

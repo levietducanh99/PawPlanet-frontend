@@ -1,11 +1,14 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntdApp } from 'antd';
 import { theme } from './theme/antdConfig';
 import './styles/App.css';
 import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { HomePage } from './pages/HomePage/HomePage.tsx';
 import { CreatePetPage } from './pages/CreatePetPage';
+import { ViewPetPage } from './pages/ViewPetPage';
+import { MyPetsPage } from './pages/MyPetsPage';
+import { EditPetPage } from './pages/EditPetPage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -20,14 +23,19 @@ function RegisterRouteWrapper() {
 function App() {
   return (
     <ConfigProvider theme={theme}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginRouteWrapper />} />
-          <Route path="/register" element={<RegisterRouteWrapper />} />
-          <Route path="/create-pet" element={<CreatePetPage />} />
-        </Routes>
-      </BrowserRouter>
+      <AntdApp>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginRouteWrapper />} />
+            <Route path="/register" element={<RegisterRouteWrapper />} />
+            <Route path="/create-pet" element={<CreatePetPage />} />
+            <Route path="/users/:username/pets" element={<ViewPetPage />} />
+            <Route path="/my-pets" element={<MyPetsPage />} />
+            <Route path="/edit-pet/:id" element={<EditPetPage />} />
+          </Routes>
+        </BrowserRouter>
+      </AntdApp>
     </ConfigProvider>
   );
 }
