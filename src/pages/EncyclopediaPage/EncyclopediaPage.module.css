@@ -1,0 +1,145 @@
+/* Encyclopedia Page Styles - Following PawPlanet Design System */
+
+.encyclopediaPage {
+  padding: 24px 20px 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: var(--bg-body);
+  min-height: 100vh;
+}
+
+/* Demo Tags Section */
+.demoTags {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.demoTag {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  background: var(--bg-white);
+  border-width: 2px;
+  transition: all 0.3s ease;
+}
+
+.demoTag:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Search Section */
+.searchContainer {
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+
+.searchInput {
+  border-radius: 24px !important;
+  background: var(--bg-white) !important;
+  border: 1px solid var(--border) !important;
+  height: 52px !important;
+  padding: 0 24px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.searchInput:hover,
+.searchInput:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.1);
+}
+
+.searchInput input {
+  background: transparent !important;
+  font-size: 16px;
+}
+
+.searchInput input::placeholder {
+  color: var(--text-secondary);
+}
+
+.searchIcon {
+  font-size: 18px;
+  color: var(--text-secondary);
+  margin-right: 8px;
+}
+
+/* Grid Container */
+.gridContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+/* Large Cards Row */
+.largeCardsRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+/* Small Cards Row */
+.smallCardsRow {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 16px;
+}
+
+/* Placeholder Content */
+.placeholderContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  background: var(--bg-white);
+  border-radius: 16px;
+  box-shadow: var(--shadow-soft);
+  margin-top: 24px;
+}
+
+.placeholderText {
+  color: var(--text-secondary);
+  font-size: 18px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .smallCardsRow {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .encyclopediaPage {
+    padding: 16px;
+  }
+
+  .demoTags {
+    gap: 8px;
+  }
+
+  .demoTag {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .largeCardsRow {
+    grid-template-columns: 1fr;
+  }
+
+  .smallCardsRow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .smallCardsRow {
+    grid-template-columns: 1fr;
+  }
+}
