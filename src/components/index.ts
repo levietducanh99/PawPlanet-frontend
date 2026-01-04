@@ -1,4 +1,5 @@
 // Layout Components
+export { Header } from './Header/Header';
 export { Sidebar } from './Sidebar/Sidebar';
 export { AuthLayout } from './AuthLayout/AuthLayout';
 

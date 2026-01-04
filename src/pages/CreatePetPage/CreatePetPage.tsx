@@ -8,7 +8,7 @@ import {
   UserOutlined,
   CameraOutlined,
 } from '@ant-design/icons';
-import { Sidebar, StepIndicator, ProgressBar, WizardActions } from '../../components';
+import { Sidebar, StepIndicator, ProgressBar, WizardActions, Header } from '../../components';
 import styles from './CreatePetPage.module.css';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -103,12 +103,33 @@ export const CreatePetPage: React.FC = () => {
   const stepInfo = getStepTitle();
   const progress = (currentStep / TOTAL_STEPS) * 100;
 
-  return (
-    <div className={styles.pageContainer}>
-      {/* Sidebar */}
-      <Sidebar userName="Esther" userGreeting="Hello," />
+  // Mock pets data - sẽ thay bằng data thực từ API sau
+  const mockPets = [
+    { id: 1, name: 'Charlie', type: 'dog' as const, avatarUrl: undefined },
+    { id: 2, name: 'Luna', type: 'cat' as const, avatarUrl: undefined },
+    { id: 3, name: 'Max', type: 'dog' as const, avatarUrl: undefined },
+  ];
 
-      {/* Main Content */}
+  // Banner image - người dùng có thể upload ảnh tùy chỉnh
+  const bannerImage = 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop';
+
+  return (
+    <>
+      {/* Header - Fixed top */}
+      <Header
+        userName="Esther"
+        notificationCount={3}
+      />
+
+      <div className={styles.pageContainer}>
+        {/* Sidebar - Below header, fixed left */}
+        <Sidebar
+          pets={mockPets}
+          notificationCount={3}
+          bannerImage={bannerImage}
+        />
+
+        {/* Main Content */}
       <main className={styles.mainContent}>
         <div className={styles.formCard}>
           <button className={styles.backButton} onClick={handleBack}>
@@ -143,7 +164,8 @@ export const CreatePetPage: React.FC = () => {
           />
         </div>
       </main>
-    </div>
+      </div>
+    </>
   );
 };
 

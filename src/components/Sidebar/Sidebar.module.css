@@ -1,103 +1,315 @@
 .sidebar {
-  width: 210px;
-  background-color: #E6F7FF;
-  padding: 32px 0;
+  width: 340px;
+  background: linear-gradient(180deg, #E8F4FA 0%, #F0F8FC 100%);
+  padding: 20px;
   display: flex;
   flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 72px; /* Dưới header */
+  bottom: 0; /* Kéo dài đến cuối trang */
+  height: calc(100vh - 72px); /* Chiều cao = viewport - header */
+  overflow-y: auto; /* Scroll riêng */
+  overflow-x: hidden;
+  z-index: 100;
 }
 
-.logo {
-  padding: 0 24px;
-  margin-bottom: 48px;
+/* Banner Section */
+.bannerContainer {
+  width: 100%;
+  height: 180px;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.logoImage {
-  height: 32px;
+.bannerImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.yourPetsSection {
-  padding: 0 24px;
-  margin-bottom: 48px;
-}
-
-.sectionTitle {
-  font-size: 18px;
-  font-weight: 600;
-  color: #1F2937;
+/* Menu Section */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-bottom: 24px;
 }
 
-.quickActions {
-  padding: 0 24px;
-  flex: 1;
-  margin-bottom: 24px;
-}
-
-.actionItem {
+.menuItem {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-  border-radius: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
-  color: #6B7280;
-  font-size: 16px;
-  font-weight: 500;
+  position: relative;
+  background: transparent;
+  margin: 0 -8px;
+  padding-left: 24px;
+  padding-right: 24px;
 }
 
-.actionItem:hover {
-  background-color: rgba(24, 144, 255, 0.1);
+/* Paw decorations bên trái dưới - paw 1 */
+.menuItem::before {
+  content: '🐾';
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  font-size: 12px;
+  opacity: 0;
+  transform: scale(0.5) rotate(-15deg);
+  transition: all 0.3s ease;
+}
+
+/* Paw decorations bên trái dưới - paw 2 */
+.menuItem::after {
+  content: '🐾';
+  position: absolute;
+  left: 18px;
+  bottom: 12px;
+  font-size: 10px;
+  opacity: 0;
+  transform: scale(0.5) rotate(10deg);
+  transition: all 0.3s ease 0.05s;
+}
+
+.menuItem:hover {
+  background: linear-gradient(135deg, #C8E8FB 0%, #B8E0F6 100%);
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.12);
+  transform: scale(1.02);
+}
+
+.menuItem:hover::before {
+  opacity: 0.3;
+  transform: scale(1) rotate(-15deg);
+}
+
+.menuItem:hover::after {
+  opacity: 0.2;
+  transform: scale(0.8) rotate(10deg);
+}
+
+.menuItem:hover .menuLabel {
   color: #1890FF;
+  font-weight: 600;
 }
 
-.actionIcon {
-  font-size: 20px;
+.menuItemActive {
+  background: linear-gradient(135deg, #C8E8FB 0%, #A8D8F1 100%);
+  box-shadow: 0 3px 10px rgba(24, 144, 255, 0.2);
 }
 
-.settingsSection {
-  padding: 0 24px;
-  border-top: 1px solid #D1D5DB;
-  padding-top: 24px;
+.menuItemActive::before {
+  opacity: 0.4;
+  transform: scale(1) rotate(-15deg);
 }
 
-.userProfile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.3s ease;
+.menuItemActive::after {
+  opacity: 0.3;
+  transform: scale(0.8) rotate(10deg);
 }
 
-.userProfile:hover {
-  background-color: rgba(24, 144, 255, 0.1);
+.menuItemActive .menuLabel {
+  color: #1890FF;
+  font-weight: 600;
 }
 
-.userAvatar {
-  width: 40px;
-  height: 40px;
+.menuIcon {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background-color: #D1D5DB;
+  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.userInfo {
+.iconEmoji {
+  font-size: 24px;
+}
+
+.iconEmojiSmall {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  font-size: 16px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+}
+
+.menuLabel {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1F2937;
+}
+
+.badge {
+  margin-left: auto;
+}
+
+.badge :global(.ant-badge-count) {
+  background: #FF4D6A;
+  box-shadow: 0 2px 4px rgba(255, 77, 106, 0.3);
+}
+
+/* My Pets Section */
+.myPetsSection {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-top: auto;
+}
+
+.myPetsHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.homeIcon {
+  font-size: 20px;
+  color: #1890FF;
+}
+
+.myPetsTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.petsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.petItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.petItem:hover {
+  background: #F3F4F6;
+}
+
+.petAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.petAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.petAvatarPlaceholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #A0D8F1 0%, #7FC8E8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+}
+
+.petInfo {
   flex: 1;
 }
 
-.userGreeting {
-  font-size: 12px;
-  color: #6B7280;
-}
-
-.userName {
-  font-size: 14px;
+.petName {
+  font-size: 15px;
   font-weight: 600;
   color: #1F2937;
+  margin-bottom: 2px;
+}
+
+.petType {
+  font-size: 13px;
+  color: #6B7280;
+  text-transform: capitalize;
+}
+
+.petEmoji {
+  font-size: 24px;
+}
+
+.addPetButton {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #1890FF 0%, #40A9FF 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+.addPetButton:hover {
+  background: linear-gradient(135deg, #40A9FF 0%, #69B8FF 100%);
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+  transform: translateY(-2px);
+}
+
+.addPetButton:active {
+  transform: translateY(0);
+}
+
+.plusIcon {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    display: none;
+  }
+}
+
+/* Scrollbar Styling */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(24, 144, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(24, 144, 255, 0.3);
 }
 
