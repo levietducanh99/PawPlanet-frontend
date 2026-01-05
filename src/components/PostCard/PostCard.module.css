@@ -1,0 +1,123 @@
+.postCardWrapper {
+  margin-bottom: 24px;
+}
+
+.postCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: #FFFFFF;
+  transition: all 0.3s ease;
+}
+
+.postCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.postHeader {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+}
+
+.authorName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1F2937;
+  line-height: 1.2;
+}
+
+.postDate {
+  font-size: 12px;
+  color: #6B7280;
+  line-height: 1.2;
+}
+
+.postContent {
+  margin-bottom: 16px;
+}
+
+.postText {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #1F2937;
+  margin-bottom: 16px !important;
+}
+
+.postText:last-child {
+  margin-bottom: 0 !important;
+}
+
+.postMedia {
+  margin-top: 12px;
+}
+
+.singleImage {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.mediaGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.gridImage {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.postActions {
+  border-top: 1px solid #F3F4F6;
+  padding-top: 12px;
+  margin-top: 16px;
+}
+
+.actionButton {
+  height: auto;
+  padding: 4px 8px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: #F3F4F6;
+}
+
+.actionText {
+  font-size: 13px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.likedText {
+  font-size: 13px;
+  color: #EB5757;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .postCardWrapper {
+    margin-bottom: 16px;
+  }
+
+  .singleImage {
+    max-height: 300px;
+  }
+
+  .mediaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .gridImage {
+    height: 250px;
+  }
+}

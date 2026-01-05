@@ -9,6 +9,9 @@ import { CreatePetPage } from './pages/CreatePetPage';
 import { EncyclopediaPage } from './pages/EncyclopediaPage';
 import { SpeciesDetailPage } from './pages/SpeciesDetailPage';
 import { BreedDetailPage } from './pages/BreedDetailPage';
+import { ViewPetPage } from './pages/ViewPetPage';
+import { MyPetsPage } from './pages/MyPetsPage';
+import { EditPetPage } from './pages/EditPetPage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -29,6 +32,9 @@ function App() {
           <Route path="/login" element={<LoginRouteWrapper />} />
           <Route path="/register" element={<RegisterRouteWrapper />} />
           <Route path="/create-pet" element={<CreatePetPage />} />
+          <Route path="/users/:username/pets" element={<ViewPetPage />} />
+          <Route path="/my-pets" element={<MyPetsPage />} />
+          <Route path="/edit-pet/:id" element={<EditPetPage />} />
           <Route path="/encyclopedia" element={<EncyclopediaPage />} />
           <Route path="/encyclopedia/species/:speciesId" element={<SpeciesDetailPage />} />
           <Route path="/encyclopedia/breed/:breedId" element={<BreedDetailPage />} />
