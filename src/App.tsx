@@ -12,13 +12,14 @@ import { BreedDetailPage } from './pages/BreedDetailPage';
 import { ViewPetPage } from './pages/ViewPetPage';
 import { MyPetsPage } from './pages/MyPetsPage';
 import { EditPetPage } from './pages/EditPetPage';
+import { ProfilePage } from './pages/ProfilePage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
   return (
     <LoginPage
       onSwitchToRegister={() => navigate('/register')}
-      onLoginSuccess={() => navigate('/')}
+      onLoginSuccess={() => navigate('/profile')}
     />
   );
 }
@@ -28,7 +29,7 @@ function RegisterRouteWrapper() {
   return (
     <RegisterPage
       onSwitchToLogin={() => navigate('/login')}
-      onRegisterSuccess={() => navigate('/')}
+      onRegisterSuccess={() => navigate('/profile')}
     />
   );
 }
@@ -41,6 +42,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginRouteWrapper />} />
           <Route path="/register" element={<RegisterRouteWrapper />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/create-pet" element={<CreatePetPage />} />
           <Route path="/users/:username/pets" element={<ViewPetPage />} />
           <Route path="/my-pets" element={<MyPetsPage />} />

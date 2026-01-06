@@ -7,6 +7,7 @@
  */
 
 import axios from 'axios';
+import { Configuration } from './api/configuration';
 
 // Get base URL from environment variables
 const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://pawplanet-ae61a47d7179.herokuapp.com';
@@ -23,7 +24,8 @@ export const apiClient = axios.create({
 // Request interceptor for adding auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    // Check both sessionStorage and localStorage for token
+    const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -39,12 +41,23 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Handle unauthorized access
+      // Handle unauthorized access - clear both storage types
+      sessionStorage.removeItem('authToken');
       localStorage.removeItem('authToken');
-      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
+
+/**
+ * Get OpenAPI Configuration
+ * Used by generated API clients
+ */
+export const getApiConfig = (): Configuration => {
+  const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+  return new Configuration({
+    accessToken: token || undefined,
+  });
+};
 
 export default apiClient;
