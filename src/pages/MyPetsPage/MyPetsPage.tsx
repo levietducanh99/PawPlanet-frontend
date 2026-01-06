@@ -19,8 +19,8 @@ import {
   UserOutlined,
   EditOutlined
 } from '@ant-design/icons';
-import { Sidebar, Header, Loading } from '../../components';
-import { PostCard } from '../../components/PostCard';
+import { Loading } from '../../components';
+import PostCard from '../../components/PostCard';
 import {
   usePetProfile,
   usePetTimeline,
@@ -43,37 +43,20 @@ export const MyPetsPage: React.FC = () => {
   const [profileVisibility, setProfileVisibility] = useState(profile?.isVisible ?? true);
   const [lookingForAdoption, setLookingForAdoption] = useState(profile?.lookingForAdoption ?? false);
 
-  // Mock sidebar pets - showing user's own pets
-  const mockSidebarPets = [
-    { id: 1, name: 'Maxi', type: 'dog' as const, avatarUrl: profile?.avatarUrl },
-    { id: 2, name: 'Fiona', type: 'cat' as const, avatarUrl: undefined },
-    { id: 3, name: 'Bruno', type: 'bird' as const, avatarUrl: undefined }
-  ];
+  const loading = userPetsLoading || profileLoading || timelineLoading;
 
-  const bannerImage = 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop';
-
-  if (userPetsLoading || profileLoading) {
+  if (loading) {
     return <Loading />;
   }
 
   return (
-    <>
-      <Header userName="Esther" notificationCount={3} />
-
-      <div className={styles.pageContainer}>
-        <Sidebar
-          pets={mockSidebarPets}
-          notificationCount={3}
-          bannerImage={bannerImage}
-        />
-
-        <motion.main
-          className={styles.mainContent}
-          variants={pageVariants}
-          initial="initial"
-          animate="animate"
-        >
-          <div className={styles.contentWrapper}>
+    <motion.div
+      className={styles.pageContainer}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+    >
+      <div className={styles.contentWrapper}>
             <Row gutter={[24, 24]}>
               {/* Left Column - Pet Profile & Settings */}
               <Col xs={24} lg={8}>
@@ -272,9 +255,9 @@ export const MyPetsPage: React.FC = () => {
                           <PostCard
                             key={post.id}
                             post={post}
-                            onLike={(postId, isLiked) => console.log('Liked:', postId, isLiked)}
-                            onComment={(postId) => console.log('Comment:', postId)}
-                            onShare={(postId) => console.log('Share:', postId)}
+                            onLike={(postId: number) => console.log('Liked:', postId)}
+                            onComment={(postId: number) => console.log('Comment:', postId)}
+                            onShare={(postId: number) => console.log('Share:', postId)}
                           />
                         ))}
 
@@ -307,8 +290,6 @@ export const MyPetsPage: React.FC = () => {
               </Col>
             </Row>
           </div>
-        </motion.main>
-      </div>
-    </>
+    </motion.div>
   );
 };

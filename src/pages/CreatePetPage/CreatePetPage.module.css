@@ -1,16 +1,15 @@
 .pageContainer {
-  min-height: 100vh;
-  background-color: #F3F4F6;
+  width: 100%;
+  min-height: auto;
 }
 
 .mainContent {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 48px;
-  min-height: 100vh;
-  margin-left: 340px; /* Width của sidebar */
-  padding-top: 72px; /* Height của header */
+  padding: 24px 0;
+  width: 100%;
+  min-height: calc(100vh - 140px); /* Adjust for MainLayout padding */
 }
 
 .formCard {
@@ -229,9 +228,7 @@
 
 @media (max-width: 768px) {
   .mainContent {
-    margin-left: 0;
-    padding: 24px;
-    padding-top: 96px; /* Header height + spacing */
+    padding: 16px 0;
   }
 
   .formCard {

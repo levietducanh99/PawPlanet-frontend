@@ -1,146 +1,223 @@
-import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { Card, Avatar, Button, Typography, Space, Image } from 'antd';
+import React from 'react';
+import { Card, Avatar, Button, Space, Typography, Tag, Divider } from 'antd';
 import {
   HeartOutlined,
   HeartFilled,
   CommentOutlined,
   ShareAltOutlined,
+  EnvironmentOutlined,
+  PhoneOutlined
 } from '@ant-design/icons';
-import { usePostActions } from '@/hooks';
+import { motion } from 'motion/react';
 import type { Post } from '@/domain/post';
 import styles from './PostCard.module.css';
 
-const { Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 
 interface PostCardProps {
   post: Post;
-  onLike?: (postId: number, isLiked: boolean) => void;
-  onComment?: (postId: number) => void;
-  onShare?: (postId: number) => void;
+  onLike: (postId: number) => void;
+  onComment: (postId: number) => void;
+  onShare: (postId: number) => void;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({
-  post,
-  onLike,
-  onComment,
-  onShare,
-}) => {
-  const { likePost, sharePost, loading } = usePostActions();
-  const [isLiked, setIsLiked] = useState(post.isLiked);
-  const [likeCount, setLikeCount] = useState(post.likeCount);
-  const [shareCount, setShareCount] = useState(post.shareCount);
-
-  const handleLike = async () => {
-    try {
-      const newLikedState = await likePost(post.id, isLiked);
-      setIsLiked(newLikedState);
-      setLikeCount(prev => newLikedState ? prev + 1 : prev - 1);
-      onLike?.(post.id, newLikedState);
-    } catch (error) {
-      console.error('Failed to like post:', error);
-    }
-  };
-
-  const handleShare = async () => {
-    try {
-      await sharePost(post.id);
-      setShareCount(prev => prev + 1);
-      onShare?.(post.id);
-    } catch (error) {
-      console.error('Failed to share post:', error);
-    }
-  };
-
-  const formatDate = (dateString: string) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare }) => {
+  const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return '1 day ago';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    return date.toLocaleDateString();
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    return `${Math.floor(diffInHours / 24)}d ago`;
+  };
+
+  const getPostTypeColor = (type: string) => {
+    switch (type) {
+      case 'adoption': return '#F2994A';
+      case 'lost': return '#EB5757';
+      case 'found': return '#27AE60';
+      case 'story': return '#1890FF';
+      default: return '#6B7280';
+    }
+  };
+
+  const getPostTypeText = (type: string) => {
+    switch (type) {
+      case 'adoption': return 'For Adoption';
+      case 'lost': return 'Lost Pet';
+      case 'found': return 'Found Pet';
+      case 'story': return 'Pet Story';
+      default: return 'General';
+    }
+  };
+
+  const renderMedia = () => {
+    if (!post.media || post.media.length === 0) return null;
+
+    if (post.media.length === 1) {
+      const media = post.media[0];
+      return (
+        <div className={styles.singleMedia}>
+          {media.type === 'video' ? (
+            <video
+              src={media.url}
+              poster={media.thumbnailUrl}
+              controls
+              className={styles.mediaItem}
+            />
+          ) : (
+            <img
+              src={media.url}
+              alt="Post media"
+              className={styles.mediaItem}
+            />
+          )}
+        </div>
+      );
+    }
+
+    // Multiple media - horizontal scroll gallery
+    return (
+      <div className={styles.mediaGallery}>
+        {post.media.map((media) => (
+          <div key={media.id} className={styles.galleryItem}>
+            {media.type === 'video' ? (
+              <video
+                src={media.url}
+                poster={media.thumbnailUrl}
+                controls
+                className={styles.galleryMedia}
+              />
+            ) : (
+              <img
+                src={media.url}
+                alt="Post media"
+                className={styles.galleryMedia}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className={styles.postCardWrapper}
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300 }}
+      className={styles.cardWrapper}
     >
-      <Card
-        bordered={false}
-        className={styles.postCard}
-      >
-        {/* Post Header */}
+      <Card bordered={false} className={styles.postCard}>
+        {/* Header */}
         <div className={styles.postHeader}>
-          <Space align="center">
+          <Space size="middle">
             <Avatar
               src={post.authorAvatar}
-              size={40}
-              style={{ backgroundColor: '#1890FF' }}
-            >
-              {post.authorName.charAt(0)}
-            </Avatar>
-            <div>
-              <div className={styles.authorName}>{post.authorName}</div>
-              <div className={styles.postDate}>{formatDate(post.createdAt)}</div>
+              size={48}
+              className={styles.avatar}
+            />
+            <div className={styles.authorInfo}>
+              <div className={styles.authorName}>
+                <Text strong>{post.authorName}</Text>
+                <Text type="secondary" className={styles.username}>
+                  @{post.authorUsername}
+                </Text>
+              </div>
+              <Space size="small" className={styles.metadata}>
+                <Text type="secondary" className={styles.timestamp}>
+                  {formatTimeAgo(post.createdAt)}
+                </Text>
+                {post.location && (
+                  <>
+                    <Text type="secondary">•</Text>
+                    <Space size={4}>
+                      <EnvironmentOutlined style={{ color: '#6B7280' }} />
+                      <Text type="secondary" className={styles.location}>
+                        {post.location}
+                      </Text>
+                    </Space>
+                  </>
+                )}
+              </Space>
             </div>
           </Space>
+
+          {/* Post type tag */}
+          {post.type !== 'general' && (
+            <Tag
+              style={{
+                backgroundColor: getPostTypeColor(post.type),
+                color: '#fff',
+                border: 'none',
+                borderRadius: 20,
+                fontWeight: 500
+              }}
+            >
+              {getPostTypeText(post.type)}
+            </Tag>
+          )}
         </div>
 
-        {/* Post Content */}
+        {/* Content */}
         <div className={styles.postContent}>
-          <Paragraph className={styles.postText}>
+          <Paragraph className={styles.contentText}>
             {post.content}
           </Paragraph>
 
-          {/* Post Media */}
-          {post.media && post.media.length > 0 && (
-            <div className={styles.postMedia}>
-              {post.media.length === 1 ? (
-                <Image
-                  src={post.media[0].url}
-                  alt="Post image"
-                  className={styles.singleImage}
-                  style={{ borderRadius: 12 }}
-                />
-              ) : (
-                <div className={styles.mediaGrid}>
-                  {post.media.map((media, index) => (
-                    <Image
-                      key={media.id}
-                      src={media.url}
-                      alt={`Post image ${index + 1}`}
-                      className={styles.gridImage}
-                      style={{ borderRadius: 8 }}
-                    />
-                  ))}
-                </div>
-              )}
+          {/* Tags */}
+          {post.tags && post.tags.length > 0 && (
+            <div className={styles.tagsContainer}>
+              {post.tags.map((tag) => (
+                <Text key={tag} className={styles.hashtag}>
+                  #{tag}
+                </Text>
+              ))}
+            </div>
+          )}
+
+          {/* Contact info for lost/found/adoption posts */}
+          {post.contactInfo && (
+            <div className={styles.contactInfo}>
+              <Space>
+                <PhoneOutlined style={{ color: '#1890FF' }} />
+                <Text strong style={{ color: '#1890FF' }}>
+                  {post.contactInfo}
+                </Text>
+              </Space>
+            </div>
+          )}
+
+          {/* Pet info */}
+          {post.petName && (
+            <div className={styles.petInfo}>
+              <Text type="secondary">
+                Featuring: <Text strong>{post.petName}</Text>
+              </Text>
             </div>
           )}
         </div>
 
-        {/* Post Actions */}
+        {/* Media */}
+        {renderMedia()}
+
+        <Divider className={styles.divider} />
+
+        {/* Actions */}
         <div className={styles.postActions}>
-          <Space size="large">
+          <Space size="large" className={styles.actionButtons}>
             <motion.div whileTap={{ scale: 0.95 }}>
               <Button
                 type="text"
-                icon={isLiked ?
+                icon={post.isLiked ?
                   <HeartFilled style={{ color: '#EB5757' }} /> :
                   <HeartOutlined />
                 }
-                onClick={handleLike}
-                loading={loading[`like-${post.id}`]}
+                onClick={() => onLike(post.id)}
                 className={styles.actionButton}
               >
-                <span className={isLiked ? styles.likedText : styles.actionText}>
-                  {likeCount}
+                <span className={post.isLiked ? styles.likedText : styles.actionText}>
+                  {post.likeCount}
                 </span>
               </Button>
             </motion.div>
@@ -149,10 +226,12 @@ export const PostCard: React.FC<PostCardProps> = ({
               <Button
                 type="text"
                 icon={<CommentOutlined />}
-                onClick={() => onComment?.(post.id)}
+                onClick={() => onComment(post.id)}
                 className={styles.actionButton}
               >
-                <span className={styles.actionText}>{post.commentCount}</span>
+                <span className={styles.actionText}>
+                  {post.commentCount}
+                </span>
               </Button>
             </motion.div>
 
@@ -160,11 +239,12 @@ export const PostCard: React.FC<PostCardProps> = ({
               <Button
                 type="text"
                 icon={<ShareAltOutlined />}
-                onClick={handleShare}
-                loading={loading[`share-${post.id}`]}
+                onClick={() => onShare(post.id)}
                 className={styles.actionButton}
               >
-                <span className={styles.actionText}>{shareCount}</span>
+                <span className={styles.actionText}>
+                  {post.shareCount}
+                </span>
               </Button>
             </motion.div>
           </Space>
@@ -173,3 +253,5 @@ export const PostCard: React.FC<PostCardProps> = ({
     </motion.div>
   );
 };
+
+export default PostCard;

@@ -1,17 +1,11 @@
 .pageContainer {
-  min-height: 100vh;
-  background-color: #F3F4F6;
-}
-
-.mainContent {
-  margin-left: 340px;
-  padding: 96px 24px 48px;
+  width: 100%;
   min-height: 100vh;
 }
 
 .contentWrapper {
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
+  padding: 24px 0;
 }
 
 .leftColumn {

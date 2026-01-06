@@ -8,10 +8,12 @@
 export interface Post {
   id: number;
   content: string;
+  authorId: number;
   authorName: string;
   authorAvatar?: string;
-  petId: number;
-  petName: string;
+  authorUsername: string;
+  petId?: number;
+  petName?: string;
   createdAt: string;
   likeCount: number;
   commentCount: number;
@@ -19,6 +21,15 @@ export interface Post {
   isLiked: boolean;
   media: PostMedia[];
   tags?: string[];
+  type: 'general' | 'adoption' | 'lost' | 'found' | 'story';
+  location?: string;
+  contactInfo?: string;
+}
+
+export interface TimelineFeed {
+  posts: Post[];
+  hasMore: boolean;
+  lastPostId?: number;
 }
 
 export interface PostMedia {

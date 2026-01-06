@@ -1,17 +1,11 @@
 .pageContainer {
-  min-height: 100vh;
-  background-color: #F3F4F6;
-}
-
-.mainContent {
-  margin-left: 340px;
-  padding: 96px 24px 48px;
-  min-height: 100vh;
+  width: 100%;
+  min-height: auto; /* Let MainLayout handle min-height */
 }
 
 .contentWrapper {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  padding: 24px 0; /* Only vertical padding, MainLayout handles horizontal */
 }
 
 /* Page Header */

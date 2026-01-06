@@ -20,8 +20,8 @@ import {
   ArrowLeftOutlined,
   ShareAltOutlined
 } from '@ant-design/icons';
-import { Sidebar, Header, Loading, ErrorMessage } from '../../components';
-import { PostCard } from '../../components/PostCard';
+import { Loading, ErrorMessage } from '../../components';
+import PostCard from '../../components/PostCard';
 import {
   usePetProfile,
   usePetTimeline
@@ -69,14 +69,6 @@ export const ViewPetPage: React.FC = () => {
   const hasNoPets = userProfile?.pets.length === 0;
   const hasPrivatePets = userProfile?.pets.some(pet => pet.isPrivate) && userProfile?.pets.every(pet => pet.isPrivate);
 
-  // Mock sidebar pets
-  const mockSidebarPets = [
-    { id: 1, name: 'Maxi', type: 'dog' as const, avatarUrl: undefined },
-    { id: 2, name: 'Luna', type: 'cat' as const, avatarUrl: undefined }
-  ];
-
-  const bannerImage = 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop';
-
   if (!userProfile) {
     return <ErrorMessage message="User not found" />;
   }
@@ -84,208 +76,186 @@ export const ViewPetPage: React.FC = () => {
   // State 3: No Pets to Show
   if (hasNoPets) {
     return (
-      <>
-        <Header userName="Esther" notificationCount={3} />
-        <div className={styles.pageContainer}>
-          <Sidebar
-            pets={mockSidebarPets}
-            notificationCount={3}
-            bannerImage={bannerImage}
-          />
-
-          <motion.main
-            className={styles.mainContent}
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
+      <motion.div
+        className={styles.pageContainer}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+      >
+        <div className={styles.backButton}>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            type="text"
+            onClick={() => navigate(-1)}
+            className={styles.backBtn}
           >
-            <div className={styles.backButton}>
-              <Button
-                icon={<ArrowLeftOutlined />}
-                type="text"
-                onClick={() => navigate(-1)}
-                className={styles.backBtn}
-              >
-                Back
-              </Button>
-            </div>
-
-            <div className={styles.emptyState}>
-              <Card className={styles.emptyCard} bordered={false}>
-                <div className={styles.emptyContent}>
-                  <div className={styles.userHeader}>
-                    <Avatar
-                      size={64}
-                      src={userProfile.avatar}
-                      className={styles.userAvatar}
-                    />
-                    <Title level={3} className={styles.userName}>
-                      {userProfile.username}'s Pets
-                    </Title>
-                  </div>
-
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className={styles.emptyIcon}
-                  >
-                    <div className={styles.iconContainer}>
-                      ✨
-                    </div>
-                  </motion.div>
-
-                  <Title level={2} className={styles.emptyTitle}>
-                    No Pets to Show
-                  </Title>
-
-                  <Paragraph className={styles.emptyDescription}>
-                    Michael Chen hasn't added any pets yet. Check back later, or
-                    explore other amazing pets in the PawPlanet community 🐾
-                  </Paragraph>
-
-                  <div className={styles.emptyActions}>
-                    <Button
-                      type="primary"
-                      icon={<CameraOutlined />}
-                      size="large"
-                      className={styles.exploreButton}
-                    >
-                      Explore Other Pets
-                    </Button>
-
-                    <Button
-                      type="default"
-                      icon={<UserOutlined />}
-                      size="large"
-                      className={styles.homeButton}
-                      onClick={() => navigate('/my-pets')}
-                    >
-                      Go to Home
-                    </Button>
-                  </div>
-
-                  <div className={styles.helpSection}>
-                    <Text type="secondary" className={styles.helpText}>
-                      Did you know?
-                    </Text>
-                    <Paragraph className={styles.helpDescription}>
-                      Every pet on PawPlanet has a unique story. Start exploring pets right here and meet new furry friends to
-                      follow!
-                    </Paragraph>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </motion.main>
+            Back
+          </Button>
         </div>
-      </>
+
+        <div className={styles.emptyState}>
+          <Card className={styles.emptyCard} bordered={false}>
+            <div className={styles.emptyContent}>
+              <div className={styles.userHeader}>
+                <Avatar
+                  size={64}
+                  src={userProfile.avatar}
+                  className={styles.userAvatar}
+                />
+                <Title level={3} className={styles.userName}>
+                  {userProfile.username}'s Pets
+                </Title>
+              </div>
+
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className={styles.emptyIcon}
+              >
+                <div className={styles.iconContainer}>
+                  ✨
+                </div>
+              </motion.div>
+
+              <Title level={2} className={styles.emptyTitle}>
+                No Pets to Show
+              </Title>
+
+              <Paragraph className={styles.emptyDescription}>
+                Michael Chen hasn't added any pets yet. Check back later, or
+                explore other amazing pets in the PawPlanet community 🐾
+              </Paragraph>
+
+              <div className={styles.emptyActions}>
+                <Button
+                  type="primary"
+                  icon={<CameraOutlined />}
+                  size="large"
+                  className={styles.exploreButton}
+                >
+                  Explore Other Pets
+                </Button>
+
+                <Button
+                  type="default"
+                  icon={<UserOutlined />}
+                  size="large"
+                  className={styles.homeButton}
+                  onClick={() => navigate('/my-pets')}
+                >
+                  Go to Home
+                </Button>
+              </div>
+
+              <div className={styles.helpSection}>
+                <Text type="secondary" className={styles.helpText}>
+                  Did you know?
+                </Text>
+                <Paragraph className={styles.helpDescription}>
+                  Every pet on PawPlanet has a unique story. Start exploring pets right here and meet new furry friends to
+                  follow!
+                </Paragraph>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </motion.div>
     );
   }
 
   // State 2: Private Profile
   if (hasPrivatePets) {
     return (
-      <>
-        <Header userName="Esther" notificationCount={3} />
-        <div className={styles.pageContainer}>
-          <Sidebar
-            pets={mockSidebarPets}
-            notificationCount={3}
-            bannerImage={bannerImage}
-          />
-
-          <motion.main
-            className={styles.mainContent}
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
+      <motion.div
+        className={styles.pageContainer}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+      >
+        <div className={styles.backButton}>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            type="text"
+            onClick={() => navigate(-1)}
+            className={styles.backBtn}
           >
-            <div className={styles.backButton}>
-              <Button
-                icon={<ArrowLeftOutlined />}
-                type="text"
-                onClick={() => navigate(-1)}
-                className={styles.backBtn}
-              >
-                Back
-              </Button>
-            </div>
-
-            <div className={styles.privateState}>
-              <Card className={styles.privateCard} bordered={false}>
-                <div className={styles.privateContent}>
-                  <div className={styles.userHeader}>
-                    <Avatar
-                      size={64}
-                      src={userProfile.avatar}
-                      className={styles.userAvatar}
-                    />
-                    <Title level={3} className={styles.userName}>
-                      {userProfile.username}'s Pets
-                    </Title>
-                  </div>
-
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                    className={styles.lockIcon}
-                  >
-                    <div className={styles.lockContainer}>
-                      <LockOutlined />
-                    </div>
-                  </motion.div>
-
-                  <Title level={2} className={styles.privateTitle}>
-                    This Profile is Private
-                  </Title>
-
-                  <Paragraph className={styles.privateDescription}>
-                    Sarah Johnson has set this pet profile to private. Only they
-                    can view this adorable friend's profile. 😊
-                  </Paragraph>
-
-                  <div className={styles.privacyNote}>
-                    <div className={styles.privacyIcon}>
-                      🔒
-                    </div>
-                    <div className={styles.privacyContent}>
-                      <Text strong>Privacy Protected</Text>
-                      <br />
-                      <Text type="secondary" className={styles.privacyText}>
-                        Respecting privacy by keeping this pet profile. We want to
-                        keep fluffy's information private and anonymous.
-                      </Text>
-                    </div>
-                  </div>
-
-                  <div className={styles.privateActions}>
-                    <Button
-                      type="primary"
-                      icon={<CameraOutlined />}
-                      size="large"
-                      className={styles.exploreButton}
-                    >
-                      Explore Other Pets
-                    </Button>
-
-                    <Button
-                      type="default"
-                      icon={<UserOutlined />}
-                      size="large"
-                      className={styles.homeButton}
-                      onClick={() => navigate('/my-pets')}
-                    >
-                      Go to Home
-                    </Button>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </motion.main>
+            Back
+          </Button>
         </div>
-      </>
+
+        <div className={styles.privateState}>
+          <Card className={styles.privateCard} bordered={false}>
+            <div className={styles.privateContent}>
+              <div className={styles.userHeader}>
+                <Avatar
+                  size={64}
+                  src={userProfile.avatar}
+                  className={styles.userAvatar}
+                />
+                <Title level={3} className={styles.userName}>
+                  {userProfile.username}'s Pets
+                </Title>
+              </div>
+
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className={styles.lockIcon}
+              >
+                <div className={styles.lockContainer}>
+                  <LockOutlined />
+                </div>
+              </motion.div>
+
+              <Title level={2} className={styles.privateTitle}>
+                This Profile is Private
+              </Title>
+
+              <Paragraph className={styles.privateDescription}>
+                Sarah Johnson has set this pet profile to private. Only they
+                can view this adorable friend's profile. 😊
+              </Paragraph>
+
+              <div className={styles.privacyNote}>
+                <div className={styles.privacyIcon}>
+                  🔒
+                </div>
+                <div className={styles.privacyContent}>
+                  <Text strong>Privacy Protected</Text>
+                  <br />
+                  <Text type="secondary" className={styles.privacyText}>
+                    Respecting privacy by keeping this pet profile. We want to
+                    keep fluffy's information private and anonymous.
+                  </Text>
+                </div>
+              </div>
+
+              <div className={styles.privateActions}>
+                <Button
+                  type="primary"
+                  icon={<CameraOutlined />}
+                  size="large"
+                  className={styles.exploreButton}
+                >
+                  Explore Other Pets
+                </Button>
+
+                <Button
+                  type="default"
+                  icon={<UserOutlined />}
+                  size="large"
+                  className={styles.homeButton}
+                  onClick={() => navigate('/my-pets')}
+                >
+                  Go to Home
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </div>
+      </motion.div>
     );
   }
 
@@ -299,22 +269,12 @@ export const ViewPetPage: React.FC = () => {
   }
 
   return (
-    <>
-      <Header userName="Esther" notificationCount={3} />
-
-      <div className={styles.pageContainer}>
-        <Sidebar
-          pets={mockSidebarPets}
-          notificationCount={3}
-          bannerImage={bannerImage}
-        />
-
-        <motion.main
-          className={styles.mainContent}
-          variants={pageVariants}
-          initial="initial"
-          animate="animate"
-        >
+    <motion.div
+      className={styles.pageContainer}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+    >
           <div className={styles.backButton}>
             <Button
               icon={<ArrowLeftOutlined />}
@@ -478,9 +438,9 @@ export const ViewPetPage: React.FC = () => {
                           <PostCard
                             key={post.id}
                             post={post}
-                            onLike={(postId, isLiked) => console.log('Liked:', postId, isLiked)}
-                            onComment={(postId) => console.log('Comment:', postId)}
-                            onShare={(postId) => console.log('Share:', postId)}
+                            onLike={(postId: number) => console.log('Liked:', postId)}
+                            onComment={(postId: number) => console.log('Comment:', postId)}
+                            onShare={(postId: number) => console.log('Share:', postId)}
                           />
                         ))}
 
@@ -505,8 +465,6 @@ export const ViewPetPage: React.FC = () => {
               </Col>
             </Row>
           </div>
-        </motion.main>
-      </div>
-    </>
+    </motion.div>
   );
 };
