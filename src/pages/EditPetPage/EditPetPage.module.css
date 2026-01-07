@@ -1,0 +1,193 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #F3F4F6;
+}
+
+.mainContent {
+  margin-left: 340px;
+  padding: 96px 24px 48px;
+  min-height: 100vh;
+}
+
+.contentWrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.pageHeader {
+  margin-bottom: 32px;
+}
+
+.backButton {
+  font-size: 14px;
+  color: #6B7280;
+  padding: 8px 0;
+  margin-bottom: 16px;
+}
+
+.backButton:hover {
+  color: #1890FF;
+}
+
+.pageTitle {
+  color: #1F2937 !important;
+  margin-bottom: 8px !important;
+  font-size: 28px !important;
+  font-weight: 700 !important;
+}
+
+.pageSubtitle {
+  color: #6B7280 !important;
+  font-size: 16px;
+  margin-bottom: 0 !important;
+}
+
+/* Form Card */
+.formCard {
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 32px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.photoSection {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.sectionTitle {
+  color: #1F2937 !important;
+  margin-bottom: 24px !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+/* Bottom Actions */
+.bottomActions {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.actionButtonsContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+}
+
+.saveButton {
+  height: 48px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0 32px;
+  background: linear-gradient(135deg, #1890FF 0%, #40A9FF 100%);
+  border: none;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+  min-width: 160px;
+}
+
+.saveButton:hover {
+  background: linear-gradient(135deg, #40A9FF 0%, #1890FF 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+}
+
+.cancelButton {
+  height: 48px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 0 32px;
+  border: 1px solid #E5E7EB;
+  color: #6B7280;
+  min-width: 120px;
+}
+
+.cancelButton:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding: 96px 16px 32px;
+  }
+
+  .formCard {
+    padding: 24px 16px;
+  }
+
+  .pageTitle {
+    font-size: 24px !important;
+  }
+
+  .pageSubtitle {
+    font-size: 14px;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .saveButton,
+  .cancelButton {
+    height: 44px;
+    font-size: 15px;
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .pageTitle {
+    font-size: 22px !important;
+  }
+
+  .formCard {
+    padding: 20px 12px;
+  }
+
+  .photoSection {
+    margin-bottom: 32px;
+    padding-bottom: 24px;
+  }
+
+  .bottomActions {
+    margin-top: 32px;
+    padding-top: 24px;
+  }
+
+  .saveButton,
+  .cancelButton {
+    height: 40px;
+    font-size: 14px;
+  }
+}
+
+/* Animation states */
+.formCard {
+  transition: all 0.3s ease;
+}
+
+.saveButton {
+  transition: all 0.3s ease;
+}
+
+.cancelButton {
+  transition: all 0.3s ease;
+}

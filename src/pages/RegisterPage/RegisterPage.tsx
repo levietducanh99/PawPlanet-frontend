@@ -1,40 +1,39 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Form, Input, Button, Checkbox, Divider, message } from 'antd';
+import { Form, Input, Button, Checkbox, Divider, message, Alert } from 'antd';
 import { UserOutlined, MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
 import { fadeInUp } from '@/animations/variants.ts';
+import { useRegister } from '@/hooks';
+import type { RegisterCredentials } from '@/domain/auth';
 import '../LoginPage/auth.css';
 import './register.css';
 
 interface RegisterPageProps {
   onSwitchToLogin: () => void;
+  onRegisterSuccess?: () => void;
 }
 
-interface RegisterFormValues {
-  fullName: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  agree: boolean;
-}
-
-export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin }) => {
-  const [loading, setLoading] = useState(false);
+export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onRegisterSuccess }) => {
   const [form] = Form.useForm();
+  const { register, loading, error, clearError, isRegistered } = useRegister();
 
-  const handleSubmit = async (values: RegisterFormValues) => {
-    setLoading(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+  // Handle successful registration
+  useEffect(() => {
+    if (isRegistered && onRegisterSuccess) {
+      onRegisterSuccess();
+    }
+  }, [isRegistered, onRegisterSuccess]);
+
+  const handleSubmit = async (values: RegisterCredentials) => {
+    clearError();
+
+    const result = await register(values);
+
+    if (result?.success) {
       message.success('Registration successful! Welcome to PawPlanet!');
-      console.log('Register values:', values);
-    } catch (error) {
-      message.error('Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
+      form.resetFields();
     }
   };
 
@@ -48,6 +47,20 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin }) =
         <SimpleAvatar />
 
         <motion.div {...fadeInUp}>
+          {error && (
+            <Alert
+              type="error"
+              message={error.message}
+              showIcon
+              closable
+              onClose={clearError}
+              style={{
+                marginBottom: 24,
+                borderRadius: 12
+              }}
+            />
+          )}
+
           <Form
             form={form}
             onFinish={handleSubmit}
@@ -56,13 +69,13 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin }) =
             requiredMark={false}
           >
             <Form.Item
-              name="fullName"
-              label="Full Name"
-              rules={[{ required: true, message: 'Please input your full name!' }]}
+              name="username"
+              label="Username"
+              rules={[{ required: true, message: 'Please input your username!' }]}
             >
               <Input
                 prefix={<UserOutlined style={{ color: '#6B7280' }} />}
-                placeholder="John Doe"
+                placeholder="johndoe123"
                 size="large"
               />
             </Form.Item>
