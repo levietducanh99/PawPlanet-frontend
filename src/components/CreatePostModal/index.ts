@@ -1,0 +1,2 @@
+export { CreatePostModal } from './CreatePostModal';
+

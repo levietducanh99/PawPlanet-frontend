@@ -3,8 +3,9 @@
  * Wraps auth service and provides React-friendly interface
  */
 
-import React, { useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { authService } from '@/services/auth.service';
+import { useAuthContext } from '@/context/AuthContext';
 import type { LoginCredentials, RegisterCredentials, AuthError, LoginResult, RegisterResult } from '@/domain/auth';
 
 export interface UseLoginState {
@@ -41,7 +42,10 @@ export const useRegister = () => {
         setIsRegistered(true);
       }
 
-      return result;
+      return {
+        success: result.success,
+        user: result.user!
+      };
 
     } catch (authError) {
       setError(authError as AuthError);
@@ -67,71 +71,26 @@ export const useRegister = () => {
 
 /**
  * Hook for handling user login functionality
- * Manages login state and provides login/logout actions
+ * Sets isAuthenticated immediately on login/logout
  */
 export const useLogin = (): UseLogin => {
-  const [loading, setLoading] = useState(false);
+  const { login, isAuthenticated, loading } = useAuthContext();
+
   const [error, setError] = useState<AuthError | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = useCallback(async (credentials: LoginCredentials): Promise<LoginResult | null> => {
-    setLoading(true);
-    setError(null);
-
+  const loginWrapper = useCallback(async (credentials: LoginCredentials): Promise<LoginResult | null> => {
     try {
-      const result = await authService.login(credentials);
-
-      if (result.success && result.token.authenticated) {
-        setIsAuthenticated(true);
-
-        // Store token in localStorage if remember me is checked
-        if (credentials.remember && result.token.token) {
-          localStorage.setItem('authToken', result.token.token);
-        }
-
-        // Store in sessionStorage for session-based auth
-        if (result.token.token) {
-          sessionStorage.setItem('authToken', result.token.token);
-        }
+      const result = await login(credentials);
+      // Nếu login trả về boolean (context), trả về LoginResult giả để không lỗi type
+      if (typeof result === 'boolean') {
+        return result ? { success: true, user: undefined, token: { token: '', authenticated: true } } : { success: false, user: undefined, token: { token: '', authenticated: false } };
       }
-
       return result;
-
     } catch (authError) {
       setError(authError as AuthError);
-      setIsAuthenticated(false);
       return null;
-    } finally {
-      setLoading(false);
     }
-  }, []);
-
-  const logout = useCallback(async (): Promise<void> => {
-    setLoading(true);
-
-    try {
-      // Get token from storage
-      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-
-      if (token) {
-        await authService.logout(token);
-      }
-
-      // Clear storage
-      localStorage.removeItem('authToken');
-      sessionStorage.removeItem('authToken');
-
-      setIsAuthenticated(false);
-      setError(null);
-
-    } catch (error) {
-      console.error('Logout error:', error);
-      // Clear local state even if logout API fails
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  }, [login]);
 
   const clearError = useCallback(() => {
     setError(null);
@@ -141,54 +100,18 @@ export const useLogin = (): UseLogin => {
     loading,
     error,
     isAuthenticated,
-    login,
-    logout,
+    login: loginWrapper,
+    logout: async () => {},
     clearError
   };
 };
 
 /**
  * Hook for checking authentication status
+ * Only verifies token on mount (reload), not after login/logout
  */
 export const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  const checkAuth = useCallback(async () => {
-    setLoading(true);
-
-    try {
-      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-
-      if (!token) {
-        setIsAuthenticated(false);
-        return;
-      }
-
-      const isValid = await authService.verifyToken(token);
-      setIsAuthenticated(isValid);
-
-      if (!isValid) {
-        // Clear invalid token
-        localStorage.removeItem('authToken');
-        sessionStorage.removeItem('authToken');
-      }
-
-    } catch (error) {
-      setIsAuthenticated(false);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  // Initialize auth check on mount
-  React.useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
-  return {
-    isAuthenticated,
-    loading,
-    checkAuth
-  };
+  // Consumer cho toàn bộ app
+  const { isAuthenticated, loading, user, login, logout, verify } = useAuthContext();
+  return { isAuthenticated, loading, user, login, logout, verify };
 };

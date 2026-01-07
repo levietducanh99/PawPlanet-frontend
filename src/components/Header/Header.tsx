@@ -1,39 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined, BellOutlined } from '@ant-design/icons';
-import { Badge, Input } from 'antd';
+import { Badge, Input, Button } from 'antd';
+import { useAuth } from '../../hooks/useAuth';
+import { useUserProfile } from '../../hooks';
+import { UserDropdown } from '../UserDropdown';
+import { CreatePostModal } from '../CreatePostModal';
 import styles from './Header.module.css';
 
 interface HeaderProps {
-  userName?: string;
-  userAvatar?: string;
-  notificationCount?: number;
   onSearch?: (value: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  userName = 'User',
-  userAvatar,
-  notificationCount = 1,
   onSearch,
 }) => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { user, loading } = useUserProfile();
+  const [showCreatePost, setShowCreatePost] = useState(false);
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
   const handleCreatePost = () => {
-    navigate('/create-post');
+    setShowCreatePost(true);
   };
 
   const handleNotificationClick = () => {
     navigate('/notifications');
   };
 
-  const handleProfileClick = () => {
-    navigate('/profile');
+  const handleLoginClick = () => {
+    navigate('/login');
   };
+
+  // Default values while loading or when no user
+  const displayName = user?.username || user?.email?.split('@')[0] || 'User';
+  const notificationCount = 1; // This could come from a separate notifications API
 
   return (
     <header className={styles.header}>
@@ -44,16 +49,8 @@ export const Header: React.FC<HeaderProps> = ({
           <span className={styles.brandName}>PawPlanet</span>
         </div>
 
-        {/* Center: Create Post Button */}
-        <div className={styles.createButtonCenter}>
-          <button className={styles.createButton} onClick={handleCreatePost}>
-            <PlusOutlined className={styles.plusIcon} />
-          </button>
-        </div>
-
-        {/* Right: Search + Actions */}
-        <div className={styles.rightSection}>
-          {/* Search Bar */}
+        {/* Center: Search Bar - only show when authenticated */}
+        {isAuthenticated && (
           <div className={styles.searchContainer}>
             <Input
               className={styles.searchInput}
@@ -63,29 +60,56 @@ export const Header: React.FC<HeaderProps> = ({
               onChange={(e) => onSearch?.(e.target.value)}
             />
           </div>
+        )}
 
-          {/* Actions */}
-          <div className={styles.actions}>
-            {/* Notifications */}
-            <div className={styles.notificationButton} onClick={handleNotificationClick}>
-              <Badge count={notificationCount} offset={[-5, 5]}>
-                <BellOutlined className={styles.bellIcon} />
-              </Badge>
-            </div>
+        {/* Right: Actions */}
+        <div className={styles.rightSection}>
+          {isAuthenticated ? (
+            <>
+              {/* Create Post Button */}
+              <button className={styles.createButton} onClick={handleCreatePost}>
+                <PlusOutlined className={styles.plusIcon} />
+              </button>
 
-            {/* User Avatar */}
-            <div className={styles.userAvatar} onClick={handleProfileClick}>
-              {userAvatar ? (
-                <img src={userAvatar} alt={userName} />
-              ) : (
-                <div className={styles.avatarPlaceholder}>
-                  {userName.charAt(0).toUpperCase()}
+              {/* Actions */}
+              <div className={styles.actions}>
+                {/* Notifications */}
+                <div className={styles.notificationButton} onClick={handleNotificationClick}>
+                  <Badge count={notificationCount} offset={[-5, 5]}>
+                    <BellOutlined className={styles.bellIcon} />
+                  </Badge>
                 </div>
-              )}
-            </div>
-          </div>
+
+                {/* User Dropdown */}
+                {user && !loading ? (
+                  <UserDropdown user={user} />
+                ) : (
+                  <div className={styles.userAvatar}>
+                    <div className={styles.avatarPlaceholder}>
+                      {loading ? '...' : displayName.charAt(0).toUpperCase()}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            /* Login Button for non-authenticated users */
+            <Button
+              type="primary"
+              onClick={handleLoginClick}
+              className={styles.loginButton}
+            >
+              Login
+            </Button>
+          )}
         </div>
       </div>
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        open={showCreatePost}
+        onClose={() => setShowCreatePost(false)}
+      />
     </header>
   );
 };

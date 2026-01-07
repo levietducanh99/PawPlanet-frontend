@@ -1,0 +1,65 @@
+.mainLayout {
+  min-height: 100vh;
+}
+
+.layoutBody {
+  display: flex;
+  position: relative;
+  min-height: calc(100vh - 72px);
+  margin-top: 72px; /* Account for fixed header */
+}
+
+.mainContent {
+  flex: 1;
+  margin-left: 340px; /* Sidebar width */
+  padding: 32px 24px;
+  min-height: calc(100vh - 72px);
+  overflow-y: auto;
+  background: #F3F4F6;
+
+  /* Center content horizontally and provide flex container */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top but center horizontally */
+}
+
+/* Content wrapper for centering */
+.contentWrapper {
+  width: 100%;
+  max-width: 1200px; /* Max width for content */
+  margin: 0 auto;
+  padding: 0; /* Remove padding as MainContent already has padding */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .mainContent {
+    margin-left: 280px; /* Reduce sidebar width on smaller screens */
+    padding: 24px 20px;
+  }
+
+  .contentWrapper {
+    max-width: 900px; /* Smaller max-width for medium screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .layoutBody {
+    flex-direction: column;
+  }
+
+  .mainContent {
+    margin-left: 0;
+    padding: 20px 16px;
+  }
+
+  .contentWrapper {
+    max-width: 100%; /* Full width on mobile */
+    padding: 0;
+  }
+
+  /* Hide sidebar on mobile - could be toggled via state later */
+  .sidebar {
+    display: none;
+  }
+}

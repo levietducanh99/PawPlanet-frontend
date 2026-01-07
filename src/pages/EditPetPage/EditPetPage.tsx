@@ -12,7 +12,7 @@ import {
 } from 'antd';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
-import { Sidebar, Header, Loading, ErrorMessage } from '../../components';
+import { Loading, ErrorMessage } from '../../components';
 import { PetPhotoUpload } from '../../components/PetPhotoUpload';
 import { PetBasicForm } from '../../components/PetBasicForm';
 import { PetImportantDates } from '../../components/PetImportantDates';
@@ -38,14 +38,6 @@ export const EditPetPage: React.FC = () => {
 
   const [saving, setSaving] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
-
-  // Mock sidebar pets
-  const mockSidebarPets = [
-    { id: 1, name: 'Maxi', type: 'dog' as const, avatarUrl: undefined },
-    { id: 2, name: 'Luna', type: 'cat' as const, avatarUrl: undefined }
-  ];
-
-  const bannerImage = 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop';
 
   // Set initial form values when profile loads
   useEffect(() => {
@@ -165,23 +157,13 @@ export const EditPetPage: React.FC = () => {
   }
 
   return (
-    <>
-      <Header userName="Esther" notificationCount={3} />
-
-      <div className={styles.pageContainer}>
-        <Sidebar
-          pets={mockSidebarPets}
-          notificationCount={3}
-          bannerImage={bannerImage}
-        />
-
-        <motion.main
-          className={styles.mainContent}
-          variants={pageVariants}
-          initial="initial"
-          animate="animate"
-        >
-          <div className={styles.contentWrapper}>
+    <motion.div
+      className={styles.pageContainer}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+    >
+      <div className={styles.contentWrapper}>
             {/* Page Header */}
             <div className={styles.pageHeader}>
               <Button
@@ -279,8 +261,6 @@ export const EditPetPage: React.FC = () => {
               </Col>
             </Row>
           </div>
-        </motion.main>
-      </div>
-    </>
+    </motion.div>
   );
 };

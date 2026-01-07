@@ -1,2 +1,2 @@
-export { PostCard } from './PostCard';
+export { default } from './PostCard';
 

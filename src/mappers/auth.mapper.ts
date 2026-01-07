@@ -36,12 +36,18 @@ export const mapToRegisterRequest = (credentials: RegisterCredentials): Register
 export const mapAuthResponse = (apiResponse: ApiResponseAuthResponse): AuthToken => {
   const authResult = apiResponse.result;
   if (!authResult) {
+    console.error('Invalid auth response: missing result', apiResponse);
     throw new Error('Invalid auth response: missing result');
   }
 
+  const token = authResult.token || '';
+  const authenticated = authResult.authenticated || false;
+
+  console.log('Auth response mapped:', { token: token ? '***' : 'empty', authenticated });
+
   return {
-    token: authResult.token || '',
-    authenticated: authResult.authenticated || false
+    token,
+    authenticated
   };
 };
 
@@ -75,6 +81,7 @@ export const mapLoginResult = (
       success: true
     };
   } catch (error) {
+    console.error('Error mapping login result:', error);
     return {
       token: { token: '', authenticated: false },
       success: false

@@ -1,123 +1,274 @@
-.postCardWrapper {
+/* PostCard.module.css */
+.cardWrapper {
   margin-bottom: 24px;
 }
 
 .postCard {
   border-radius: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
+  background: #ffffff;
+  overflow: hidden;
 }
 
 .postCard:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 }
 
+/* Header */
 .postHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 16px;
-  padding-bottom: 12px;
+}
+
+.avatar {
+  border: 2px solid #E6F7FF;
+}
+
+.authorInfo {
+  flex: 1;
 }
 
 .authorName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.username {
   font-size: 14px;
-  font-weight: 600;
-  color: #1F2937;
-  line-height: 1.2;
 }
 
-.postDate {
-  font-size: 12px;
-  color: #6B7280;
-  line-height: 1.2;
+.metadata {
+  display: flex;
+  align-items: center;
 }
 
+.timestamp {
+  font-size: 14px;
+}
+
+.location {
+  font-size: 14px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Content */
 .postContent {
   margin-bottom: 16px;
 }
 
-.postText {
-  font-size: 14px;
+.contentText {
+  font-size: 16px;
   line-height: 1.5;
   color: #1F2937;
-  margin-bottom: 16px !important;
+  margin-bottom: 12px;
+  white-space: pre-wrap;
 }
 
-.postText:last-child {
-  margin-bottom: 0 !important;
+.contentText:last-child {
+  margin-bottom: 0;
 }
 
-.postMedia {
-  margin-top: 12px;
+.tagsContainer {
+  margin-bottom: 12px;
 }
 
-.singleImage {
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
+.hashtag {
+  color: #1890FF;
+  font-weight: 500;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.hashtag:hover {
+  color: #40A9FF;
+  text-decoration: underline;
+}
+
+.contactInfo {
+  background: #E6F7FF;
+  padding: 12px 16px;
   border-radius: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #B3E5FC;
 }
 
-.mediaGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 8px;
+.petInfo {
+  margin-bottom: 12px;
+}
+
+/* Media */
+.singleMedia {
+  margin-bottom: 16px;
   border-radius: 12px;
   overflow: hidden;
 }
 
-.gridImage {
+.mediaItem {
   width: 100%;
-  height: 200px;
+  height: 400px;
   object-fit: cover;
+  display: block;
+  border-radius: 12px;
+}
+
+.mediaGallery {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: #D1D5DB #F9FAFB;
+}
+
+.mediaGallery::-webkit-scrollbar {
+  height: 6px;
+}
+
+.mediaGallery::-webkit-scrollbar-track {
+  background: #F9FAFB;
+  border-radius: 3px;
+}
+
+.mediaGallery::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 3px;
+}
+
+.mediaGallery::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
+.galleryItem {
+  flex-shrink: 0;
+  width: 280px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.galleryMedia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Actions */
+.divider {
+  margin: 16px 0 12px 0;
+  border-color: #E5E7EB;
 }
 
 .postActions {
-  border-top: 1px solid #F3F4F6;
-  padding-top: 12px;
-  margin-top: 16px;
+  padding-top: 4px;
+}
+
+.actionButtons {
+  width: 100%;
+  justify-content: space-between;
 }
 
 .actionButton {
-  height: auto;
-  padding: 4px 8px;
-  border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
+  padding: 8px 16px;
+  height: auto;
+  border-radius: 20px;
+  font-weight: 500;
   transition: all 0.2s ease;
+  color: #6B7280;
 }
 
 .actionButton:hover {
   background-color: #F3F4F6;
+  color: #1890FF;
 }
 
 .actionText {
-  font-size: 13px;
-  color: #6B7280;
+  font-size: 14px;
   font-weight: 500;
+  color: inherit;
 }
 
 .likedText {
-  font-size: 13px;
+  font-size: 14px;
+  font-weight: 500;
   color: #EB5757;
-  font-weight: 600;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .postCardWrapper {
+  .postHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .authorInfo {
+    flex: none;
+    width: 100%;
+  }
+
+  .location {
+    max-width: 120px;
+  }
+
+  .mediaItem {
+    height: 250px;
+  }
+
+  .galleryItem {
+    width: 200px;
+    height: 150px;
+  }
+
+  .actionButtons {
+    justify-content: space-around;
+  }
+
+  .actionButton {
+    padding: 6px 12px;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cardWrapper {
     margin-bottom: 16px;
   }
 
-  .singleImage {
-    max-height: 300px;
+  .postCard {
+    border-radius: 12px;
+    margin: 0 -8px;
   }
 
-  .mediaGrid {
-    grid-template-columns: 1fr;
+  .contentText {
+    font-size: 15px;
   }
 
-  .gridImage {
-    height: 250px;
+  .mediaItem {
+    height: 200px;
+    border-radius: 8px;
+  }
+
+  .galleryItem {
+    width: 160px;
+    height: 120px;
+  }
+
+  .actionButton {
+    padding: 4px 8px;
+    font-size: 13px;
   }
 }
