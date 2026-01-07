@@ -4,17 +4,14 @@
  */
 
 import React, { useState } from 'react';
-import { Card, Button, Space, Typography, Form, Input, Select, message } from 'antd';
+import { Card, Button, Space, Typography, message } from 'antd';
 import { petService } from '@/services/pet.service';
 import type { CreatePetData } from '@/services/pet.service';
 
-const { Title, Text, Paragraph } = Typography;
-const { Option } = Select;
+const {Text, Paragraph } = Typography;
 
 export const PetCreationDebugComponent: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
-
   const [testData] = useState<CreatePetData>({
     name: 'Test Pet ' + Date.now(),
     speciesId: 1,
