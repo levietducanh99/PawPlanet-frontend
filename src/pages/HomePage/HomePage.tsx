@@ -94,12 +94,6 @@ export const HomePage: React.FC = () => {
         >
           Create Pet Profile
         </Button>
-        <Button
-          size="large"
-          onClick={() => navigate('/login')}
-        >
-          Login
-        </Button>
       </div>
     </motion.div>
   );

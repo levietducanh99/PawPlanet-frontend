@@ -3,7 +3,7 @@ import { Row, Col, Button, message, Spin, Empty } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { motion } from 'motion/react';
 import PostCard from '@/components/PostCard/PostCard';
-import CreatePostModal from '@/components/CreatePostModal/CreatePostModal';
+import { CreatePostModal } from '@/components/CreatePostModal/CreatePostModal';
 import { pageVariants } from '@/animations/variants';
 import {
   getTimelineFeed,
@@ -195,11 +195,8 @@ const MainFeedPage: React.FC = () => {
 
         {/* Create Post Modal */}
         <CreatePostModal
-          visible={createPostModalVisible}
-          onCancel={() => setCreatePostModalVisible(false)}
-          onSubmit={handleCreatePost}
-          currentUserName="Sarah Chen"
-          currentUserAvatar="https://images.unsplash.com/photo-1494790108755-2616b612b601?w=100&h=100&fit=crop&crop=face"
+          open={createPostModalVisible}
+          onClose={() => setCreatePostModalVisible(false)}
         />
       </motion.div>
   );

@@ -3,6 +3,7 @@ export { Header } from './Header/Header';
 export { Sidebar } from './Sidebar/Sidebar';
 export { AuthLayout } from './AuthLayout/AuthLayout';
 export { MainLayout } from './MainLayout/MainLayout';
+export { UserDropdown } from './UserDropdown';
 
 // UI Components
 export { StepIndicator } from './StepIndicator/StepIndicator';
@@ -19,6 +20,10 @@ export { PetCreationDebugComponent } from './PetCreationDebugComponent';
 // Post Components
 export { default as PostCard } from './PostCard';
 export { default as CreatePostModal } from './CreatePostModal';
+
+// Post Components
+export { default as PostCard } from './PostCard';
+export { CreatePostModal } from './CreatePostModal';
 
 // Other
 export { Loading } from './Loading';

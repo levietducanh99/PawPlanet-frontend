@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { userService } from '@/services/user.service';
+import { useAuth } from './useAuth';
 import type { User } from '@/domain/auth';
 
 interface UseUserProfileReturn {
@@ -12,14 +13,25 @@ interface UseUserProfileReturn {
 
 /**
  * Hook to get current user profile
- * Automatically loads user profile when authenticated
+ * Automatically loads user profile when authenticated and clears when logged out
  */
 export const useUserProfile = (): UseUserProfileReturn => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Listen to auth state changes
+  const { isAuthenticated, loading: authLoading } = useAuth();
+
   const fetchUserProfile = useCallback(async () => {
+    // If not authenticated, clear user data immediately
+    if (!isAuthenticated) {
+      setUser(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
+
     // Check if user is authenticated
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
 
@@ -53,7 +65,7 @@ export const useUserProfile = (): UseUserProfileReturn => {
       console.error('Failed to fetch user profile:', err);
 
       // In development mode, fall back to mock data instead of showing error
-      if (import.meta.env.DEV && err.message?.includes('No authentication token')) {
+      if (import.meta.env.DEV && err instanceof Error && err.message?.includes('No authentication token')) {
         console.log('Development mode: Using mock user data due to auth error');
         setUser({
           id: 1,
@@ -71,20 +83,23 @@ export const useUserProfile = (): UseUserProfileReturn => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   const refetch = useCallback(async () => {
     await fetchUserProfile();
-  }, []); // Empty dependency to prevent circular updates
+  }, [fetchUserProfile]);
 
   const clearError = useCallback(() => {
     setError(null);
   }, []);
 
-  // Load user profile on mount
+  // Load user profile when auth state changes
   useEffect(() => {
+    // Don't fetch if auth is still loading
+    if (authLoading) return;
+
     fetchUserProfile();
-  }, []); // Empty dependency array for mount only
+  }, [fetchUserProfile, authLoading]);
 
   return {
     user,

@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Input, Slider, DatePicker, Select, message } from 'antd';
+import { Input, Slider, DatePicker, Upload, Progress, message, Select } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeftOutlined,
   ManOutlined,
   WomanOutlined,
   UserOutlined,
   CameraOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 import { StepIndicator, ProgressBar, WizardActions } from '../../components';
-import { useCreatePetWorkflow } from '../../hooks';
-import { mapSpeciesToOptions, mapBreedsToOptions, mapCreatePetRequestToData } from '../../mappers/pet.mapper';
-import { CreatePetRequest } from '../../domain/pet';
+import { CloudinaryDebugTest } from '../../components/CloudinaryDebugTest';
+import { useCreatePetWithImages, useCreatePetWorkflow } from '../../hooks';
 import styles from './CreatePetPage.module.css';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -20,7 +20,7 @@ interface PetFormData {
   speciesId: number | null;
   breedId: number | null;
   name: string;
-  photo: string | null;
+  photo: File | null; // Change to File object for Cloudinary upload
   dateOfBirth: Dayjs | null;
   gender: 'male' | 'female' | null;
   weight: number;
@@ -41,10 +41,6 @@ export const CreatePetPage: React.FC = () => {
 
   // API integration hooks
   const {
-    // Create Pet
-    isCreating,
-    createError,
-    createPet,
     // Species
     species,
     isLoadingSpecies,
@@ -56,8 +52,15 @@ export const CreatePetPage: React.FC = () => {
     breedsError,
     loadBreeds,
     clearBreeds,
-    // Note: clearAllErrors available but not used in this component
   } = useCreatePetWorkflow();
+
+  // Hook for creating pet with image upload
+  const {
+    createPetWithImages,
+    isCreating: isCreatingWithImages,
+    uploadProgress,
+    error: uploadError,
+  } = useCreatePetWithImages();
 
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<PetFormData>({
@@ -88,16 +91,13 @@ export const CreatePetPage: React.FC = () => {
 
   // Show error messages
   useEffect(() => {
-    if (createError) {
-      message.error(createError);
-    }
     if (speciesError) {
       message.error(speciesError);
     }
     if (breedsError) {
       message.error(breedsError);
     }
-  }, [createError, speciesError, breedsError]);
+  }, [speciesError, breedsError]);
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS) {
@@ -133,31 +133,30 @@ export const CreatePetPage: React.FC = () => {
         return;
       }
 
-      // Create the pet request
-      const createRequest: CreatePetRequest = {
+      // Prepare data for createPetWithImages hook
+      const createData = {
         name: formData.name.trim(),
-        speciesId: formData.speciesId,
+        speciesId: formData.speciesId!, // Non-null assertion since we validate above
         breedId: formData.breedId || undefined,
         birthDate: formData.dateOfBirth?.format('YYYY-MM-DD'),
-        gender: formData.gender || undefined,
+        gender: formData.gender === 'male' ? 'MALE' as const :
+               formData.gender === 'female' ? 'FEMALE' as const : undefined,
         description: formData.description.trim() || undefined,
         weight: formData.weight > 0 ? formData.weight : undefined,
         height: formData.height > 0 ? formData.height : undefined,
+        photo: formData.photo || undefined // Convert null to undefined
       };
 
-      // Convert to service data format
-      const petData = mapCreatePetRequestToData(createRequest);
+      // Create pet with image upload
+      const success = await createPetWithImages(createData);
 
-      // Create the pet
-      const newPet = await createPet(petData);
-
-      if (newPet) {
+      if (success) {
         message.success(`${formData.name} has been created successfully!`);
         navigate('/my-pets'); // Redirect to pets list
       }
     } catch (error) {
       console.error('Failed to create pet:', error);
-      // Error message is handled by useEffect
+      // Error message is handled by the hook
     }
   };
 
@@ -202,7 +201,14 @@ export const CreatePetPage: React.FC = () => {
       case 3:
         return <NameStep value={formData.name} onChange={(v) => updateFormData('name', v)} />;
       case 4:
-        return <PhotoStep value={formData.photo} onChange={(v) => updateFormData('photo', v)} />;
+        return (
+          <PhotoStep
+            value={formData.photo}
+            onChange={(v) => updateFormData('photo', v)}
+            uploadProgress={uploadProgress}
+            uploadError={uploadError}
+          />
+        );
       case 5:
         return <DateOfBirthStep value={formData.dateOfBirth} onChange={(v) => updateFormData('dateOfBirth', v)} />;
       case 6:
@@ -235,6 +241,9 @@ export const CreatePetPage: React.FC = () => {
 
   return (
     <div className={styles.pageContainer}>
+      {/* Temporary Debug Component */}
+      <CloudinaryDebugTest />
+
       {/* Main Content */}
       <main className={styles.mainContent}>
         <div className={styles.formCard}>
@@ -267,13 +276,28 @@ export const CreatePetPage: React.FC = () => {
             onSkip={handleSkip}
             onConfirm={handleNext}
             isLastStep={currentStep === TOTAL_STEPS}
-            confirmLabel={currentStep === TOTAL_STEPS ? (isCreating ? 'Creating...' : 'Create Pet') : 'Next'}
+            confirmLabel={currentStep === TOTAL_STEPS ? (isCreatingWithImages ? 'Creating...' : 'Create Pet') : 'Next'}
             skipLabel={currentStep === TOTAL_STEPS ? 'Create without details' : 'Skip for now'}
           />
         </div>
       </main>
     </div>
   );
+};
+
+// Helper functions for mapping data
+const mapSpeciesToOptions = (species: Array<{ id?: number; name?: string; scientificName?: string }>) => {
+  return species.filter(s => s.id).map(s => ({
+    id: s.id!,
+    name: s.name || s.scientificName || 'Unknown'
+  }));
+};
+
+const mapBreedsToOptions = (breeds: Array<{ id?: number; name?: string }>) => {
+  return breeds.filter(b => b.id).map(b => ({
+    id: b.id!,
+    name: b.name || 'Unknown'
+  }));
 };
 
 // Step Components
@@ -286,7 +310,7 @@ interface StepProps<T> {
 const SpeciesStep: React.FC<{
   value: number | null;
   onChange: (value: number) => void;
-  species: any[];
+  species: Array<{ id?: number; name?: string; scientificName?: string }>;
   loading: boolean;
 }> = ({ value, onChange, species, loading }) => {
   const speciesOptions = mapSpeciesToOptions(species);
@@ -330,7 +354,7 @@ const SpeciesStep: React.FC<{
 const BreedStep: React.FC<{
   value: number | null;
   onChange: (value: number | null) => void;
-  breeds: any[];
+  breeds: Array<{ id?: number; name?: string }>;
   loading: boolean;
   disabled: boolean;
 }> = ({ value, onChange, breeds, loading, disabled }) => {
@@ -398,38 +422,83 @@ const NameStep: React.FC<StepProps<string>> = ({ value, onChange }) => {
   );
 };
 
-const PhotoStep: React.FC<StepProps<string | null>> = ({ value, onChange }) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+interface PhotoStepProps {
+  value: File | null;
+  onChange: (value: File | null) => void;
+  uploadProgress: number;
+  uploadError: string | null;
+}
+
+const PhotoStep: React.FC<PhotoStepProps> = ({ value, onChange, uploadProgress, uploadError }) => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Update preview when value changes
+  useEffect(() => {
+    if (value) {
+      const url = URL.createObjectURL(value);
+      setPreviewUrl(url);
+      return () => URL.revokeObjectURL(url); // Cleanup
+    } else {
+      setPreviewUrl(null);
     }
+  }, [value]);
+
+  const handleFileSelect = (file: File) => {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      message.error('Please select an image file');
+      return false;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      message.error('Image size must be less than 10MB');
+      return false;
+    }
+
+    // Store the file object (not base64)
+    onChange(file);
+    return false; // Prevent default upload
   };
 
   return (
     <div className={styles.avatarSection}>
       <h3 className={styles.questionText}>Upload a photo of your pet</h3>
       <p className={styles.hintText}>Choose a clear photo that shows your pet's personality</p>
-      <label htmlFor="photo-upload">
-        <div className={`${styles.avatarUpload} ${value ? styles.avatarUploadActive : ''}`}>
-          {value ? (
-            <img src={value} alt="Pet" className={styles.avatarImage} />
+
+      <Upload
+        beforeUpload={handleFileSelect}
+        accept="image/*"
+        showUploadList={false}
+        maxCount={1}
+      >
+        <div className={`${styles.avatarUpload} ${previewUrl ? styles.avatarUploadActive : ''}`}>
+          {uploadProgress > 0 && uploadProgress < 100 ? (
+            <div style={{ textAlign: 'center' }}>
+              <LoadingOutlined style={{ fontSize: 48, color: '#1890FF' }} />
+              <div style={{ marginTop: 8, color: '#1890FF', fontSize: '14px' }}>
+                Uploading... {uploadProgress}%
+              </div>
+            </div>
+          ) : previewUrl ? (
+            <img src={previewUrl} alt="Pet" className={styles.avatarImage} />
           ) : (
             <CameraOutlined style={{ fontSize: 48, color: '#1890FF' }} />
           )}
         </div>
-      </label>
-      <input
-        id="photo-upload"
-        type="file"
-        accept="image/*"
-        style={{ display: 'none' }}
-        onChange={handleFileChange}
-      />
+      </Upload>
+
+      {uploadProgress > 0 && uploadProgress < 100 && (
+        <div style={{ marginTop: 16 }}>
+          <Progress percent={uploadProgress} status="active" />
+        </div>
+      )}
+
+      {uploadError && (
+        <div style={{ marginTop: 16, color: '#EB5757', fontSize: '14px', textAlign: 'center' }}>
+          {uploadError}
+        </div>
+      )}
     </div>
   );
 };

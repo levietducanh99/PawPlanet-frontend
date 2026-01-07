@@ -1,322 +1,211 @@
 import React, { useState } from 'react';
-import {
-  Modal,
-  Form,
-  Input,
-  Button,
-  Select,
-  Upload,
-  Space,
-  Avatar,
-  Tag,
-  Divider,
-  message
-} from 'antd';
-import {
-  PlusOutlined,
-  EnvironmentOutlined,
-  PhoneOutlined,
-  CloseOutlined
-} from '@ant-design/icons';
-import { motion } from 'motion/react';
-import type { UploadFile } from 'antd';
+import { Modal, Input, Select, Button, Avatar, Upload, message } from 'antd';
+import { motion } from 'framer-motion';
+import { UploadOutlined, CloseOutlined } from '@ant-design/icons';
+import type { UploadFile } from 'antd/es/upload/interface';
+import { useCreatePost } from '@/hooks/useCreatePost';
 import styles from './CreatePostModal.module.css';
 
-const { TextArea } = Input;
-const { Option } = Select;
+// Fake data for demo (replace with real data from hooks)
+const user = {
+  name: 'Sarah Johnson',
+  avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+};
+const pets = [
+  { id: 1, name: 'Charlie', avatar: 'https://images.unsplash.com/photo-1502672023488-70e25813f145?w=80&h=80&fit=crop' },
+  { id: 2, name: 'Luna', avatar: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=80&h=80&fit=crop' },
+  { id: 3, name: 'Max', avatar: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=80&h=80&fit=crop' },
+];
+
+const privacyOptions = [
+  { label: 'Public', value: 'public', icon: '🌐' },
+  { label: 'Friends', value: 'friends', icon: '👥' },
+  { label: 'Only Me', value: 'private', icon: '🔒' },
+];
+
+const typeOptions = [
+  { label: 'Daily Moment', value: 'general' },
+  { label: 'Rescue', value: 'rescue' },
+  { label: 'Lost & Found', value: 'lost' },
+];
 
 interface CreatePostModalProps {
-  visible: boolean;
-  onCancel: () => void;
-  onSubmit: (postData: {
-    content: string;
-    type: 'general' | 'adoption' | 'lost' | 'found' | 'story';
-    petIds?: number[];
-    mediaUrls?: string[];
-    location?: string;
-    contactInfo?: string;
-    tags?: string[];
-  }) => Promise<void>;
-  currentUserAvatar?: string;
-  currentUserName?: string;
+  open: boolean;
+  onClose: () => void;
 }
 
-const CreatePostModal: React.FC<CreatePostModalProps> = ({
-  visible,
-  onCancel,
-  onSubmit,
-  currentUserAvatar,
-  currentUserName = "You"
-}) => {
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [postType, setPostType] = useState<'general' | 'adoption' | 'lost' | 'found' | 'story'>('general');
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
-  const [inputTag, setInputTag] = useState('');
+export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose }) => {
+  const [privacy, setPrivacy] = useState('public');
+  const [type, setType] = useState('general');
+  const [content, setContent] = useState('');
+  const [selectedPets, setSelectedPets] = useState<number[]>([]);
+  const [mediaList, setMediaList] = useState<UploadFile[]>([]);
+  const [posting, setPosting] = useState(false);
+  const { submit, loading: apiLoading, error } = useCreatePost();
 
-  const mockPets = [
-    { id: 1, name: 'Maxi', avatar: 'https://images.unsplash.com/photo-1551717743-49959800b1f6?w=50&h=50&fit=crop' },
-    { id: 2, name: 'Luna', avatar: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=50&h=50&fit=crop' },
-    { id: 3, name: 'Bella', avatar: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=50&h=50&fit=crop' }
-  ];
+  const handlePetTag = (id: number) => {
+    setSelectedPets((prev) => prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]);
+  };
 
-  const postTypeOptions = [
-    { value: 'general', label: 'General Post', color: '#6B7280' },
-    { value: 'story', label: 'Pet Story', color: '#1890FF' },
-    { value: 'adoption', label: 'For Adoption', color: '#F2994A' },
-    { value: 'lost', label: 'Lost Pet', color: '#EB5757' },
-    { value: 'found', label: 'Found Pet', color: '#27AE60' }
-  ];
+  const handleUpload = ({ fileList }: { fileList: UploadFile[] }) => {
+    setMediaList(fileList);
+  };
 
-  const handleSubmit = async () => {
-    try {
-      setLoading(true);
-      const values = await form.validateFields();
-
-      const mediaUrls = fileList.map(file => file.url || file.response?.url).filter(Boolean);
-
-      await onSubmit({
-        content: values.content,
-        type: postType,
-        petIds: values.petIds,
-        mediaUrls,
-        location: values.location,
-        contactInfo: values.contactInfo,
-        tags: tags
-      });
-
-      // Reset form
-      form.resetFields();
-      setFileList([]);
-      setTags([]);
-      setPostType('general');
+  const handlePost = async () => {
+    setPosting(true);
+    // Chuẩn hóa dữ liệu gửi API
+    const hashtags = '';
+    const mediaUrls = mediaList.map(f => ({ url: f.url || f.thumbUrl || '', type: f.type || 'image' }));
+    const data = {
+      content,
+      hashtags,
+      type,
+      petIds: selectedPets,
+      mediaUrls,
+      // Thêm các trường khác nếu cần
+    };
+    const result = await submit(data);
+    setPosting(false);
+    if (result) {
       message.success('Post created successfully!');
-    } catch (error) {
-      console.error('Failed to create post:', error);
-      message.error('Failed to create post. Please try again.');
-    } finally {
-      setLoading(false);
+      setContent('');
+      setMediaList([]);
+      setSelectedPets([]);
+      onClose();
+    } else if (error) {
+      message.error(error);
     }
   };
 
-  const handleUploadChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
-    setFileList(newFileList);
-  };
-
-  const customRequest = ({ onSuccess }: any) => {
-    // Mock upload - in real app, upload to Cloudinary
-    setTimeout(() => {
-      onSuccess({
-        url: `https://images.unsplash.com/photo-1${Math.random().toString().slice(2, 15)}?w=400&h=300&fit=crop`
-      });
-    }, 1000);
-  };
-
-  const addTag = () => {
-    if (inputTag && !tags.includes(inputTag)) {
-      setTags([...tags, inputTag]);
-      setInputTag('');
+  const handleClose = () => {
+    if (!posting) {
+      onClose();
     }
   };
-
-  const removeTag = (tagToRemove: string) => {
-    setTags(tags.filter(tag => tag !== tagToRemove));
-  };
-
-  const uploadButton = (
-    <div className={styles.uploadButton}>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-
-  const needsContactInfo = postType === 'lost' || postType === 'found' || postType === 'adoption';
 
   return (
     <Modal
-      title={null}
-      open={visible}
-      onCancel={onCancel}
+      open={open}
+      onCancel={handleClose}
       footer={null}
-      width={600}
       centered
-      className={styles.createPostModal}
-      destroyOnClose
+      width={560}
+      className={styles.modalRoot}
+      maskClosable={!posting}
+      closeIcon={<CloseOutlined style={{ fontSize: 16, color: '#6B7280' }} />}
+      title={null}
+      modalRender={modal => (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        >
+          {modal}
+        </motion.div>
+      )}
     >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ type: "spring", damping: 25, stiffness: 500 }}
+      {/* Header with User Info and Controls */}
+      <div className={styles.header}>
+        <Avatar src={user.avatar} size={48} className={styles.avatar} />
+        <div className={styles.userInfo}>
+          <span className={styles.displayName}>{user.name}</span>
+          <Select
+            className={styles.privacySelect}
+            value={privacy}
+            onChange={setPrivacy}
+            options={privacyOptions.map(opt => ({
+              value: opt.value,
+              label: (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <span>{opt.icon}</span>
+                  <span>{opt.label}</span>
+                </div>
+              ),
+            }))}
+            variant="borderless"
+            size="small"
+          />
+        </div>
+        <Select
+          className={styles.typeSelect}
+          value={type}
+          onChange={setType}
+          options={typeOptions}
+          variant="borderless"
+          size="small"
+        />
+      </div>
+
+      {/* Content Input */}
+      <Input.TextArea
+        className={styles.textArea}
+        placeholder="What's on your furry friend's mind today?"
+        autoSize={{ minRows: 4, maxRows: 8 }}
+        value={content}
+        onChange={e => setContent(e.target.value)}
+        maxLength={500}
+        showCount
+        variant="borderless"
+      />
+
+      {/* Media Upload */}
+      <Upload.Dragger
+        className={styles.mediaUpload}
+        fileList={mediaList}
+        onChange={handleUpload}
+        beforeUpload={() => false}
+        multiple
+        accept="image/*,video/*"
+        showUploadList={{ showRemoveIcon: true, showPreviewIcon: false }}
       >
-        <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Create a new Post</h2>
+        <UploadOutlined style={{ fontSize: 24, color: '#1890FF', marginBottom: 8 }} />
+        <div style={{ color: '#6B7280', fontSize: 16, fontWeight: 500 }}>
+          Add Photos/Videos
         </div>
-
-        <div className={styles.postTypeSelector}>
-          <Space wrap>
-            {postTypeOptions.map((option) => (
-              <Tag
-                key={option.value}
-                className={`${styles.typeTag} ${postType === option.value ? styles.typeTagActive : ''}`}
-                onClick={() => setPostType(option.value as any)}
-                style={{
-                  borderColor: postType === option.value ? option.color : '#D1D5DB',
-                  backgroundColor: postType === option.value ? option.color : 'transparent',
-                  color: postType === option.value ? '#fff' : option.color
-                }}
-              >
-                {option.label}
-              </Tag>
-            ))}
-          </Space>
+        <div style={{ color: '#9CA3AF', fontSize: 14, marginTop: 4 }}>
+          Drag & drop or click to upload
         </div>
+      </Upload.Dragger>
 
-        <Form form={form} layout="vertical" className={styles.postForm}>
-          {/* User info */}
-          <div className={styles.userInfo}>
-            <Avatar
-              src={currentUserAvatar}
-              size={48}
-              style={{ border: '2px solid #E6F7FF' }}
-            />
-            <div className={styles.userDetails}>
-              <div className={styles.userName}>{currentUserName}</div>
-              <div className={styles.postVisibility}>Public post</div>
+      {/* Pet Tags Section */}
+      <div className={styles.petSection}>
+        <span className={styles.petLabel}>Tag Your Pets:</span>
+        <div className={styles.petTagList}>
+          {pets.map(pet => (
+            <div
+              key={pet.id}
+              className={`${styles.petTag} ${selectedPets.includes(pet.id) ? styles.selected : ''}`}
+              onClick={() => handlePetTag(pet.id)}
+            >
+              <Avatar src={pet.avatar} size={44} className={styles.petAvatar} />
+              <span className={styles.petName}>{pet.name}</span>
             </div>
-          </div>
+          ))}
+        </div>
+      </div>
 
-          {/* Content */}
-          <Form.Item
-            name="content"
-            rules={[{ required: true, message: 'Please write something!' }]}
-          >
-            <TextArea
-              placeholder={
-                postType === 'lost' ? "Describe your lost pet and when/where you last saw them..." :
-                postType === 'found' ? "Describe the pet you found and where you found them..." :
-                postType === 'adoption' ? "Tell us about the pet looking for a home..." :
-                "What's on your mind?"
-              }
-              autoSize={{ minRows: 4, maxRows: 8 }}
-              className={styles.contentInput}
-            />
-          </Form.Item>
-
-          {/* Pet selection */}
-          <Form.Item name="petIds" label="Tag your pets (optional)">
-            <Select
-              mode="multiple"
-              placeholder="Select your pets"
-              style={{ width: '100%' }}
-            >
-              {mockPets.map(pet => (
-                <Option key={pet.id} value={pet.id}>
-                  <Space>
-                    <Avatar src={pet.avatar} size={24} />
-                    {pet.name}
-                  </Space>
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
-          {/* Media upload */}
-          <div className={styles.mediaSection}>
-            <Upload
-              listType="picture-card"
-              fileList={fileList}
-              onChange={handleUploadChange}
-              customRequest={customRequest}
-              multiple
-              accept="image/*,video/*"
-              className={styles.uploader}
-            >
-              {fileList.length >= 4 ? null : uploadButton}
-            </Upload>
-          </div>
-
-          {/* Location */}
-          <Form.Item name="location">
-            <Input
-              placeholder="Add location (optional)"
-              prefix={<EnvironmentOutlined style={{ color: '#1890FF' }} />}
-              className={styles.locationInput}
-            />
-          </Form.Item>
-
-          {/* Contact info for special post types */}
-          {needsContactInfo && (
-            <Form.Item
-              name="contactInfo"
-              rules={[{ required: true, message: 'Contact information is required for this post type' }]}
-            >
-              <Input
-                placeholder="Contact phone number or email"
-                prefix={<PhoneOutlined style={{ color: '#1890FF' }} />}
-                className={styles.contactInput}
-              />
-            </Form.Item>
-          )}
-
-          {/* Tags */}
-          <div className={styles.tagsSection}>
-            <div className={styles.tagsInput}>
-              <Input
-                placeholder="Add tags (press Enter)"
-                value={inputTag}
-                onChange={(e) => setInputTag(e.target.value)}
-                onPressEnter={addTag}
-                suffix={
-                  <Button
-                    type="text"
-                    size="small"
-                    onClick={addTag}
-                    disabled={!inputTag}
-                  >
-                    Add
-                  </Button>
-                }
-              />
-            </div>
-
-            {tags.length > 0 && (
-              <div className={styles.tagsList}>
-                {tags.map((tag) => (
-                  <Tag
-                    key={tag}
-                    closable
-                    closeIcon={<CloseOutlined />}
-                    onClose={() => removeTag(tag)}
-                    className={styles.tag}
-                  >
-                    #{tag}
-                  </Tag>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <Divider className={styles.formDivider} />
-
-          {/* Actions */}
-          <div className={styles.modalActions}>
-            <Button onClick={onCancel} className={styles.cancelButton}>
-              Cancel
-            </Button>
-            <Button
-              type="primary"
-              onClick={handleSubmit}
-              loading={loading}
-              className={styles.submitButton}
-            >
-              Share Post
-            </Button>
-          </div>
-        </Form>
-      </motion.div>
+      {/* Footer with Action Buttons */}
+      <div className={styles.footer}>
+        <Button
+          className={styles.cancelBtn}
+          onClick={handleClose}
+          disabled={posting}
+          size="large"
+        >
+          Cancel
+        </Button>
+        <Button
+          type="primary"
+          className={styles.postBtn}
+          loading={posting || apiLoading}
+          disabled={!content.trim() && mediaList.length === 0}
+          onClick={handlePost}
+          size="large"
+        >
+          Post
+        </Button>
+      </div>
     </Modal>
   );
 };
-
-export default CreatePostModal;
