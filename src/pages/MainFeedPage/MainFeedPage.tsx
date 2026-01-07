@@ -7,8 +7,7 @@ import { CreatePostModal } from '@/components/CreatePostModal/CreatePostModal';
 import { pageVariants } from '@/animations/variants';
 import {
   getTimelineFeed,
-  toggleTimelinePostLike,
-  createTimelinePost
+  toggleTimelinePostLike
 } from '@/services/post.service.mock';
 import type { TimelineFeed } from '@/domain/post';
 import styles from './MainFeedPage.module.css';
@@ -76,31 +75,6 @@ const MainFeedPage: React.FC = () => {
     console.log('Sharing post:', postId);
     message.success('Post shared! (Mock action)');
   };
-
-  const handleCreatePost = async (postData: {
-    content: string;
-    type: 'general' | 'adoption' | 'lost' | 'found' | 'story';
-    petIds?: number[];
-    mediaUrls?: string[];
-    location?: string;
-    contactInfo?: string;
-    tags?: string[];
-  }) => {
-    try {
-      const newPost = await createTimelinePost(postData);
-
-      setTimeline(prev => ({
-        ...prev,
-        posts: [newPost, ...prev.posts]
-      }));
-
-      setCreatePostModalVisible(false);
-    } catch (error) {
-      console.error('Failed to create post:', error);
-      throw error;
-    }
-  };
-
   const loadMorePosts = () => {
     if (!loading && timeline.hasMore) {
       loadTimeline(false);

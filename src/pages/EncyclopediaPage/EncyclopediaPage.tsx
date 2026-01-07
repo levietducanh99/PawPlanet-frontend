@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Input, Tag, Typography } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Tag, Typography } from 'antd';
 import { pageVariants } from '@/animations/variants';
+import { SearchBar } from '@/components';
 import {
   AnimalClassCard,
   AnimalClassData,
@@ -134,13 +134,14 @@ export const EncyclopediaPage: React.FC = () => {
 
       {/* Search Bar */}
       <div className={styles.searchContainer}>
-        <Input
-          size="large"
-          placeholder="Search for animals..."
-          prefix={<SearchOutlined className={styles.searchIcon} />}
+        <SearchBar
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          className={styles.searchInput}
+          onChange={setSearchValue}
+          placeholder="Search for animals, species, or breeds..."
+          onSearch={(value) => {
+            console.log('Search:', value);
+            // TODO: Implement search functionality
+          }}
         />
       </div>
 

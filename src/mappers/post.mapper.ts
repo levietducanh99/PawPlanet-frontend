@@ -20,7 +20,7 @@ export const mapPost = (dto: PostResponse): Post => ({
     id: m.id!,
     type: m.type as 'image' | 'video',
     url: m.url!,
-    thumbnailUrl: m.thumbnailUrl,
+
     displayOrder: m.displayOrder ?? 0,
   })),
   tags: dto.hashtags ? dto.hashtags.split(',').map((t: string) => t.trim()).filter(Boolean) : [],

@@ -2,8 +2,6 @@
 export { Header } from './Header/Header';
 export { Sidebar } from './Sidebar/Sidebar';
 export { AuthLayout } from './AuthLayout/AuthLayout';
-export { MainLayout } from './MainLayout/MainLayout';
-export { UserDropdown } from './UserDropdown';
 
 // UI Components
 export { StepIndicator } from './StepIndicator/StepIndicator';
@@ -15,11 +13,8 @@ export { Divider } from './Divider/Divider';
 export { InputField } from './InputField/InputField';
 export { SocialButton } from './SocialButton/SocialButton';
 export { AvatarUpload } from './AvatarUpload/AvatarUpload';
+export { SearchBar } from './SearchBar/SearchBar';
 export { PetCreationDebugComponent } from './PetCreationDebugComponent';
-
-// Post Components
-export { default as PostCard } from './PostCard';
-export { default as CreatePostModal } from './CreatePostModal';
 
 // Post Components
 export { default as PostCard } from './PostCard';
