@@ -1,0 +1,289 @@
+/* CreatePostModal.module.css */
+.createPostModal .ant-modal-content {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.createPostModal .ant-modal-body {
+  padding: 24px;
+}
+
+/* Header */
+.modalHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.modalTitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1F2937;
+  margin: 0;
+}
+
+/* Post type selector */
+.postTypeSelector {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.typeTag {
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border-width: 2px;
+}
+
+.typeTag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.typeTagActive {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* User info */
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: #F9FAFB;
+  border-radius: 12px;
+}
+
+.userDetails {
+  flex: 1;
+}
+
+.userName {
+  font-weight: 600;
+  color: #1F2937;
+  font-size: 16px;
+}
+
+.postVisibility {
+  font-size: 14px;
+  color: #6B7280;
+}
+
+/* Form */
+.postForm {
+  margin: 0;
+}
+
+.contentInput {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  font-size: 16px;
+  resize: none;
+  background: transparent;
+}
+
+.contentInput:focus,
+.contentInput:hover {
+  border: none;
+  box-shadow: none;
+}
+
+.contentInput .ant-input {
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Media upload */
+.mediaSection {
+  margin-bottom: 16px;
+}
+
+.uploader .ant-upload-select {
+  border: 2px dashed #D1D5DB;
+  border-radius: 12px;
+  background: #F9FAFB;
+  transition: all 0.2s ease;
+}
+
+.uploader .ant-upload-select:hover {
+  border-color: #1890FF;
+  background: #E6F7FF;
+}
+
+.uploadButton {
+  color: #6B7280;
+  text-align: center;
+  padding: 20px;
+}
+
+.uploadButton:hover {
+  color: #1890FF;
+}
+
+/* Location and contact inputs */
+.locationInput,
+.contactInput {
+  border-radius: 12px;
+  border: 1px solid #D1D5DB;
+}
+
+.locationInput:focus,
+.locationInput:hover,
+.contactInput:focus,
+.contactInput:hover {
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+/* Tags */
+.tagsSection {
+  margin-bottom: 16px;
+}
+
+.tagsInput {
+  margin-bottom: 12px;
+}
+
+.tagsInput .ant-input {
+  border-radius: 12px;
+  border: 1px solid #D1D5DB;
+}
+
+.tagsInput .ant-input:focus,
+.tagsInput .ant-input:hover {
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+.tagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  border-radius: 16px;
+  background: #E6F7FF;
+  border: 1px solid #1890FF;
+  color: #1890FF;
+  font-weight: 500;
+  padding: 4px 12px;
+}
+
+/* Form divider */
+.formDivider {
+  margin: 20px 0;
+  border-color: #E5E7EB;
+}
+
+/* Actions */
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.cancelButton {
+  border-radius: 8px;
+  height: 44px;
+  padding: 0 24px;
+  font-weight: 600;
+  border: 1px solid #D1D5DB;
+  color: #6B7280;
+}
+
+.cancelButton:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+}
+
+.submitButton {
+  border-radius: 8px;
+  height: 44px;
+  padding: 0 24px;
+  font-weight: 600;
+  background: #1890FF;
+  border: none;
+  box-shadow: 0 2px 5px rgba(24, 144, 255, 0.2);
+}
+
+.submitButton:hover {
+  background: #40A9FF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+/* Form item styling */
+.postForm .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.postForm .ant-form-item-label > label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.postForm .ant-select-selector {
+  border-radius: 12px;
+  border: 1px solid #D1D5DB;
+}
+
+.postForm .ant-select-focused .ant-select-selector {
+  border-color: #1890FF;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .createPostModal {
+    margin: 0;
+    max-width: 100vw;
+  }
+
+  .createPostModal .ant-modal-content {
+    border-radius: 20px 20px 0 0;
+    margin: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modalActions {
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+  }
+
+  .postTypeSelector .typeTag {
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .createPostModal .ant-modal-body {
+    padding: 16px;
+  }
+
+  .modalTitle {
+    font-size: 20px;
+  }
+
+  .userInfo {
+    padding: 12px;
+  }
+
+  .contentInput {
+    font-size: 15px;
+  }
+}

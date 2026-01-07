@@ -41,7 +41,13 @@ export const useRegister = () => {
         setIsRegistered(true);
       }
 
-      return result;
+      // Map LoginResult to RegisterResult
+      const registerResult: RegisterResult = {
+        success: result.success,
+        user: result.user!
+      };
+
+      return registerResult;
 
     } catch (authError) {
       setError(authError as AuthError);
@@ -79,7 +85,13 @@ export const useLogin = (): UseLogin => {
     setError(null);
 
     try {
+      console.log('Login attempt started');
       const result = await authService.login(credentials);
+      console.log('Auth service returned:', {
+        success: result.success,
+        hasToken: !!result.token?.token,
+        authenticated: result.token?.authenticated
+      });
 
       if (result.success && result.token.authenticated) {
         setIsAuthenticated(true);
@@ -87,11 +99,15 @@ export const useLogin = (): UseLogin => {
         // Store token in localStorage if remember me is checked
         if (credentials.remember && result.token.token) {
           localStorage.setItem('authToken', result.token.token);
+          console.log('Token stored in localStorage');
         }
 
         // Store in sessionStorage for session-based auth
         if (result.token.token) {
           sessionStorage.setItem('authToken', result.token.token);
+          console.log('Token stored in sessionStorage');
+        } else {
+          console.warn('No token received from auth service');
         }
       }
 
