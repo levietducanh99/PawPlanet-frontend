@@ -18,7 +18,7 @@ export { AvatarUpload } from './AvatarUpload/AvatarUpload';
 
 // Post Components
 export { default as PostCard } from './PostCard';
-export { default as CreatePostModal } from './CreatePostModal';
+export { CreatePostModal } from './CreatePostModal';
 
 // Other
 export { Loading } from './Loading';

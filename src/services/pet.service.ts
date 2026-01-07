@@ -61,7 +61,6 @@ export const petService = {
         weight: petData.weight,
         height: petData.height,
         status: petData.status || 'ACTIVE',
-        url: petData.url
       };
 
       const response = await petApi.createPet({

@@ -3,6 +3,7 @@ export { useMediaUpload } from './useMediaUpload';
 export { useLogin, useRegister, useAuth } from './useAuth';
 export { useLogout } from './useLogout';
 export { useViewProfile, useProfileData } from './useProfile';
+export { useCreatePetWithImages } from './useCreatePetWithImages';
 export {
   usePetProfile,
   usePetTimeline,

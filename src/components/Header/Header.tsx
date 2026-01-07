@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined, BellOutlined } from '@ant-design/icons';
 import { Badge, Input, Button } from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useUserProfile } from '../../hooks';
 import { UserDropdown } from '../UserDropdown';
+import { CreatePostModal } from '../CreatePostModal';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -17,13 +18,14 @@ export const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { user, loading } = useUserProfile();
+  const [showCreatePost, setShowCreatePost] = useState(false);
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
   const handleCreatePost = () => {
-    navigate('/create-post');
+    setShowCreatePost(true);
   };
 
   const handleNotificationClick = () => {
@@ -102,6 +104,12 @@ export const Header: React.FC<HeaderProps> = ({
           )}
         </div>
       </div>
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        open={showCreatePost}
+        onClose={() => setShowCreatePost(false)}
+      />
     </header>
   );
 };
