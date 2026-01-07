@@ -15,6 +15,11 @@ export { Divider } from './Divider/Divider';
 export { InputField } from './InputField/InputField';
 export { SocialButton } from './SocialButton/SocialButton';
 export { AvatarUpload } from './AvatarUpload/AvatarUpload';
+export { PetCreationDebugComponent } from './PetCreationDebugComponent';
+
+// Post Components
+export { default as PostCard } from './PostCard';
+export { default as CreatePostModal } from './CreatePostModal';
 
 // Post Components
 export { default as PostCard } from './PostCard';
