@@ -18,10 +18,6 @@ export { PetCreationDebugComponent } from './PetCreationDebugComponent';
 
 // Post Components
 export { default as PostCard } from './PostCard';
-export { default as CreatePostModal } from './CreatePostModal';
-
-// Post Components
-export { default as PostCard } from './PostCard';
 export { CreatePostModal } from './CreatePostModal';
 
 // Other

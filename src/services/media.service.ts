@@ -75,7 +75,9 @@ export const uploadToCloudinary = async (
 
   // Add folder if provided
   if (signData.assetFolder) {
-    formData.append('folder', signData.assetFolder);
+    // Cloudinary signed uploads expect the backend-provided key 'asset_folder' in our flow
+    // Backend sends 'assetFolder' in the sign response; we must pass it as 'asset_folder'
+    formData.append('asset_folder', signData.assetFolder);
   }
 
   // Add public_id if provided
