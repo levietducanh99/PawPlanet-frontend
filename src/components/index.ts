@@ -13,6 +13,7 @@ export { Divider } from './Divider/Divider';
 export { InputField } from './InputField/InputField';
 export { SocialButton } from './SocialButton/SocialButton';
 export { AvatarUpload } from './AvatarUpload/AvatarUpload';
+export { SearchBar } from './SearchBar/SearchBar';
 
 // Other
 export { Loading } from './Loading';
