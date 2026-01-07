@@ -5,6 +5,7 @@ import './styles/App.css';
 import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { HomePage } from '@/pages/HomePage';
+import { ProfilePage } from '@/pages/ProfilePage';
 import { MainLayout } from '@/components/MainLayout';
 import MainFeedPage from './pages/MainFeedPage';
 import { CreatePetPage } from './pages/CreatePetPage';
@@ -14,6 +15,7 @@ import { BreedDetailPage } from './pages/BreedDetailPage';
 import { ViewPetPage } from './pages/ViewPetPage';
 import { MyPetsPage } from './pages/MyPetsPage';
 import { EditPetPage } from './pages/EditPetPage';
+import { AuthProvider } from '@/context/AuthContext';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -37,31 +39,34 @@ function RegisterRouteWrapper() {
 
 function App() {
   return (
-    <ConfigProvider theme={theme}>
-      <AntdApp>
-        <BrowserRouter>
-          <Routes>
-            {/* Auth pages without layout */}
-            <Route path="/login" element={<LoginRouteWrapper />} />
-            <Route path="/register" element={<RegisterRouteWrapper />} />
+    <AuthProvider>
+      <ConfigProvider theme={theme}>
+        <AntdApp>
+          <BrowserRouter>
+            <Routes>
+              {/* Auth pages without layout */}
+              <Route path="/login" element={<LoginRouteWrapper />} />
+              <Route path="/register" element={<RegisterRouteWrapper />} />
 
-            {/* Main app pages with unified layout */}
-            <Route path="/" element={<MainLayout />}>
-              <Route index element={<HomePage />} />
-              <Route path="feed" element={<MainFeedPage />} />
-              <Route path="create-pet" element={<CreatePetPage />} />
-              <Route path="users/:username/pets" element={<ViewPetPage />} />
-              <Route path="my-pets" element={<MyPetsPage />} />
-              <Route path="edit-pet/:id" element={<EditPetPage />} />
-              <Route path="encyclopedia" element={<EncyclopediaPage />} />
-              <Route path="encyclopedia/species/:speciesId" element={<SpeciesDetailPage />} />
-              <Route path="encyclopedia/breed/:breedId" element={<BreedDetailPage />} />
-              <Route path="encyclopedia/class/:classId" element={<EncyclopediaPage />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </AntdApp>
-    </ConfigProvider>
+              {/* Main app pages with unified layout */}
+              <Route path="/" element={<MainLayout />}>
+                <Route index element={<HomePage />} />
+                <Route path="feed" element={<MainFeedPage />} />
+                <Route path="profile" element={<ProfilePage />} />
+                <Route path="create-pet" element={<CreatePetPage />} />
+                <Route path="users/:username/pets" element={<ViewPetPage />} />
+                <Route path="my-pets" element={<MyPetsPage />} />
+                <Route path="edit-pet/:id" element={<EditPetPage />} />
+                <Route path="encyclopedia" element={<EncyclopediaPage />} />
+                <Route path="encyclopedia/species/:speciesId" element={<SpeciesDetailPage />} />
+                <Route path="encyclopedia/breed/:breedId" element={<BreedDetailPage />} />
+                <Route path="encyclopedia/class/:classId" element={<EncyclopediaPage />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </AntdApp>
+      </ConfigProvider>
+    </AuthProvider>
   );
 }
 

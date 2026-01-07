@@ -5,10 +5,11 @@ import { MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined, LoginOutl
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
 import { fadeInUp } from '@/animations/variants.ts';
-import { useLogin } from '@/hooks';
+import { useLogin, useAuth } from '@/hooks';
 import type { LoginCredentials } from '@/domain/auth';
 import './auth.css';
 import './login.css';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginPageProps {
   onSwitchToRegister: () => void;
@@ -17,7 +18,16 @@ interface LoginPageProps {
 
 export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLoginSuccess }) => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
   const { login, loading, error, clearError, isAuthenticated } = useLogin();
+  const { isAuthenticated: authStatus } = useAuth();
+
+  // Redirect authenticated users to home
+  useEffect(() => {
+    if (authStatus) {
+      navigate('/');
+    }
+  }, [authStatus, navigate]);
 
   // Handle successful login
   useEffect(() => {
@@ -34,6 +44,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLogi
     if (result?.success) {
       message.success('Login successful!');
       form.resetFields();
+      navigate('/');
     }
   };
 

@@ -5,10 +5,11 @@ import { UserOutlined, MailOutlined, LockOutlined, GoogleOutlined, FacebookOutli
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
 import { fadeInUp } from '@/animations/variants.ts';
-import { useRegister } from '@/hooks';
-import type { RegisterCredentials } from '@/domain/auth';
 import '../LoginPage/auth.css';
 import './register.css';
+import { useNavigate } from 'react-router-dom';
+import { useAuth, useRegister } from '@/hooks';
+import type { RegisterCredentials } from '@/domain/auth';
 
 interface RegisterPageProps {
   onSwitchToLogin: () => void;
@@ -17,7 +18,16 @@ interface RegisterPageProps {
 
 export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onRegisterSuccess }) => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const { register, loading, error, clearError, isRegistered } = useRegister();
+
+  // Redirect authenticated users away from register page to home (/)
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   // Handle successful registration
   useEffect(() => {
@@ -34,6 +44,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
     if (result?.success) {
       message.success('Registration successful! Welcome to PawPlanet!');
       form.resetFields();
+      navigate('/');
     }
   };
 
@@ -196,4 +207,3 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
     </AuthLayout>
   );
 };
-
