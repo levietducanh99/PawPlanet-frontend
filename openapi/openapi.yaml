@@ -2546,8 +2546,9 @@
           "status": {
             "type": "string"
           },
-          "url": {
-            "type": "string"
+          "avatarPublicId": {
+            "type": "string",
+            "description": "Cloudinary public_id for pet avatar (optional)"
           },
           "weight": {
             "type": "number"
@@ -2617,6 +2618,7 @@
         "properties": {
           "context": {
             "type": "string",
+            "description": "Upload context determining folder structure",
             "enum": [
               "USER_AVATAR",
               "USER_COVER",
@@ -2630,13 +2632,16 @@
           },
           "ownerId": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Owner ID - Required for USER_AVATAR, PET_GALLERY, POST_MEDIA. Optional for PET_AVATAR (when creating new pet)."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Required for ENCYCLOPEDIA contexts"
           },
           "resourceType": {
-            "type": "string"
+            "type": "string",
+            "description": "Resource type: image (default), video, raw, auto"
           }
         }
       },

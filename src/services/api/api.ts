@@ -1097,11 +1097,11 @@ export interface CreatePetRequestDTO {
      */
     'status'?: string;
     /**
-     * 
+     * Cloudinary public_id for pet avatar (optional)
      * @type {string}
      * @memberof CreatePetRequestDTO
      */
-    'url'?: string;
+    'avatarPublicId'?: string;
     /**
      * 
      * @type {number}
@@ -1373,25 +1373,25 @@ export interface MediaItem {
  */
 export interface MediaSignRequest {
     /**
-     * 
+     * Upload context determining folder structure
      * @type {string}
      * @memberof MediaSignRequest
      */
     'context': MediaSignRequestContextEnum;
     /**
-     * 
+     * Owner ID - Required for USER_AVATAR, PET_GALLERY, POST_MEDIA. Optional for PET_AVATAR (when creating new pet).
      * @type {number}
      * @memberof MediaSignRequest
      */
     'ownerId'?: number;
     /**
-     * 
+     * Required for ENCYCLOPEDIA contexts
      * @type {string}
      * @memberof MediaSignRequest
      */
     'slug'?: string;
     /**
-     * 
+     * Resource type: image (default), video, raw, auto
      * @type {string}
      * @memberof MediaSignRequest
      */
