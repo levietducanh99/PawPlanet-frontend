@@ -9,6 +9,7 @@
  */
 
 import { apiClient } from './apiConfig';
+import type { MediaItem, AddPetMediaRequest } from './api';
 import type {
   SignMediaRequest,
   SignMediaResponse,
@@ -298,3 +299,87 @@ export const uploadEncyclopediaSpecies = async (
   });
 };
 
+/**
+ * Upload media for pet and link it to pet
+ *
+ * This function handles two different flows:
+ *
+ * **For AVATAR**:
+ * 1. Uploads file to Cloudinary using PET_AVATAR context
+ * 2. Updates pet profile with avatarPublicId via PUT /api/v1/pets/{id}
+ *
+ * **For GALLERY**:
+ * 1. Uploads file to Cloudinary using PET_GALLERY context
+ * 2. Links media to pet gallery via POST /api/v1/pets/{id}/gallery
+ *    - MediaItem.type = "image" or "video" (detected from file)
+ *    - Backend will assign role (PRIMARY, GALLERY, etc.)
+ *
+ * @param petId - Pet ID to add media to
+ * @param file - File to upload (image or video)
+ * @param role - Upload purpose: 'avatar' (profile pic) or 'gallery' (gallery photo/video)
+ * @returns Backend response with added media info
+ *
+ * @example
+ * // Upload avatar
+ * await uploadMediaForPet(123, avatarFile, 'avatar');
+ * // → PUT /api/v1/pets/123 with avatarPublicId
+ *
+ * @example
+ * // Upload to gallery
+ * await uploadMediaForPet(123, photoFile, 'gallery');
+ * // → POST /api/v1/pets/123/gallery with mediaItems: [{publicId, type: "image"}]
+ */
+export const uploadMediaForPet = async (
+  petId: number,
+  file: File,
+  role: 'avatar' | 'gallery' = 'gallery'
+): Promise<any> => {
+  // Step 1: Upload to Cloudinary with appropriate context
+  const context = role === 'avatar' ? 'PET_AVATAR' : 'PET_GALLERY';
+
+  console.log(`🔵 Uploading pet media with role: ${role}, context: ${context}`);
+
+  const cloudinaryResponse = await uploadMedia(file, {
+    context,
+    ownerId: petId,
+  });
+
+  console.log('🔵 Cloudinary upload successful:', cloudinaryResponse);
+
+  // Step 2: Link media to pet via appropriate backend API
+  if (role === 'avatar') {
+    // For AVATAR: Update pet profile with avatarPublicId
+    console.log('🔵 Updating pet avatar via PUT /api/v1/pets/{id}');
+
+    const response = await apiClient.put(`/api/v1/pets/${petId}`, {
+      avatarPublicId: cloudinaryResponse.publicId,
+    });
+
+    console.log('🔵 Backend avatar update response:', response.data);
+    return response.data;
+
+  } else {
+    // For GALLERY/PRIMARY: Add to gallery via POST /api/v1/pets/{id}/gallery
+    console.log('🔵 Adding media to gallery via POST /api/v1/pets/{id}/gallery');
+
+    // MediaItem.type must be "image" or "video" (media type from Cloudinary)
+    // NOT "PRIMARY" or "GALLERY" (those are roles, handled by backend)
+    const mediaType = cloudinaryResponse.resourceType || 'image'; // 'image' or 'video'
+
+    const mediaItem: MediaItem = {
+      publicId: cloudinaryResponse.publicId,
+      type: mediaType, // ✅ Must be "image" or "video"
+    };
+
+    const requestBody: AddPetMediaRequest = {
+      mediaItems: [mediaItem],
+    };
+
+    console.log('🔵 Linking media to pet gallery:', { petId, requestBody });
+
+    const response = await apiClient.post(`/api/v1/pets/${petId}/gallery`, requestBody);
+
+    console.log('🔵 Backend gallery link response:', response.data);
+    return response.data;
+  }
+};

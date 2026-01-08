@@ -18,7 +18,8 @@ import { PetBasicForm } from '../../components/PetBasicForm';
 import { PetImportantDates } from '../../components/PetImportantDates';
 import { PetAppearanceForm } from '../../components/PetAppearanceForm';
 import { PetProfileSettings } from '../../components/PetProfileSettings';
-import { usePetProfile } from '../../hooks';
+import { usePetDetail, useUpdatePet } from '../../hooks';
+import { uploadMediaForPet } from '../../services/media.service';
 import styles from './EditPetPage.module.css';
 import { pageVariants } from '../../animations/variants';
 
@@ -29,7 +30,8 @@ export const EditPetPage: React.FC = () => {
   const navigate = useNavigate();
   const petId = parseInt(id || '0');
 
-  const { profile, loading: profileLoading, error } = usePetProfile(petId);
+  const { pet: profile, pageLoading: profileLoading, error } = usePetDetail(petId);
+  const { updatePetData, loading: updating, error: updateError } = useUpdatePet();
 
   const [basicForm] = Form.useForm();
   const [datesForm] = Form.useForm();
@@ -37,20 +39,21 @@ export const EditPetPage: React.FC = () => {
   const [settingsForm] = Form.useForm();
 
   const [saving, setSaving] = useState(false);
-  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
+
+  const isSubmitting = saving || updating;
 
   // Set initial form values when profile loads
   useEffect(() => {
     if (profile) {
-      // Basic info
+      // Basic info - using domain Pet fields
       basicForm.setFieldsValue({
         petName: profile.name,
-        species: 'dog', // Default since we don't have species field
-        breed: profile.breed || '',
+        species: profile.speciesName || '',
+        breed: profile.breedName || '',
         gender: profile.gender,
-        size: profile.size?.toLowerCase(),
         weight: profile.weight,
-        height: 60, // Default height since not in PetProfile
+        height: profile.height,
       });
 
       // Dates - Convert string dates to dayjs objects with robust parsing
@@ -73,30 +76,32 @@ export const EditPetPage: React.FC = () => {
       };
 
       const dateValues = {
-        birthDate: parseDateSafely(profile.importantDates?.birthday),
-        adoptionDate: parseDateSafely(profile.importantDates?.adoptionDay),
-        microchipDate: parseDateSafely(profile.importantDates?.microchipDay),
-        vaccinationDate: undefined, // This field might not exist in mock data
+        birthDate: parseDateSafely(profile.birthDate),
+        // Other date fields not available in Pet domain model
+        adoptionDate: undefined,
+        microchipDate: undefined,
+        vaccinationDate: undefined,
       };
 
       datesForm.setFieldsValue(dateValues);
 
       // Appearance
       appearanceForm.setFieldsValue({
-        appearance: profile.color,
-        additionalNotes: 'Additional distinctive features...',
+        appearance: '', // Color not in Pet domain
+        additionalNotes: profile.description || '',
       });
 
-      // Settings
+      // Settings - map from Pet domain to form values
       settingsForm.setFieldsValue({
-        profileVisibility: profile.isVisible ?? true,
-        lookingForAdoption: profile.lookingForAdoption ?? false,
+        profileVisibility: profile.status === 'Public',
+        lookingForAdoption: profile.status === 'For Adoption',
       });
     }
   }, [profile, basicForm, datesForm, appearanceForm, settingsForm]);
 
-  const handlePhotoChange = (file: File | null) => {
-    setSelectedPhoto(file);
+  const handleAvatarChange = (file: File | null) => {
+    console.log('🖼️ Avatar changed:', file?.name);
+    setNewAvatarFile(file);
   };
 
   const handleSettingsChange = (field: string, value: boolean) => {
@@ -115,28 +120,62 @@ export const EditPetPage: React.FC = () => {
         settingsForm.validateFields(),
       ]);
 
-      // Combine all form data
-      const petData = {
-        ...basicValues,
-        ...datesValues,
-        ...appearanceValues,
-        ...settingsValues,
-        photo: selectedPhoto,
+      let avatarUploadSuccess = false;
+
+      // Step 1: Upload new avatar if changed (using uploadMediaForPet with role='avatar')
+      if (newAvatarFile) {
+        console.log('🖼️ EditPet: Uploading new avatar...');
+        console.log('📁 Avatar file:', newAvatarFile.name, 'Type:', newAvatarFile.type, 'Size:', newAvatarFile.size);
+        console.log('🐾 Pet ID:', petId);
+
+        try {
+          // This will: 1) Upload to Cloudinary (PET_AVATAR context)
+          //            2) Update pet via PUT /api/v1/pets/{id} with avatarPublicId
+          const uploadResult = await uploadMediaForPet(petId, newAvatarFile, 'avatar');
+          console.log('✅ Avatar uploaded and linked successfully:', uploadResult);
+          avatarUploadSuccess = true;
+          message.success('Avatar uploaded successfully! 📸');
+        } catch (uploadError) {
+          console.error('❌ Avatar upload failed:', uploadError);
+          message.error('Failed to upload avatar. Continuing with other updates...');
+          // Continue with update even if avatar upload fails
+        }
+      }
+
+      // Step 2: Prepare update data for other pet profile fields
+      const updateData = {
+        name: basicValues.petName,
+        gender: basicValues.gender,
+        birthDate: datesValues.birthDate ? datesValues.birthDate.format('YYYY-MM-DD') : undefined,
+        description: appearanceValues.additionalNotes,
+        status: settingsValues.profileVisibility ? 'PUBLIC' : 'HIDDEN',
+        weight: basicValues.weight ? parseFloat(basicValues.weight) : undefined,
+        height: basicValues.height ? parseFloat(basicValues.height) : undefined,
+        // Note: Avatar is handled separately via uploadMediaForPet above
+        // It updates avatarPublicId through PUT /api/v1/pets/{id}
       };
 
-      console.log('Pet data to save:', petData);
+      console.log('🔄 Pet data to update:', updateData);
 
-      // TODO: Call API to save pet data
-      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      // Step 3: Call API to update pet profile (other fields)
+      const success = await updatePetData(petId, updateData);
 
-      message.success('Pet profile updated successfully!');
-      navigate(`/users/current-user/pets`);
+      if (success) {
+        const successMessage = avatarUploadSuccess
+          ? 'Pet profile and avatar updated successfully! 🎉'
+          : 'Pet profile updated successfully! 🎉';
+        message.success(successMessage);
+        navigate(`/pets/${petId}`);
+      } else {
+        message.error(updateError || 'Failed to update pet profile');
+      }
 
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error('❌ Validation or update failed:', error);
       message.error('Please check all required fields');
     } finally {
       setSaving(false);
+      console.log('🏁 EditPet: Save process finished');
     }
   };
 
@@ -199,9 +238,8 @@ export const EditPetPage: React.FC = () => {
                         Pet Photo
                       </Title>
                       <PetPhotoUpload
-                        currentPhoto={profile.avatarUrl}
-                        onPhotoChange={handlePhotoChange}
-                        size={120}
+                        currentPhoto={profile?.avatarUrl}
+                        onPhotoChange={handleAvatarChange}
                       />
                     </div>
 
@@ -238,7 +276,7 @@ export const EditPetPage: React.FC = () => {
                           <Button
                             size="large"
                             onClick={handleCancel}
-                            disabled={saving}
+                            disabled={isSubmitting}
                             className={styles.cancelButton}
                           >
                             Cancel
@@ -247,11 +285,11 @@ export const EditPetPage: React.FC = () => {
                           <Button
                             type="primary"
                             size="large"
-                            loading={saving}
+                            loading={isSubmitting}
                             onClick={handleSave}
                             className={styles.saveButton}
                           >
-                            {saving ? 'Saving Changes...' : 'Save Changes'}
+                            Save Changes
                           </Button>
                         </div>
                       </motion.div>

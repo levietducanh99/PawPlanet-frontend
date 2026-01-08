@@ -6,7 +6,6 @@ export { useViewProfile, useProfileData } from './useProfile';
 export { useCreatePetWithImages } from './useCreatePetWithImages';
 export { useOptimistic } from './useOptimistic';
 export {
-  usePetProfile,
   usePetTimeline,
   useUserPets,
   usePostActions,
@@ -18,6 +17,7 @@ export {
   usePetPosts,
   useUserPosts,
 } from './usePost';
+export { usePetProfile } from './usePetProfile';
 export {
   useCreatePet,
   useSpecies,
@@ -40,3 +40,9 @@ export {
   useEncyclopediaBreedsBySpecies,
 } from './useEncyclopedia';
 export { useEncyclopediaMedia } from './useEncyclopediaMedia';
+
+// Pet-related hooks
+export { usePetDetail } from './usePetDetail';
+export { usePetFollow } from './usePetFollow';
+export { useUpdatePet } from './useUpdatePet';
+export { useViewPet } from './useViewPet';

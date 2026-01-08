@@ -55,7 +55,7 @@ function App() {
                 <Route path="feed" element={<MainFeedPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="create-pet" element={<CreatePetPage />} />
-                <Route path="users/:username/pets" element={<ViewPetPage />} />
+                <Route path="pets/:petId" element={<ViewPetPage />} />
                 <Route path="my-pets" element={<MyPetsPage />} />
                 <Route path="edit-pet/:id" element={<EditPetPage />} />
                 <Route path="encyclopedia" element={<EncyclopediaPage />} />
