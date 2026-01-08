@@ -61,7 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.setItem('authToken', result.token.token);
         }
         if (result.token.token) {
-          sessionStorage.setItem('authToken', result.token.token);
+          localStorage.setItem('authToken', result.token.token);
         }
         return true;
       } else {

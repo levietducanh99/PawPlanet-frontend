@@ -11,7 +11,6 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 import { StepIndicator, ProgressBar, WizardActions } from '../../components';
-import { CloudinaryDebugTest } from '../../components/CloudinaryDebugTest';
 import { useCreatePetWithImages, useCreatePetWorkflow } from '../../hooks';
 import styles from './CreatePetPage.module.css';
 import dayjs, { Dayjs } from 'dayjs';
@@ -241,8 +240,6 @@ export const CreatePetPage: React.FC = () => {
 
   return (
     <div className={styles.pageContainer}>
-      {/* Temporary Debug Component */}
-      <CloudinaryDebugTest />
 
       {/* Main Content */}
       <main className={styles.mainContent}>

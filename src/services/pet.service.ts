@@ -155,6 +155,18 @@ export const petService = {
       console.error('BACKEND MESSAGE:', error.response?.data);
       throw error;
     }
+  },
+
+  // Get all pets of the current user
+  async getAllMyPets(): Promise<PetProfileDTO[]> {
+    try {
+      const response = await petApi.getAllMyPets();
+      return response.data;
+    } catch (error: any) {
+      console.error('STATUS:', error.response?.status);
+      console.error('BACKEND MESSAGE:', error.response?.data);
+      throw error;
+    }
   }
 };
 
