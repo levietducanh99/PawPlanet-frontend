@@ -1577,7 +1577,7 @@ export interface MediaUrlRequest {
      * @type {string}
      * @memberof MediaUrlRequest
      */
-    'url'?: string;
+    'publicId'?: string;
     /**
      * 
      * @type {string}

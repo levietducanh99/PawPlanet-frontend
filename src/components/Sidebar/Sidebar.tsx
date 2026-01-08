@@ -135,9 +135,15 @@ export const Sidebar: React.FC<SidebarProps> = () => {
                   </div>
                   <div className={styles.petInfo}>
                     <div className={styles.petName}>{pet.name}</div>
-                    <div className={styles.petType}>{pet.type.charAt(0).toUpperCase() + pet.type.slice(1)}</div>
+                    <div className={styles.petType}>{
+                      // pet may come from different shapes: legacy hooks use `type` (dog/cat) while domain Pet uses `speciesName`.
+                      // Resolve safely to avoid TS errors and provide graceful fallback.
+                      ((pet as any).type ? ((pet as any).type as string) : (pet.speciesName ?? 'other'))
+                        .charAt(0)
+                        .toUpperCase() + (((pet as any).type ? ((pet as any).type as string) : (pet.speciesName ?? 'other')).slice(1))
+                    }</div>
                   </div>
-                  <span className={styles.petEmoji}>{getPetEmoji(pet.type)}</span>
+                  <span className={styles.petEmoji}>{getPetEmoji(((pet as any).type ? ((pet as any).type as string) : (pet.speciesName ?? 'other')))}</span>
                 </div>
               ))}
             </div>

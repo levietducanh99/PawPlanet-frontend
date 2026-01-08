@@ -14,6 +14,10 @@ export interface Post {
   authorUsername: string;
   petId?: number;
   petName?: string;
+  petAvatar?: string; // optional pet avatar for UI
+  badge?: string; // optional badge text for author/pet
+  petOwnerName?: string; // optional owner display name
+  petDisplay?: string; // optional pet display (e.g., "Dog · Golden Retriever")
   createdAt: string;
   likeCount: number;
   commentCount: number;
@@ -40,6 +44,15 @@ export interface PostMedia {
   displayOrder: number;
 }
 
+/**
+ * Media request format for creating posts
+ * Backend expects publicId instead of full URL
+ */
+export interface PostMediaRequest {
+  publicId: string;
+  type: 'image' | 'video';
+}
+
 export interface PetTimeline {
   petId: number;
   posts: Post[];
@@ -49,9 +62,15 @@ export interface PetTimeline {
 
 export interface CreatePostRequest {
   content: string;
-  petId: number;
-  mediaUrls?: string[];
+  // Allow single petId (legacy) or multiple petIds (UI supports tagging multiple pets)
+  petId?: number;
+  petIds?: number[];
+  // Frontend uses PostMediaRequest (publicId + type) when sending to backend
+  mediaUrls?: PostMediaRequest[];
   tags?: string[];
+  // Post type (general | rescue | lost ...)
+  type?: 'general' | 'rescue' | 'lost' | 'found' | 'story';
+  hashtags?: string;
 }
 
 export interface Comment {
