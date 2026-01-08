@@ -13,7 +13,7 @@ import {
   SpeciesCard,
   SpeciesCardData,
 } from '@/components/Encyclopedia';
-import { useEncyclopediaSpeciesDetail, useEncyclopediaBreedsBySpecies } from '@/hooks';
+import { useEncyclopediaSpeciesDetail, useEncyclopediaBreedsBySpecies, useEncyclopediaSpeciesList } from '@/hooks';
 import styles from './SpeciesDetailPage.module.css';
 
 const { Title, Paragraph } = Typography;
@@ -29,20 +29,29 @@ const tabs: TabItem[] = [
 ];
 
 export const SpeciesDetailPage: React.FC = () => {
-  const { speciesId } = useParams<{ speciesId: string }>();
+  const { speciesId } = useParams<{ speciesId?: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
-  const numericId = Number(speciesId);
-  const { data: species, loading, error } = useEncyclopediaSpeciesDetail(
-    Number.isFinite(numericId) ? numericId : undefined
-  );
+  // Parse slug to get actual ID
+  const { data: searchResult } = useEncyclopediaSpeciesList({
+    q: speciesId,
+    page: 0,
+    size: 10,
+  });
 
-  const {
-    data: breedsList,
-    loading: breedsLoading,
-    error: breedsError,
-  } = useEncyclopediaBreedsBySpecies(Number.isFinite(numericId) ? numericId : undefined);
+  // Find species by slug or use numeric ID directly
+  const actualSpeciesId = useMemo(() => {
+    if (!speciesId) return undefined;
+    const numericId = Number(speciesId);
+    if (Number.isFinite(numericId)) return numericId;
+
+    // Find by slug
+    const found = searchResult.items.find((s) => s.slug === speciesId);
+    return found?.id;
+  }, [speciesId, searchResult.items]);
+
+  const { data: species, loading, error } = useEncyclopediaSpeciesDetail(actualSpeciesId);
 
   const heroImage =
     species?.heroUrl ||
@@ -68,14 +77,21 @@ export const SpeciesDetailPage: React.FC = () => {
     return (species?.galleryPreview ?? []).map((m) => m.url).filter(Boolean);
   }, [species?.galleryPreview]);
 
+  const {
+    data: breedsList,
+    loading: breedsLoading,
+    error: breedsError,
+  } = useEncyclopediaBreedsBySpecies(species?.id);
+
   const breeds: SpeciesCardData[] = useMemo(() => {
-    return breedsList.map((b) => ({
+    return (breedsList ?? []).map((b) => ({
       id: String(b.id),
       name: b.name,
       scientificName: b.origin,
       status: b.taxonomyType,
       statusColor: '#27AE60',
       image: b.avatarUrl || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800',
+      slug: b.slug,
     }));
   }, [breedsList]);
 

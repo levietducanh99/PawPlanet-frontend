@@ -27,6 +27,11 @@ export const EncyclopediaClassPage: React.FC = () => {
 
   const { data: classes } = useEncyclopediaClasses();
 
+  const currentClass = useMemo(() => {
+    if (!Number.isFinite(numericClassId)) return undefined;
+    return classes.find((c) => c.id === numericClassId);
+  }, [classes, numericClassId]);
+
   const {
     data: speciesPaged,
     loading: speciesLoading,
@@ -36,11 +41,6 @@ export const EncyclopediaClassPage: React.FC = () => {
     page: page - 1,
     size: pageSize,
   });
-
-  const currentClass = useMemo(() => {
-    if (!Number.isFinite(numericClassId)) return undefined;
-    return classes.find((c) => c.id === numericClassId);
-  }, [classes, numericClassId]);
 
   const heroImage =
     currentClass?.avatarUrl ||
@@ -56,6 +56,7 @@ export const EncyclopediaClassPage: React.FC = () => {
       image:
         s.avatarUrl ||
         'https://images.unsplash.com/photo-1474511320723-9a56873571b7?w=800',
+      slug: s.slug,
     }));
   }, [speciesPaged.items]);
 
@@ -99,7 +100,10 @@ export const EncyclopediaClassPage: React.FC = () => {
                 <Col key={s.id} xs={24} sm={12} md={8} lg={6}>
                   <SpeciesCard
                     species={s}
-                    onClick={(item) => navigate(`/encyclopedia/species/${item.id}`)}
+                    onClick={(item) => {
+                      if (item.slug) navigate(`/encyclopedia/species/${item.slug}`);
+                      else navigate(`/encyclopedia/species/${item.id}`);
+                    }}
                   />
                 </Col>
               ))}

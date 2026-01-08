@@ -8,6 +8,7 @@ const { Title, Paragraph } = Typography;
 
 export interface AnimalClassData {
   id: string;
+  slug?: string;
   name: string;
   description: string;
   image: string;

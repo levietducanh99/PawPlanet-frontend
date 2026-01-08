@@ -1,99 +1,288 @@
-/* Class Modal Styles */
+/* Class Modal - The Specimen Stage */
 
 .classModal :global(.ant-modal-content) {
   padding: 0;
-  border-radius: 20px;
-  overflow: hidden;
+  border-radius: 24px;
+  overflow: visible;
+  background: linear-gradient(180deg, #f8f9ff 0%, #fefefe 50%, #f0f4f8 100%);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 .closeIcon {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
+  top: 20px;
+  right: 20px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
-  transition: background 0.3s ease;
-  z-index: 10;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .closeIcon:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: white;
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.modalImage {
-  width: 100%;
-  height: 350px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
+.modalWrapper {
+  padding: 48px 40px 56px;
 }
 
-.modalOverlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 40px 32px 32px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
+/* Header */
+.modalHeader {
+  /* center content vertically and horizontally to avoid any accidental shift */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 18px; /* slightly reduced to make layout tighter */
 }
 
-.modalTag {
-  background: var(--color-primary) !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 20px !important;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 12px;
+.headerTag {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #9CA3AF;
+  margin-bottom: 10px;
+  text-transform: uppercase;
 }
 
 .modalTitle {
-  color: white !important;
-  margin: 0 0 8px 0 !important;
-  font-size: 28px !important;
+  /* make the class name more prominent */
+  color: #0F1724 !important;
+  margin: 4px 0 6px 0 !important;
+  font-size: 44px !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.5px;
+  line-height: 1.02 !important;
 }
 
 .modalSubtitle {
-  color: rgba(255, 255, 255, 0.85) !important;
+  /* ensure subtitle is centered and constrained so it doesn't wrap oddly */
+  color: #6B7280 !important;
   margin: 0 !important;
-  font-size: 16px;
-}
-
-.modalContent {
-  padding: 24px 32px 32px;
-  background: linear-gradient(to bottom, #1a1a1a, #111);
-}
-
-.modalDescription {
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-size: 16px;
-  margin-bottom: 24px !important;
+  font-size: 15px;
   line-height: 1.6;
+  max-width: 760px; /* constrain width to keep centered layout */
+  text-align: center;
+  padding: 0 12px;
 }
 
-.viewButton {
-  height: 52px !important;
-  border-radius: 12px !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
+/* Filter Pills */
+.pillTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 32px;
+  padding: 0 20px;
+}
+
+.pillTag {
+  padding: 9px 20px;
+  border-radius: 24px;
+  background: #F3F4F6;
+  color: #6B7280;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  user-select: none;
+}
+
+.pillTag:hover {
+  background: #E5E7EB;
+  color: #374151;
+  transform: translateY(-1px);
+}
+
+.pillTagActive {
+  background: #1F2937;
+  color: white;
+  border-color: #1F2937;
+  box-shadow: 0 4px 12px rgba(31, 41, 55, 0.3);
+}
+
+/* 3D Coverflow Stage */
+.coverflowStage {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  perspective: 1400px;
+  perspective-origin: center center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center elements (container + nav) */
+}
+
+.coverflowContainer {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  transform-style: preserve-3d;
+}
+
+.coverflowCard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 400px;
+  height: 300px;
+  margin-left: -200px;
+  margin-top: -150px;
+  transform-style: preserve-3d;
+  transition: all 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+  cursor: pointer;
+  will-change: transform, opacity, filter;
+}
+
+.specimenImage {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  /* Use CSS variable with a safe fallback to avoid linter errors */
+  background-image: var(--specimen-image, none);
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25), 0 8px 16px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.4s ease;
+  backface-visibility: hidden;
+}
+
+.coverflowCard:hover .specimenImage {
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.3), 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Specimen Info */
+.specimenInfo {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  margin: 16px auto 0;
+  padding: 0 20px;
+}
+
+.specimenName {
+  color: #111827 !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  margin: 0 0 4px 0 !important;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.specimenScientific {
+  color: #6B7280 !important;
+  font-size: 14px !important;
+  font-style: italic;
+  margin: 0 !important;
+}
+
+/* Navigation */
+.coverflowNav {
+  position: relative;
+  bottom: auto;
+  left: auto;
+  transform: none;
+  margin-top: 18px; /* spacing between stage and nav */
+  display: flex;
+  gap: 16px;
+  z-index: 40;
+}
+
+.navButton {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid #E5E7EB;
+  background: white;
+  color: #6B7280;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 18px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.navButton:hover {
+  background: #1890FF;
+  border-color: #1890FF;
+  color: white;
+  transform: scale(1.12);
+  box-shadow: 0 10px 28px rgba(24, 144, 255, 0.25);
+}
+
+.navButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .modalImage {
-    height: 280px;
+  .modalWrapper {
+    padding: 32px 20px 48px;
   }
 
   .modalTitle {
-    font-size: 24px !important;
+    font-size: 28px !important;
+  }
+
+  .coverflowStage {
+    height: 400px;
+  }
+
+  .coverflowContainer {
+    height: 320px;
+  }
+
+  .coverflowCard {
+    width: 320px;
+    height: 240px;
+    margin-left: -160px;
+    margin-top: -120px;
+  }
+
+  .pillTags {
+    gap: 8px;
+  }
+
+  .pillTag {
+    font-size: 12px;
+    padding: 7px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .coverflowCard {
+    width: 280px;
+    height: 210px;
+    margin-left: -140px;
+    margin-top: -105px;
+  }
+
+  .coverflowStage {
+    height: 360px;
+  }
+
+  .navButton {
+    width: 42px;
+    height: 42px;
+    font-size: 16px;
   }
 }
