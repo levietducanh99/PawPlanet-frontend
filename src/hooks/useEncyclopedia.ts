@@ -214,3 +214,55 @@ export const useEncyclopediaBreedsBySpecies = (speciesId?: number) => {
 
   return { data, loading, error, refetch: fetchBreeds };
 };
+
+export const useEncyclopediaBreedDetailBySlug = (slug?: string) => {
+  const [data, setData] = useState<EncyclopediaBreedDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchDetail = useCallback(async () => {
+    if (!slug) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await encyclopediaService.getBreedBySlug(slug);
+      setData(res);
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    void fetchDetail();
+  }, [fetchDetail]);
+
+  return { data, loading, error, refetch: fetchDetail };
+};
+
+export const useEncyclopediaSpeciesDetailBySlug = (slug?: string) => {
+  const [data, setData] = useState<EncyclopediaSpeciesDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchDetail = useCallback(async () => {
+    if (!slug) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await encyclopediaService.getSpeciesBySlug(slug);
+      setData(res);
+    } catch (e) {
+      setError(e as Error);
+    } finally {
+      setLoading(false);
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    void fetchDetail();
+  }, [fetchDetail]);
+
+  return { data, loading, error, refetch: fetchDetail };
+};

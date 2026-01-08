@@ -29,11 +29,12 @@ const tabs: TabItem[] = [
   { key: 'random', label: 'Random Discovery' },
 ];
 
-const mapDomainClassToCard = (c: { id: number; name: string; description?: string; avatarUrl?: string }): AnimalClassData => {
+const mapDomainClassToCard = (c: { id: number; name: string; description?: string; avatarUrl?: string; slug?: string }): AnimalClassData => {
   // The UI card expects an id string; we keep it stable via slug fallback.
   const id = String(c.id);
   return {
     id,
+    slug: c.slug ? String(c.slug) : undefined,
     name: c.name,
     description: c.description || 'Learn more about this animal class.',
     image:

@@ -13,6 +13,7 @@ export interface SpeciesCardData {
   status?: string;
   statusColor?: string;
   image: string;
+  slug?: string;
 }
 
 interface SpeciesCardProps {
