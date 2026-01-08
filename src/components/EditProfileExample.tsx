@@ -41,7 +41,7 @@ interface EditProfilePageProps {
 }
 
 /**
- * Complete example of user profile edit page with avatar upload
+ * Complete example of user profile edit page with logo upload
  */
 export const EditProfilePage: React.FC<EditProfilePageProps> = ({
   user,

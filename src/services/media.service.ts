@@ -141,7 +141,7 @@ export const uploadToCloudinary = async (
  * It handles both steps: getting signature and uploading to Cloudinary.
  *
  * @example
- * // Upload user avatar
+ * // Upload user logo
  * const result = await uploadMedia(file, {
  *   context: 'USER_AVATAR',
  *   ownerId: 123
@@ -187,7 +187,7 @@ export const uploadMedia = async (
 };
 
 /**
- * Upload user avatar
+ * Upload user logo
  */
 export const uploadUserAvatar = async (
   file: File,
@@ -200,7 +200,7 @@ export const uploadUserAvatar = async (
 };
 
 /**
- * Upload pet avatar
+ * Upload pet logo
  */
 export const uploadPetAvatar = async (
   file: File,

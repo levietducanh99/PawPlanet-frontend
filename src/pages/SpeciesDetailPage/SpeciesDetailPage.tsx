@@ -14,6 +14,8 @@ import {
   SpeciesCardData,
 } from '@/components/Encyclopedia';
 import { useEncyclopediaSpeciesDetail, useEncyclopediaBreedsBySpecies, useEncyclopediaSpeciesList } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { isAdmin } from '@/domain/auth';
 import styles from './SpeciesDetailPage.module.css';
 
 const { Title, Paragraph } = Typography;
@@ -32,6 +34,8 @@ export const SpeciesDetailPage: React.FC = () => {
   const { speciesId } = useParams<{ speciesId?: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const { user } = useAuth();
+  const userIsAdmin = isAdmin(user);
 
   // Parse slug to get actual ID
   const { data: searchResult } = useEncyclopediaSpeciesList({
@@ -210,9 +214,15 @@ export const SpeciesDetailPage: React.FC = () => {
             )}
 
             {/* Photo Gallery */}
-            {galleryImages.length > 0 && (
-              <PhotoGallery images={galleryImages} altPrefix={species.name} />
-            )}
+            <PhotoGallery
+              images={galleryImages}
+              altPrefix={species.name}
+              isAdmin={userIsAdmin}
+              entityType="species"
+              entityId={species.id}
+              entitySlug={species.slug}
+              onImageAdded={() => window.location.reload()}
+            />
 
             {/* Breeds */}
             {breeds.length > 0 && (
@@ -267,13 +277,15 @@ export const SpeciesDetailPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {galleryImages.length > 0 ? (
-              <PhotoGallery images={galleryImages} altPrefix={species.name} />
-            ) : (
-              <div className={styles.emptyState}>
-                <Paragraph>No gallery images available.</Paragraph>
-              </div>
-            )}
+            <PhotoGallery
+              images={galleryImages}
+              altPrefix={species.name}
+              isAdmin={userIsAdmin}
+              entityType="species"
+              entityId={species.id}
+              entitySlug={species.slug}
+              onImageAdded={() => window.location.reload()}
+            />
           </motion.div>
         )}
 

@@ -12,6 +12,8 @@ import {
   PhotoGallery,
 } from '@/components/Encyclopedia';
 import { useEncyclopediaBreedDetail } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { isAdmin } from '@/domain/auth';
 import styles from './BreedDetailPage.module.css';
 
 const { Title, Paragraph } = Typography;
@@ -19,6 +21,8 @@ const { Title, Paragraph } = Typography;
 export const BreedDetailPage: React.FC = () => {
   const { breedId } = useParams<{ breedId: string }>();
   const [activeTab, setActiveTab] = useState('overview');
+  const { user } = useAuth();
+  const userIsAdmin = isAdmin(user);
 
   const numericId = Number(breedId);
   const { data: breed, loading, error } = useEncyclopediaBreedDetail(
@@ -160,7 +164,15 @@ export const BreedDetailPage: React.FC = () => {
               ))}
 
             {/* Photo Gallery */}
-            {galleryImages.length > 0 && <PhotoGallery images={galleryImages} altPrefix={breed.name} />}
+            <PhotoGallery
+              images={galleryImages}
+              altPrefix={breed.name}
+              isAdmin={userIsAdmin}
+              entityType="breed"
+              entityId={breed.id}
+              entitySlug={breed.slug}
+              onImageAdded={() => window.location.reload()}
+            />
           </motion.div>
         )}
 
@@ -199,13 +211,15 @@ export const BreedDetailPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {galleryImages.length > 0 ? (
-              <PhotoGallery images={galleryImages} altPrefix={breed.name} />
-            ) : (
-              <div className={styles.emptyState}>
-                <Paragraph>No gallery images available.</Paragraph>
-              </div>
-            )}
+            <PhotoGallery
+              images={galleryImages}
+              altPrefix={breed.name}
+              isAdmin={userIsAdmin}
+              entityType="breed"
+              entityId={breed.id}
+              entitySlug={breed.slug}
+              onImageAdded={() => window.location.reload()}
+            />
           </motion.div>
         )}
 

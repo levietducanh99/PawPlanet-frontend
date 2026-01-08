@@ -1,4 +1,4 @@
-/* Photo Gallery Styles */
+ll/* Photo Gallery Styles */
 
 .section {
   margin-bottom: 40px;
@@ -8,49 +8,109 @@
   color: var(--color-primary) !important;
   font-size: 20px !important;
   font-weight: 600 !important;
-  margin-bottom: 20px !important;
+  margin-bottom: 24px !important;
 }
 
-.galleryGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+/* Masonry Grid Layout */
+.masonryGrid {
+  column-count: 3;
+  column-gap: 16px;
 }
 
-.galleryItem {
-  border-radius: 12px;
-  overflow: hidden;
+.masonryItem {
+  break-inside: avoid;
+  margin-bottom: 16px;
   cursor: pointer;
-  aspect-ratio: 4/3;
 }
 
-.galleryItem img {
+.imageWrapper {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.masonryItem:hover .imageWrapper {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+}
+
+.imageWrapper img {
   width: 100%;
-  height: 100%;
+  height: auto;
+  display: block;
   object-fit: cover;
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
-.galleryItem:hover img {
+.masonryItem:hover .imageWrapper img {
   transform: scale(1.05);
+}
+
+/* Overlay on hover */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.6) 0%,
+    rgba(0, 0, 0, 0.3) 50%,
+    transparent 100%
+  );
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.masonryItem:hover .overlay {
+  opacity: 1;
+}
+
+.overlayText {
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .galleryGrid {
-    grid-template-columns: repeat(3, 1fr);
+  .masonryGrid {
+    column-count: 2;
+    column-gap: 14px;
+  }
+
+  .masonryItem {
+    margin-bottom: 14px;
   }
 }
 
 @media (max-width: 768px) {
-  .galleryGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+  .masonryGrid {
+    column-count: 2;
+    column-gap: 12px;
+  }
+
+  .masonryItem {
+    margin-bottom: 12px;
+  }
+
+  .imageWrapper {
+    border-radius: 16px;
   }
 }
 
 @media (max-width: 480px) {
-  .galleryGrid {
-    grid-template-columns: 1fr 1fr;
+  .masonryGrid {
+    column-count: 1;
+  }
+
+  .imageWrapper {
+    border-radius: 12px;
   }
 }
