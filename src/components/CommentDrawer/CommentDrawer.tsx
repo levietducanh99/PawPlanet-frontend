@@ -1,0 +1,100 @@
+import React, { useMemo, useState } from 'react';
+import { Modal, Avatar, Button, Input, List, Typography, Space, Spin } from 'antd';
+import { CloseOutlined, HeartOutlined, SendOutlined } from '@ant-design/icons';
+import { usePostComments } from '@/hooks';
+import { useAuth } from '@/hooks';
+import styles from './CommentDrawer.module.css';
+
+const { Text } = Typography;
+
+interface CommentModalProps {
+  postId: number | null;
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+}
+
+export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClose, title }) => {
+  const { comments, loading, creating, addComment, refetch } = usePostComments(postId);
+  const { user } = useAuth();
+  const [value, setValue] = useState('');
+
+  const commentCount = useMemo(() => comments?.length ?? 0, [comments]);
+
+  const handleSend = async () => {
+    if (!value.trim() || !postId) return;
+    try {
+      await addComment(value.trim());
+      setValue('');
+      refetch();
+    } catch (err) {}
+  };
+
+  return (
+    <Modal
+      open={open}
+      onCancel={onClose}
+      footer={null}
+      centered
+      width={700}
+      closeIcon={<CloseOutlined />}
+      bodyStyle={{ padding: 0, borderRadius: 16, overflow: 'hidden', background: '#fff' }}
+      className={styles.modal}
+      destroyOnClose
+    >
+      <div className={styles.header}>
+        <div>
+          <div className={styles.title}>{title || 'Comments'}</div>
+          <div className={styles.subtitle}>{commentCount} comment{commentCount !== 1 ? 's' : ''}</div>
+        </div>
+      </div>
+      <div className={styles.content} style={{ minHeight: 220 }}>
+        {loading ? (
+          <div className={styles.loadingCenter}><Spin /></div>
+        ) : (
+          <List
+            dataSource={comments}
+            renderItem={(c) => (
+              <List.Item className={styles.commentItem}>
+                <List.Item.Meta
+                  avatar={<Avatar src={c.userAvatar} />}
+                  title={<div className={styles.commentTitle}><Text strong>{c.userName}</Text></div>}
+                  description={<div className={styles.commentBody}>{c.content}</div>}
+                />
+                <div className={styles.commentMeta}>
+                  <Space size="small">
+                    <Text type="secondary">{ /* time */ }</Text>
+                    <Space size={8}>
+                      <HeartOutlined style={{ color: '#EB5757' }} />
+                      <Text type="secondary">{c.likeCount ?? 0}</Text>
+                    </Space>
+                  </Space>
+                </div>
+              </List.Item>
+            )}
+          />
+        )}
+      </div>
+      <div className={styles.inputBar}>
+        <Avatar src={user?.avatarUrl} />
+        <Input.TextArea
+          autoSize={{ minRows: 1, maxRows: 4 }}
+          placeholder="Write a comment..."
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onPressEnter={() => {}}
+          className={styles.textarea}
+        />
+        <Button
+          type="primary"
+          icon={<SendOutlined />}
+          onClick={handleSend}
+          loading={creating}
+          disabled={!value.trim()}
+        />
+      </div>
+    </Modal>
+  );
+};
+
+export default CommentModal;

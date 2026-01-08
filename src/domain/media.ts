@@ -18,6 +18,7 @@ export interface SignMediaRequest {
   context: MediaContext;
   ownerId?: number;
   slug?: string;
+  resourceType?: 'image' | 'video'; // Optional: if not provided, backend will use default (image)
 }
 
 export interface SignMediaResponse {

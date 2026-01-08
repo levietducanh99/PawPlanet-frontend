@@ -16,6 +16,18 @@ import type {
 } from '@/domain/media';
 
 /**
+ * Detect resource type from file
+ * @param file - File to check
+ * @returns 'image' or 'video'
+ */
+const detectResourceType = (file: File): 'image' | 'video' => {
+  if (file.type.startsWith('video/')) {
+    return 'video';
+  }
+  return 'image';
+};
+
+/**
  * Step 1: Request signature from backend
  *
  * @param request - Sign request with context and owner info
@@ -30,6 +42,7 @@ export const signMediaUpload = async (
     context: request.context,
     ownerId: request.ownerId,
     slug: request.slug,
+    resourceType: request.resourceType, // Send resource type to backend
   });
 
   console.log('🔵 Backend sign response:', response.data);
@@ -179,10 +192,18 @@ export const uploadMedia = async (
   file: File,
   request: SignMediaRequest
 ): Promise<CloudinaryUploadResponse> => {
-  // Step 1: Get signature from backend
-  const signData = await signMediaUpload(request);
+  // Detect resource type from file
+  const resourceType = detectResourceType(file);
 
-  // Step 2: Upload to Cloudinary
+  console.log(`🔵 Detected resource type: ${resourceType} for file: ${file.name} (${file.type})`);
+
+  // Step 1: Get signature from backend with resource type
+  const signData = await signMediaUpload({
+    ...request,
+    resourceType, // Explicitly pass resource type to backend
+  });
+
+  // Step 2: Upload to Cloudinary with correct endpoint
   return uploadToCloudinary(file, signData);
 };
 

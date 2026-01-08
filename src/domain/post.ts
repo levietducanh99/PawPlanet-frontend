@@ -14,6 +14,10 @@ export interface Post {
   authorUsername: string;
   petId?: number;
   petName?: string;
+  petAvatar?: string; // optional pet avatar for UI
+  badge?: string; // optional badge text for author/pet
+  petOwnerName?: string; // optional owner display name
+  petDisplay?: string; // optional pet display (e.g., "Dog · Golden Retriever")
   createdAt: string;
   likeCount: number;
   commentCount: number;
@@ -38,6 +42,15 @@ export interface PostMedia {
   url: string;
   thumbnailUrl?: string;
   displayOrder: number;
+}
+
+/**
+ * Media request format for creating posts
+ * Backend expects publicId instead of full URL
+ */
+export interface PostMediaRequest {
+  publicId: string;
+  type: 'image' | 'video';
 }
 
 export interface PetTimeline {
