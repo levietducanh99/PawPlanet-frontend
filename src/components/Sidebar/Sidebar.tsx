@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusOutlined, HomeOutlined } from '@ant-design/icons';
 import { Badge } from 'antd';
-import { useUserProfile, useUserSidebarPets } from '../../hooks';
+import { useUserProfile, useUserPets } from '../../hooks';
 import styles from './Sidebar.module.css';
 
 interface SidebarProps {
@@ -59,7 +59,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   const location = useLocation();
 
   const { user } = useUserProfile();
-  const { pets, loading: petsLoading } = useUserSidebarPets();
+  const { pets, loading: petsLoading } = useUserPets();
 
   const handleMenuClick = (path: string) => {
     navigate(path);
@@ -152,4 +152,3 @@ export const Sidebar: React.FC<SidebarProps> = () => {
     </aside>
   );
 };
-
