@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Typography, Row, Col, Card } from 'antd';
+import { Alert, Typography, Row, Col, Card } from 'antd';
 import { pageVariants } from '@/animations/variants';
 import {
   HeroBanner,
@@ -13,130 +13,10 @@ import {
   SpeciesCard,
   SpeciesCardData,
 } from '@/components/Encyclopedia';
+import { useEncyclopediaSpeciesDetail, useEncyclopediaBreedsBySpecies } from '@/hooks';
 import styles from './SpeciesDetailPage.module.css';
 
 const { Title, Paragraph } = Typography;
-
-// Mock data for species
-interface SpeciesInfo {
-  id: string;
-  commonName: string;
-  scientificName: string;
-  status: string;
-  statusColor: string;
-  heroImage: string;
-  overview: string;
-  attributes: AttributeData[];
-  appearance: { title: string; content: string };
-  behavior: { title: string; content: string };
-  gallery: string[];
-  breeds: SpeciesCardData[];
-}
-
-const speciesData: Record<string, SpeciesInfo> = {
-  lion: {
-    id: 'lion',
-    commonName: 'African Lion',
-    scientificName: 'Panthera leo',
-    status: 'Vulnerable',
-    statusColor: '#F2994A',
-    heroImage: 'https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=1600',
-    overview: `The African lion is a large cat of the genus Panthera native to Africa and India. It has a muscular, broad-chested body; short, rounded head; round ears; and a hairy tuft at the end of its tail. It is sexually dimorphic; adult male lions are larger than females and have a prominent mane.`,
-    attributes: [
-      { icon: 'length', label: 'Length', value: '1.4-2.5 m' },
-      { icon: 'height', label: 'Height', value: '1.2 m' },
-      { icon: 'weight-male', label: 'Weight (Male)', value: '190 kg' },
-      { icon: 'weight-female', label: 'Weight (Female)', value: '126 kg' },
-      { icon: 'lifespan', label: 'Life Span', value: '10-14 years' },
-      { icon: 'speed', label: 'Top Speed', value: '80 km/h' },
-    ],
-    appearance: {
-      title: 'Physical Appearance',
-      content: `Lions are the only cats that live in groups, called prides. A pride consists of about 15 lions. Male lions defend the pride's territory, which may include some 100 square miles of grasslands, scrub, or open woodlands. These intimidating animals mark the area with urine, roar menacingly to warn intruders, and chase off animals that encroach on their turf.`,
-    },
-    behavior: {
-      title: 'Lifestyle & Behavior',
-      content: `Female lions are the pride's primary hunters. They often work together to prey upon antelopes, zebras, wildebeest, and other large animals of the open grasslands. Many of these animals are faster than lions, so teamwork pays off. After the kill, the males usually eat first, lionesses next—and the cubs get what's left.`,
-    },
-    gallery: [
-      'https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=600',
-      'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=600',
-      'https://images.unsplash.com/photo-1575550959106-5a7defe28b56?w=600',
-      'https://images.unsplash.com/photo-1552410260-0fd9e8f8e0c2?w=600',
-    ],
-    breeds: [
-      {
-        id: 'asiatic-lion',
-        name: 'Asiatic Lion',
-        scientificName: 'Panthera leo persica',
-        status: 'Endangered',
-        statusColor: '#F2994A',
-        image: 'https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=400',
-      },
-      {
-        id: 'barbary-lion',
-        name: 'Barbary Lion',
-        scientificName: 'Panthera leo leo',
-        status: 'Extinct',
-        statusColor: '#EB5757',
-        image: 'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=400',
-      },
-    ],
-  },
-  snake: {
-    id: 'snake',
-    commonName: 'King Cobra',
-    scientificName: 'Ophiophagus hannah',
-    status: 'Venomous',
-    statusColor: '#EB5757',
-    heroImage: 'https://images.unsplash.com/photo-1531386151447-fd76ad50012f?w=1600',
-    overview: `The king cobra is the world's longest venomous snake, with a length up to 5.85 m (19.2 ft). This species is native to the Indian subcontinent and Southeast Asia. Despite the word "cobra" in its common name, this species does not belong to the genus Naja but is the sole member of its own genus.`,
-    attributes: [
-      { icon: 'length', label: 'Length', value: '3-5.8 m' },
-      { icon: 'weight', label: 'Weight', value: '6 kg' },
-      { icon: 'lifespan', label: 'Life Span', value: '20 years' },
-      { icon: 'speed', label: 'Strike Speed', value: '2.4 m/s' },
-    ],
-    appearance: {
-      title: 'Physical Appearance',
-      content: `The king cobra's skin colour varies across habitats, from black with white stripes to unbroken brownish grey. It has an olive green colour with pale yellow cross bands in some areas.`,
-    },
-    behavior: {
-      title: 'Lifestyle & Behavior',
-      content: `King cobras are diurnal and primarily feed on other snakes. They are the only snakes that build nests for their eggs, which the female guards until they hatch.`,
-    },
-    gallery: [
-      'https://images.unsplash.com/photo-1531386151447-fd76ad50012f?w=600',
-      'https://images.unsplash.com/photo-1509358271058-acd22cc93898?w=600',
-    ],
-    breeds: [],
-  },
-  jellyfish: {
-    id: 'jellyfish',
-    commonName: 'Moon Jellyfish',
-    scientificName: 'Aurelia aurita',
-    status: 'Marine',
-    statusColor: '#1890FF',
-    heroImage: 'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10?w=1600',
-    overview: `The moon jellyfish is a species of jellyfish found throughout most of the world's oceans. It is translucent, usually about 25–40 cm (10–16 in) in diameter, and can be recognized by its four horseshoe-shaped gonads, easily seen through the top of the bell.`,
-    attributes: [
-      { icon: 'length', label: 'Diameter', value: '25-40 cm' },
-      { icon: 'lifespan', label: 'Life Span', value: '6-12 months' },
-    ],
-    appearance: {
-      title: 'Physical Appearance',
-      content: `Moon jellies are translucent and their four horseshoe-shaped gonads are easily visible through the bell. The bell is almost flat, with a round disk shape.`,
-    },
-    behavior: {
-      title: 'Lifestyle & Behavior',
-      content: `Moon jellyfish feed on plankton, which includes organisms such as mollusks, crustaceans, tunicate larvae, copepods, rotifers, and nematodes.`,
-    },
-    gallery: [
-      'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10?w=600',
-    ],
-    breeds: [],
-  },
-};
 
 const tabs: TabItem[] = [
   { key: 'overview', label: 'Overview' },
@@ -153,11 +33,87 @@ export const SpeciesDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
-  const species = speciesData[speciesId || 'lion'] || speciesData.lion;
+  const numericId = Number(speciesId);
+  const { data: species, loading, error } = useEncyclopediaSpeciesDetail(
+    Number.isFinite(numericId) ? numericId : undefined
+  );
+
+  const {
+    data: breedsList,
+    loading: breedsLoading,
+    error: breedsError,
+  } = useEncyclopediaBreedsBySpecies(Number.isFinite(numericId) ? numericId : undefined);
+
+  const heroImage =
+    species?.heroUrl ||
+    species?.thumbnailUrl ||
+    species?.galleryPreview?.[0]?.url ||
+    'https://images.unsplash.com/photo-1484406566174-9da000fda645?w=1600';
+
+  const attributes: AttributeData[] = useMemo(() => {
+    return (species?.attributes ?? [])
+      .slice()
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map((attr) => ({
+        icon: attr.key,
+        label: attr.key,
+        value:
+          attr.value ??
+          [attr.valueMin, attr.valueMax].filter((v) => v !== undefined).join(' - ') +
+            (attr.unit ? ` ${attr.unit}` : ''),
+      }));
+  }, [species?.attributes]);
+
+  const galleryImages = useMemo(() => {
+    return (species?.galleryPreview ?? []).map((m) => m.url).filter(Boolean);
+  }, [species?.galleryPreview]);
+
+  const breeds: SpeciesCardData[] = useMemo(() => {
+    return breedsList.map((b) => ({
+      id: String(b.id),
+      name: b.name,
+      scientificName: b.origin,
+      status: b.taxonomyType,
+      statusColor: '#27AE60',
+      image: b.avatarUrl || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800',
+    }));
+  }, [breedsList]);
 
   const handleBreedClick = (breed: SpeciesCardData) => {
     navigate(`/encyclopedia/breed/${breed.id}`);
   };
+
+  if (loading) {
+    return (
+      <motion.div
+        className={styles.speciesPage}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+      >
+        <Paragraph className={styles.sectionContent}>Loading...</Paragraph>
+      </motion.div>
+    );
+  }
+
+  if (error || !species) {
+    return (
+      <motion.div
+        className={styles.speciesPage}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+      >
+        <Alert
+          type="error"
+          message={error?.message || 'Species not found'}
+          showIcon
+        />
+      </motion.div>
+    );
+  }
+
+  const overviewText = species.description || 'No overview available yet.';
 
   return (
     <motion.div
@@ -168,10 +124,10 @@ export const SpeciesDetailPage: React.FC = () => {
     >
       {/* Hero Section */}
       <HeroBanner
-        image={species.heroImage}
-        status={species.status}
-        statusColor={species.statusColor}
-        title={species.commonName}
+        image={heroImage}
+        status={'Species'}
+        statusColor={'#1890FF'}
+        title={species.name}
         subtitle={species.scientificName}
       />
 
@@ -196,69 +152,62 @@ export const SpeciesDetailPage: React.FC = () => {
               <Title level={4} className={styles.sectionTitle}>
                 Overview
               </Title>
-              <Paragraph className={styles.sectionContent}>
-                {species.overview}
-              </Paragraph>
+              <Paragraph className={styles.sectionContent}>{overviewText}</Paragraph>
             </section>
 
             {/* Key Attributes */}
-            <section className={styles.section}>
-              <Title level={4} className={styles.sectionTitle}>
-                Key Attributes
-              </Title>
-              <Row gutter={[16, 16]}>
-                {species.attributes.map((attr, index) => (
-                  <Col xs={12} sm={8} md={4} key={index}>
-                    <AttributeCard attribute={attr} />
-                  </Col>
-                ))}
-              </Row>
-            </section>
-
-            {/* Appearance & Habits */}
-            <Card bordered={false} className={styles.contentCard}>
-              <Title level={3} className={styles.cardTitle}>
-                Appearance & Habits
-              </Title>
-
-              <div className={styles.subsection}>
-                <Title level={5} className={styles.subsectionTitle}>
-                  {species.appearance.title}
+            {attributes.length > 0 && (
+              <section className={styles.section}>
+                <Title level={4} className={styles.sectionTitle}>
+                  Key Attributes
                 </Title>
-                <Paragraph className={styles.subsectionContent}>
-                  {species.appearance.content}
-                </Paragraph>
-              </div>
+                <Row gutter={[16, 16]}>
+                  {attributes.map((attr, index) => (
+                    <Col xs={12} sm={8} md={4} key={index}>
+                      <AttributeCard attribute={attr} />
+                    </Col>
+                  ))}
+                </Row>
+              </section>
+            )}
 
-              <div className={styles.subsection}>
-                <Title level={5} className={styles.subsectionTitle}>
-                  {species.behavior.title}
+            {/* Sections rendered as content cards */}
+            {(species.sections ?? []).length > 0 && (
+              <Card bordered={false} className={styles.contentCard}>
+                <Title level={3} className={styles.cardTitle}>
+                  About
                 </Title>
-                <Paragraph className={styles.subsectionContent}>
-                  {species.behavior.content}
-                </Paragraph>
-              </div>
-            </Card>
+                {(species.sections ?? [])
+                  .slice()
+                  .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+                  .map((section) => (
+                    <div className={styles.subsection} key={section.id}>
+                      <Title level={5} className={styles.subsectionTitle}>
+                        {section.title}
+                      </Title>
+                      <Paragraph className={styles.subsectionContent}>
+                        {section.content || 'No content yet.'}
+                      </Paragraph>
+                    </div>
+                  ))}
+              </Card>
+            )}
 
             {/* Photo Gallery */}
-            <PhotoGallery
-              images={species.gallery}
-              altPrefix={species.commonName}
-            />
+            {galleryImages.length > 0 && (
+              <PhotoGallery images={galleryImages} altPrefix={species.name} />
+            )}
 
             {/* Breeds */}
-            {species.breeds.length > 0 && (
+            {breeds.length > 0 && (
               <section className={styles.section}>
                 <Title level={4} className={styles.sectionTitle}>
                   Breeds
                 </Title>
                 <Row gutter={[16, 16]}>
-                  {species.breeds.map((breed) => (
+                  {breeds.map((breed) => (
                     <Col xs={24} sm={12} md={8} lg={6} key={breed.id}>
-                      <SpeciesCard
-                        species={breed}
-                        onClick={handleBreedClick}
-                      />
+                      <SpeciesCard species={breed} onClick={handleBreedClick} />
                     </Col>
                   ))}
                 </Row>
@@ -278,45 +227,20 @@ export const SpeciesDetailPage: React.FC = () => {
               <Title level={4} className={styles.sectionTitle}>
                 All Attributes
               </Title>
-              <Row gutter={[16, 16]}>
-                {species.attributes.map((attr, index) => (
-                  <Col xs={12} sm={8} md={6} lg={4} key={index}>
-                    <AttributeCard attribute={attr} />
-                  </Col>
-                ))}
-              </Row>
+              {attributes.length > 0 ? (
+                <Row gutter={[16, 16]}>
+                  {attributes.map((attr, index) => (
+                    <Col xs={12} sm={8} md={4} key={index}>
+                      <AttributeCard attribute={attr} />
+                    </Col>
+                  ))}
+                </Row>
+              ) : (
+                <div className={styles.emptyState}>
+                  <Paragraph>No attribute information available.</Paragraph>
+                </div>
+              )}
             </section>
-          </motion.div>
-        )}
-
-        {/* Appearance Tab */}
-        {activeTab === 'appearance' && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card bordered={false} className={styles.contentCard}>
-              <Title level={3} className={styles.cardTitle}>
-                Appearance & Habits
-              </Title>
-              <div className={styles.subsection}>
-                <Title level={5} className={styles.subsectionTitle}>
-                  {species.appearance.title}
-                </Title>
-                <Paragraph className={styles.subsectionContent}>
-                  {species.appearance.content}
-                </Paragraph>
-              </div>
-              <div className={styles.subsection}>
-                <Title level={5} className={styles.subsectionTitle}>
-                  {species.behavior.title}
-                </Title>
-                <Paragraph className={styles.subsectionContent}>
-                  {species.behavior.content}
-                </Paragraph>
-              </div>
-            </Card>
           </motion.div>
         )}
 
@@ -327,10 +251,13 @@ export const SpeciesDetailPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <PhotoGallery
-              images={species.gallery}
-              altPrefix={species.commonName}
-            />
+            {galleryImages.length > 0 ? (
+              <PhotoGallery images={galleryImages} altPrefix={species.name} />
+            ) : (
+              <div className={styles.emptyState}>
+                <Paragraph>No gallery images available.</Paragraph>
+              </div>
+            )}
           </motion.div>
         )}
 
@@ -341,41 +268,45 @@ export const SpeciesDetailPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <section className={styles.section}>
-              <Title level={4} className={styles.sectionTitle}>
-                Breeds
-              </Title>
-              {species.breeds.length > 0 ? (
+            {breedsError && (
+              <Alert type="error" message={breedsError.message} showIcon style={{ marginBottom: 16 }} />
+            )}
+
+            {breedsLoading ? (
+              <div className={styles.emptyState}>
+                <Paragraph>Loading breeds...</Paragraph>
+              </div>
+            ) : breeds.length > 0 ? (
+              <section className={styles.section}>
+                <Title level={4} className={styles.sectionTitle}>
+                  All Breeds
+                </Title>
                 <Row gutter={[16, 16]}>
-                  {species.breeds.map((breed) => (
+                  {breeds.map((breed) => (
                     <Col xs={24} sm={12} md={8} lg={6} key={breed.id}>
-                      <SpeciesCard
-                        species={breed}
-                        onClick={handleBreedClick}
-                      />
+                      <SpeciesCard species={breed} onClick={handleBreedClick} />
                     </Col>
                   ))}
                 </Row>
-              ) : (
-                <div className={styles.emptyState}>
-                  <Paragraph>No breed information available.</Paragraph>
-                </div>
-              )}
-            </section>
+              </section>
+            ) : (
+              <div className={styles.emptyState}>
+                <Paragraph>No breeds available for this species.</Paragraph>
+              </div>
+            )}
           </motion.div>
         )}
 
-        {/* Placeholder for other tabs */}
-        {(activeTab === 'habitat' || activeTab === 'related') && (
+        {/* Other tabs - keep existing empty state */}
+        {(activeTab === 'appearance' || activeTab === 'habitat' || activeTab === 'related') && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className={styles.placeholderSection}
           >
-            <Paragraph className={styles.placeholderText}>
-              {activeTab === 'habitat' ? 'Habitat' : 'Related Species'} section - Coming soon!
-            </Paragraph>
+            <div className={styles.emptyState}>
+              <Paragraph>Coming soon!</Paragraph>
+            </div>
           </motion.div>
         )}
       </div>

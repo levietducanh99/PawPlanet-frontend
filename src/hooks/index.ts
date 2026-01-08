@@ -23,3 +23,13 @@ export {
   useUserById,
   useUserSidebarPets
 } from './useUser';
+
+// Encyclopedia
+export {
+  useEncyclopediaClasses,
+  useEncyclopediaSpeciesList,
+  useEncyclopediaSpeciesDetail,
+  useEncyclopediaBreedDetail,
+  useEncyclopediaSearch,
+  useEncyclopediaBreedsBySpecies,
+} from './useEncyclopedia';

@@ -8,6 +8,7 @@ interface SearchBarProps {
   onChange: (value: string) => void;
   placeholder?: string;
   onSearch?: (value: string) => void;
+  loading?: boolean;
 }
 
 // Particle component
@@ -50,6 +51,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   onChange,
   placeholder = 'Search animals, species, or breeds...',
   onSearch,
+  loading = false,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -63,13 +65,14 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (loading) return;
     if (e.key === 'Enter' && onSearch) {
       onSearch(value);
     }
   };
 
   return (
-    <div className={styles.searchBarContainer} ref={containerRef}>
+    <div className={styles.searchBarContainer} ref={containerRef} aria-busy={loading}>
       {/* Glow effect - hiển thị khi focus */}
       <AnimatePresence>
         {isFocused && (
@@ -106,6 +109,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             aria-label="Search"
+            disabled={loading}
           />
 
           {/* Sheen element (animated highlight) */}

@@ -16,6 +16,7 @@ import { ViewPetPage } from './pages/ViewPetPage';
 import { MyPetsPage } from './pages/MyPetsPage';
 import { EditPetPage } from './pages/EditPetPage';
 import { AuthProvider } from '@/context/AuthContext';
+import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ function App() {
                 <Route path="encyclopedia" element={<EncyclopediaPage />} />
                 <Route path="encyclopedia/species/:speciesId" element={<SpeciesDetailPage />} />
                 <Route path="encyclopedia/breed/:breedId" element={<BreedDetailPage />} />
-                <Route path="encyclopedia/class/:classId" element={<EncyclopediaPage />} />
+                <Route path="encyclopedia/class/:classId" element={<EncyclopediaClassPage />} />
               </Route>
             </Routes>
           </BrowserRouter>
