@@ -33,6 +33,7 @@ export {
   useEncyclopediaSearch,
   useEncyclopediaBreedsBySpecies,
 } from './useEncyclopedia';
+export { useEncyclopediaMedia } from './useEncyclopediaMedia';
 
 // Pet-related hooks
 export { usePetDetail } from './usePetDetail';

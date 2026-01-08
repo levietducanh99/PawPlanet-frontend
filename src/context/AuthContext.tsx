@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authService } from '@/services/auth.service';
+import { decodeJWT } from '@/utils/jwt';
 import type { User, LoginCredentials } from '@/domain/auth';
 
 interface AuthContextType {
@@ -35,7 +36,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         sessionStorage.removeItem('authToken');
         setUser(null);
       } else {
-        // Optionally: fetch user info here if needed
+        // Decode JWT để lấy user info (id, email, role)
+        const payload = decodeJWT(token);
+        if (payload) {
+          setUser({
+            id: payload.userId || 0,
+            email: payload.sub || '',
+            username: payload.sub?.split('@')[0],
+            role: payload.scope,
+          });
+        }
       }
     } catch {
       setIsAuthenticated(false);

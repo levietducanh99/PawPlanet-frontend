@@ -2,16 +2,15 @@
  * Hook for Create Pet with Image Upload
  *
  * This hook handles the complete flow:
- * 1. Create pet with basic info (without image)
- * 2. Upload image to Cloudinary with petId
- * 3. Update pet with image URL
+ * 1. Upload image to Cloudinary FIRST (if provided)
+ * 2. Get publicId from Cloudinary response
+ * 3. Create pet with avatarPublicId
  */
 
 import { useState } from 'react';
 import { useCreatePet } from './useCreatePet';
-import { useMediaUpload } from './useMediaUpload';
+import { uploadMedia } from '@/services/media.service';
 import { message } from 'antd';
-import type { CloudinaryUploadResponse } from '@/domain/media';
 
 interface CreatePetWithImagesData {
   name: string;
@@ -30,30 +29,14 @@ interface UseCreatePetWithImagesReturn {
   isCreating: boolean;
   uploadProgress: number;
   error: string | null;
-  imageUrl: string | null;
 }
 
 export const useCreatePetWithImages = (): UseCreatePetWithImagesReturn => {
   const [isCreating, setIsCreating] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const { createPet } = useCreatePet();
-
-  const { upload: uploadImage } = useMediaUpload({
-    onSuccess: (result: CloudinaryUploadResponse) => {
-      setImageUrl(result.secureUrl);
-      message.success('Pet image uploaded successfully!');
-    },
-    onError: (err) => {
-      setError(err.message);
-      message.error(`Image upload failed: ${err.message}`);
-    },
-    onProgress: (progress) => {
-      setUploadProgress(progress.percentage);
-    }
-  });
 
   const createPetWithImages = async (data: CreatePetWithImagesData): Promise<boolean> => {
     setIsCreating(true);
@@ -61,16 +44,37 @@ export const useCreatePetWithImages = (): UseCreatePetWithImagesReturn => {
     setUploadProgress(0);
 
     try {
-      // Step 1: Create pet with basic info first (ensure required fields)
+      let avatarPublicId: string | undefined = undefined;
+
+      // Step 1: Upload image FIRST if provided
+      if (data.photo) {
+        setUploadProgress(10);
+        message.loading('Uploading image...', 0);
+
+        const uploadResult = await uploadMedia(data.photo, {
+          context: 'PET_AVATAR',
+        });
+
+        // Extract publicId from Cloudinary response
+        avatarPublicId = uploadResult.publicId;
+
+        setUploadProgress(50);
+        message.destroy(); // Clear loading message
+        message.success('Image uploaded successfully!');
+      }
+
+      // Step 2: Create pet with avatarPublicId
+      setUploadProgress(60);
       const petData = {
         name: data.name,
-        speciesId: data.speciesId, // Required field
+        speciesId: data.speciesId,
         breedId: data.breedId,
         birthDate: data.birthDate,
         gender: data.gender,
         description: data.description,
         weight: data.weight,
         height: data.height,
+        avatarPublicId, // Send publicId to backend
       };
 
       const createdPet = await createPet(petData);
@@ -79,14 +83,8 @@ export const useCreatePetWithImages = (): UseCreatePetWithImagesReturn => {
         throw new Error('Failed to create pet - no ID returned');
       }
 
+      setUploadProgress(100);
       message.success('Pet created successfully!');
-
-      // Step 2: Upload image if provided
-      if (data.photo) {
-        setUploadProgress(10);
-        await uploadImage(data.photo, 'PET_AVATAR', createdPet.id);
-      }
-
       return true;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to create pet';
@@ -103,6 +101,5 @@ export const useCreatePetWithImages = (): UseCreatePetWithImagesReturn => {
     isCreating,
     uploadProgress,
     error,
-    imageUrl
   };
 };
