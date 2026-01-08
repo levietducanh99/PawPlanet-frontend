@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Typography, Row, Col, Card } from 'antd';
+import { Alert, Typography, Row, Col, Card } from 'antd';
 import { pageVariants } from '@/animations/variants';
 import {
   HeroBanner,
@@ -11,208 +11,87 @@ import {
   AttributeData,
   PhotoGallery,
 } from '@/components/Encyclopedia';
+import { useEncyclopediaBreedDetail } from '@/hooks';
 import styles from './BreedDetailPage.module.css';
 
 const { Title, Paragraph } = Typography;
-
-// Custom section interface for breed-specific content
-interface CustomSection {
-  id: string;
-  title: string;
-  content: string;
-  type: 'text' | 'list';
-  items?: string[];
-}
-
-interface BreedInfo {
-  id: string;
-  name: string;
-  scientificName?: string;
-  origin?: string;
-  status?: string;
-  statusColor?: string;
-  heroImage: string;
-  overview: string;
-  attributes: AttributeData[];
-  gallery: string[];
-  customSections: CustomSection[];
-}
-
-// Mock data for breeds - each breed can have unique sections
-const breedData: Record<string, BreedInfo> = {
-  'golden-retriever': {
-    id: 'golden-retriever',
-    name: 'Golden Retriever',
-    origin: 'Scotland',
-    status: 'Popular',
-    statusColor: '#27AE60',
-    heroImage: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=1600',
-    overview: `The Golden Retriever is a medium-large gun dog that was bred to retrieve shot waterfowl, such as ducks and upland game birds, during hunting and shooting parties. The name "retriever" refers to the breed's ability to retrieve shot game undamaged due to their soft mouth.`,
-    attributes: [
-      { icon: 'height', label: 'Height', value: '51-61 cm' },
-      { icon: 'weight', label: 'Weight', value: '25-34 kg' },
-      { icon: 'lifespan', label: 'Life Span', value: '10-12 years' },
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1552053831-71594a27632d?w=600',
-      'https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=600',
-    ],
-    customSections: [
-      {
-        id: 'temperament',
-        title: 'Temperament',
-        content: 'Golden Retrievers are known for their friendly, reliable, and trustworthy nature. They are intelligent and versatile, making them excellent family pets, therapy dogs, and assistance dogs.',
-        type: 'text',
-      },
-      {
-        id: 'care',
-        title: 'Care Requirements',
-        content: 'Golden Retrievers require regular exercise and grooming. Their beautiful golden coat needs brushing several times a week to prevent matting.',
-        type: 'text',
-      },
-      {
-        id: 'training',
-        title: 'Training Tips',
-        content: '',
-        type: 'list',
-        items: [
-          'Start training early - puppies are eager to learn',
-          'Use positive reinforcement techniques',
-          'Socialize with other dogs and people',
-          'Provide plenty of mental stimulation',
-        ],
-      },
-    ],
-  },
-  'asiatic-lion': {
-    id: 'asiatic-lion',
-    name: 'Asiatic Lion',
-    scientificName: 'Panthera leo persica',
-    origin: 'Gir Forest, India',
-    status: 'Endangered',
-    statusColor: '#F2994A',
-    heroImage: 'https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=1600',
-    overview: `The Asiatic lion is a lion population in Gujarat, India. Its range is restricted to the Gir National Park and environs. On a genetic basis, it is separated from the African lion.`,
-    attributes: [
-      { icon: 'length', label: 'Length', value: '2.0-2.8 m' },
-      { icon: 'height', label: 'Height', value: '1.0-1.2 m' },
-      { icon: 'weight', label: 'Weight', value: '150-250 kg' },
-      { icon: 'lifespan', label: 'Life Span', value: '16-18 years' },
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1614027164847-1b28cfe1df60?w=600',
-    ],
-    customSections: [
-      {
-        id: 'conservation',
-        title: 'Conservation Status',
-        content: 'The Asiatic lion is listed as Endangered on the IUCN Red List. Conservation efforts have helped increase their population from around 180 in 1974 to over 600 in recent years.',
-        type: 'text',
-      },
-      {
-        id: 'habitat',
-        title: 'Natural Habitat',
-        content: 'Asiatic lions inhabit the Gir Forest in Gujarat, India. This dry deciduous forest is the only place in the wild where these lions can be found.',
-        type: 'text',
-      },
-    ],
-  },
-  'barbary-lion': {
-    id: 'barbary-lion',
-    name: 'Barbary Lion',
-    scientificName: 'Panthera leo leo',
-    origin: 'North Africa',
-    status: 'Extinct',
-    statusColor: '#EB5757',
-    heroImage: 'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=1600',
-    overview: `The Barbary lion was a population of the lion that is now extinct in the wild. It inhabited the Atlas Mountains of North Africa. The last known wild Barbary lion was shot in Morocco in 1942.`,
-    attributes: [
-      { icon: 'length', label: 'Length', value: '2.5-3.0 m' },
-      { icon: 'weight', label: 'Weight', value: '200-270 kg' },
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=600',
-    ],
-    customSections: [
-      {
-        id: 'history',
-        title: 'Historical Significance',
-        content: 'The Barbary lion was the most famous lion in the Roman era, often used in gladiatorial games. They were prized for their impressive dark manes that extended over the shoulders and belly.',
-        type: 'text',
-      },
-      {
-        id: 'extinction',
-        title: 'Extinction',
-        content: 'Overhunting and habitat loss led to the extinction of Barbary lions in the wild. Some descendants may exist in captivity, but their genetic purity is debated.',
-        type: 'text',
-      },
-    ],
-  },
-};
-
-// Default breed for demo
-const defaultBreed: BreedInfo = {
-  id: 'unknown',
-  name: 'Unknown Breed',
-  heroImage: 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=1600',
-  overview: 'Information about this breed is not available yet.',
-  attributes: [],
-  gallery: [],
-  customSections: [],
-};
 
 export const BreedDetailPage: React.FC = () => {
   const { breedId } = useParams<{ breedId: string }>();
   const [activeTab, setActiveTab] = useState('overview');
 
-  const breed = breedData[breedId || ''] || defaultBreed;
+  const numericId = Number(breedId);
+  const { data: breed, loading, error } = useEncyclopediaBreedDetail(
+    Number.isFinite(numericId) ? numericId : undefined
+  );
 
-  // Build dynamic tabs based on breed's custom sections
-  const baseTabs: TabItem[] = [
-    { key: 'overview', label: 'Overview' },
-    { key: 'attributes', label: 'Attributes' },
-  ];
+  const heroImage =
+    breed?.heroUrl ||
+    breed?.thumbnailUrl ||
+    breed?.galleryPreview?.[0]?.url ||
+    'https://images.unsplash.com/photo-1552053831-71594a27632d?w=1600';
 
-  // Add custom section tabs
-  const customTabs: TabItem[] = breed.customSections.map((section) => ({
-    key: section.id,
-    label: section.title,
-  }));
+  const attributes: AttributeData[] = useMemo(() => {
+    return (breed?.attributes ?? [])
+      .slice()
+      .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+      .map((attr) => ({
+        icon: attr.key,
+        label: attr.key,
+        value: attr.value || '',
+      }));
+  }, [breed?.attributes]);
 
-  // Add gallery tab if breed has gallery images
-  const galleryTab: TabItem[] = breed.gallery.length > 0
-    ? [{ key: 'gallery', label: 'Gallery' }]
-    : [];
+  const galleryImages = useMemo(() => {
+    return (breed?.galleryPreview ?? []).map((m) => m.url).filter(Boolean);
+  }, [breed?.galleryPreview]);
 
-  const tabs = [...baseTabs, ...customTabs, ...galleryTab];
+  // Build dynamic tabs based on breed sections + gallery
+  const tabs: TabItem[] = useMemo(() => {
+    const baseTabs: TabItem[] = [
+      { key: 'overview', label: 'Overview' },
+      { key: 'attributes', label: 'Attributes' },
+    ];
 
-  const renderCustomSection = (section: CustomSection) => {
-    if (section.type === 'list' && section.items) {
-      return (
-        <Card bordered={false} className={styles.contentCard}>
-          <Title level={4} className={styles.cardTitle}>
-            {section.title}
-          </Title>
-          <ul className={styles.listContent}>
-            {section.items.map((item, index) => (
-              <li key={index}>{item}</li>
-            ))}
-          </ul>
-        </Card>
-      );
-    }
+    const sectionTabs: TabItem[] = (breed?.sections ?? []).map((s) => ({
+      key: String(s.id),
+      label: s.title,
+    }));
 
+    const galleryTab: TabItem[] = galleryImages.length > 0 ? [{ key: 'gallery', label: 'Gallery' }] : [];
+
+    return [...baseTabs, ...sectionTabs, ...galleryTab];
+  }, [breed?.sections, galleryImages.length]);
+
+  if (loading) {
     return (
-      <Card bordered={false} className={styles.contentCard}>
-        <Title level={4} className={styles.cardTitle}>
-          {section.title}
-        </Title>
-        <Paragraph className={styles.sectionContent}>
-          {section.content}
-        </Paragraph>
-      </Card>
+      <motion.div
+        className={styles.breedPage}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+      >
+        <Paragraph className={styles.sectionContent}>Loading...</Paragraph>
+      </motion.div>
     );
-  };
+  }
+
+  if (error || !breed) {
+    return (
+      <motion.div
+        className={styles.breedPage}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+      >
+        <Alert type="error" message={error?.message || 'Breed not found'} showIcon />
+      </motion.div>
+    );
+  }
+
+  const overviewText = breed.shortDescription || 'Information about this breed is not available yet.';
+
+  const activeSection = (breed.sections ?? []).find((s) => String(s.id) === activeTab);
 
   return (
     <motion.div
@@ -223,20 +102,15 @@ export const BreedDetailPage: React.FC = () => {
     >
       {/* Hero Section */}
       <HeroBanner
-        image={breed.heroImage}
-        status={breed.status}
-        statusColor={breed.statusColor}
+        image={heroImage}
+        status={breed.taxonomyType}
+        statusColor={'#27AE60'}
         title={breed.name}
-        subtitle={breed.scientificName || breed.origin}
+        subtitle={breed.origin}
       />
 
       {/* Tab Navigation */}
-      <PillTabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-        sticky
-      />
+      <PillTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} sticky />
 
       {/* Content Sections */}
       <div className={styles.contentContainer}>
@@ -251,19 +125,17 @@ export const BreedDetailPage: React.FC = () => {
               <Title level={4} className={styles.sectionTitle}>
                 Overview
               </Title>
-              <Paragraph className={styles.sectionContent}>
-                {breed.overview}
-              </Paragraph>
+              <Paragraph className={styles.sectionContent}>{overviewText}</Paragraph>
             </section>
 
             {/* Key Attributes */}
-            {breed.attributes.length > 0 && (
+            {attributes.length > 0 && (
               <section className={styles.section}>
                 <Title level={4} className={styles.sectionTitle}>
                   Key Attributes
                 </Title>
                 <Row gutter={[16, 16]}>
-                  {breed.attributes.map((attr, index) => (
+                  {attributes.map((attr, index) => (
                     <Col xs={12} sm={8} md={6} lg={4} key={index}>
                       <AttributeCard attribute={attr} />
                     </Col>
@@ -272,20 +144,23 @@ export const BreedDetailPage: React.FC = () => {
               </section>
             )}
 
-            {/* Display all custom sections on overview */}
-            {breed.customSections.map((section) => (
-              <div key={section.id}>
-                {renderCustomSection(section)}
-              </div>
-            ))}
+            {/* Render all sections here as well (like previous mock) */}
+            {(breed.sections ?? [])
+              .slice()
+              .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+              .map((section) => (
+                <Card bordered={false} className={styles.contentCard} key={section.id}>
+                  <Title level={4} className={styles.cardTitle}>
+                    {section.title}
+                  </Title>
+                  <Paragraph className={styles.sectionContent}>
+                    {section.content || 'No content yet.'}
+                  </Paragraph>
+                </Card>
+              ))}
 
             {/* Photo Gallery */}
-            {breed.gallery.length > 0 && (
-              <PhotoGallery
-                images={breed.gallery}
-                altPrefix={breed.name}
-              />
-            )}
+            {galleryImages.length > 0 && <PhotoGallery images={galleryImages} altPrefix={breed.name} />}
           </motion.div>
         )}
 
@@ -300,9 +175,9 @@ export const BreedDetailPage: React.FC = () => {
               <Title level={4} className={styles.sectionTitle}>
                 All Attributes
               </Title>
-              {breed.attributes.length > 0 ? (
+              {attributes.length > 0 ? (
                 <Row gutter={[16, 16]}>
-                  {breed.attributes.map((attr, index) => (
+                  {attributes.map((attr, index) => (
                     <Col xs={12} sm={8} md={6} lg={4} key={index}>
                       <AttributeCard attribute={attr} />
                     </Col>
@@ -324,26 +199,33 @@ export const BreedDetailPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <PhotoGallery
-              images={breed.gallery}
-              altPrefix={breed.name}
-            />
+            {galleryImages.length > 0 ? (
+              <PhotoGallery images={galleryImages} altPrefix={breed.name} />
+            ) : (
+              <div className={styles.emptyState}>
+                <Paragraph>No gallery images available.</Paragraph>
+              </div>
+            )}
           </motion.div>
         )}
 
-        {/* Custom Section Tabs */}
-        {breed.customSections.map((section) => (
-          activeTab === section.id && (
-            <motion.div
-              key={section.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {renderCustomSection(section)}
-            </motion.div>
-          )
-        ))}
+        {/* Dynamic Section Tabs */}
+        {activeSection && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card bordered={false} className={styles.contentCard}>
+              <Title level={4} className={styles.cardTitle}>
+                {activeSection.title}
+              </Title>
+              <Paragraph className={styles.sectionContent}>
+                {activeSection.content || 'No content yet.'}
+              </Paragraph>
+            </Card>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
