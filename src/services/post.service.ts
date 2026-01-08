@@ -1,7 +1,7 @@
 // src/services/post.service.ts
-import { PostControllerApi, CreatePostRequest as ApiCreatePostRequest } from '@/services/api';
+import { PostControllerApi, CreatePostRequest as ApiCreatePostRequest, MediaUrlRequest as ApiMediaUrlRequest } from '@/services/api';
 import { mapPost, mapPosts } from '@/mappers/post.mapper';
-import { Post, CreatePostRequest } from '@/domain/post';
+import { Post, CreatePostRequest as DomainCreatePostRequest, PostMediaRequest } from '@/domain/post';
 import { apiClient } from './apiConfig';
 
 const api = new PostControllerApi(undefined, undefined, apiClient);
@@ -9,18 +9,21 @@ const api = new PostControllerApi(undefined, undefined, apiClient);
 /**
  * Tạo post mới
  */
-export const createPost = async (data: CreatePostRequest): Promise<Post> => {
+export const createPost = async (data: DomainCreatePostRequest): Promise<Post> => {
   // Map domain CreatePostRequest sang API CreatePostRequest
+  const apiMediaUrls: ApiMediaUrlRequest[] | undefined = data.mediaUrls?.map((m: PostMediaRequest) => ({
+    // The generated API expects 'url' field; backend now interprets this as publicId
+    url: m.publicId,
+    type: m.type,
+  }));
+
   const apiRequest: ApiCreatePostRequest = {
     content: data.content,
-    petId: data.petId,
-    hashtags: data.tags?.join(','),
-    // Map mediaUrls từ string[] sang MediaUrlRequest[]
-    mediaUrls: data.mediaUrls?.map(url => ({
-      url,
-      type: 'image', // Default type, có thể enhance sau
-    })),
-  };
+    petIds: data.petIds ?? (data.petId ? [data.petId] : undefined),
+    hashtags: data.hashtags,
+    type: data.type,
+    mediaUrls: apiMediaUrls,
+  } as ApiCreatePostRequest;
 
   const res = await api.createPost({ createPostRequest: apiRequest });
   return mapPost(res.data);
@@ -69,7 +72,15 @@ export const getPostsByUserId = async (userId: number): Promise<Post[]> => {
 /**
  * Cập nhật post
  */
-export const updatePost = async (id: number, data: CreatePostRequest): Promise<Post> => {
-  const res = await api.updatePost({ id, updatePostRequest: data });
+export const updatePost = async (id: number, data: DomainCreatePostRequest): Promise<Post> => {
+  // Map similar to create
+  const apiMediaUrls: ApiMediaUrlRequest[] | undefined = data.mediaUrls?.map((m: PostMediaRequest) => ({ url: m.publicId, type: m.type }));
+  const updateReq: any = {
+    content: data.content,
+    mediaUrls: apiMediaUrls,
+    hashtags: data.hashtags,
+    type: data.type,
+  };
+  const res = await api.updatePost({ id, updatePostRequest: updateReq });
   return mapPost(res.data);
 };

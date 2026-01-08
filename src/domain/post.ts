@@ -62,9 +62,15 @@ export interface PetTimeline {
 
 export interface CreatePostRequest {
   content: string;
-  petId: number;
-  mediaUrls?: string[];
+  // Allow single petId (legacy) or multiple petIds (UI supports tagging multiple pets)
+  petId?: number;
+  petIds?: number[];
+  // Frontend uses PostMediaRequest (publicId + type) when sending to backend
+  mediaUrls?: PostMediaRequest[];
   tags?: string[];
+  // Post type (general | rescue | lost ...)
+  type?: 'general' | 'rescue' | 'lost' | 'found' | 'story';
+  hashtags?: string;
 }
 
 export interface Comment {

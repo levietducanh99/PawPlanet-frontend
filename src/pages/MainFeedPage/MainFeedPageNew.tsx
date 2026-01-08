@@ -22,7 +22,7 @@ const MainFeedPage: React.FC = () => {
     if (!post) return;
 
     try {
-      await likePost(postId, post.isLiked);
+      await likePost(postId);
       // Refresh để lấy dữ liệu mới
       refresh();
     } catch (err) {
