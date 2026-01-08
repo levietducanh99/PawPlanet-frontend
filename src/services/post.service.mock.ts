@@ -343,12 +343,27 @@ export const createPost = async (request: CreatePostRequest): Promise<Post> => {
     shareCount: 0,
     isLiked: false,
     type: 'general',
-    media: request.mediaUrls?.map((url, index) => ({
-      id: Date.now() + index,
-      type: 'image' as const,
-      url,
-      displayOrder: index + 1
-    })) || [],
+    media: request.mediaUrls?.map((url, index) => {
+      const entry: any = url;
+      // If entry is a string (legacy), treat as direct URL
+      if (typeof entry === 'string') {
+        return {
+          id: Date.now() + index,
+          type: 'image' as const,
+          url: entry,
+          displayOrder: index + 1
+        };
+      }
+      // Otherwise expect object with publicId and type
+      const publicId = entry.publicId ?? String(entry);
+      const mediaType = entry.type ?? 'image';
+      return {
+        id: Date.now() + index,
+        type: mediaType as 'image' | 'video',
+        url: `https://res.cloudinary.com/demo/${mediaType}/upload/${publicId}`,
+        displayOrder: index + 1
+      };
+    }) || [],
     tags: request.tags || []
   };
 

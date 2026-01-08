@@ -4,12 +4,18 @@ export { useLogin, useRegister, useAuth } from './useAuth';
 export { useLogout } from './useLogout';
 export { useViewProfile, useProfileData } from './useProfile';
 export { useCreatePetWithImages } from './useCreatePetWithImages';
+export { useOptimistic } from './useOptimistic';
 export {
   usePetTimeline,
   useUserPets,
   usePostActions,
   useCreatePost,
-  usePostComments
+  usePostComments,
+  useNewsFeed,
+  useMyPosts,
+  usePostDetail,
+  usePetPosts,
+  useUserPosts,
 } from './usePost';
 export { usePetProfile } from './usePetProfile';
 export {

@@ -2450,7 +2450,7 @@
       "MediaUrlRequest": {
         "type": "object",
         "properties": {
-          "url": {
+          "publicId": {
             "type": "string"
           },
           "type": {

@@ -1,12 +1,15 @@
-import React from 'react';
-import { Card, Avatar, Button, Space, Typography, Tag, Divider } from 'antd';
+import React, { useState } from 'react';
+import { Card, Avatar, Button, Space, Typography, Tag, Divider, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
 import {
   HeartOutlined,
   HeartFilled,
   CommentOutlined,
   ShareAltOutlined,
-  EnvironmentOutlined,
-  PhoneOutlined
+  MoreOutlined,
+  GlobalOutlined,
+  LeftOutlined,
+  RightOutlined,
 } from '@ant-design/icons';
 import { motion } from 'motion/react';
 import type { Post } from '@/domain/post';
@@ -22,6 +25,16 @@ interface PostCardProps {
 }
 
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  // uiPost extends Post with optional UI-only fields used by the component
+  const uiPost = post as Post & {
+    petAvatar?: string;
+    badge?: string;
+    petOwnerName?: string;
+    petDisplay?: string;
+  };
+
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -32,75 +45,73 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
     return `${Math.floor(diffInHours / 24)}d ago`;
   };
 
-  const getPostTypeColor = (type: string) => {
-    switch (type) {
-      case 'adoption': return '#F2994A';
-      case 'lost': return '#EB5757';
-      case 'found': return '#27AE60';
-      case 'story': return '#1890FF';
-      default: return '#6B7280';
-    }
+  const prev = () => {
+    setCurrentIndex((i) => (i - 1 + (post.media?.length || 1)) % (post.media?.length || 1));
   };
-
-  const getPostTypeText = (type: string) => {
-    switch (type) {
-      case 'adoption': return 'For Adoption';
-      case 'lost': return 'Lost Pet';
-      case 'found': return 'Found Pet';
-      case 'story': return 'Pet Story';
-      default: return 'General';
-    }
+  const next = () => {
+    setCurrentIndex((i) => (i + 1) % (post.media?.length || 1));
   };
 
   const renderMedia = () => {
     if (!post.media || post.media.length === 0) return null;
 
-    if (post.media.length === 1) {
-      const media = post.media[0];
-      return (
-        <div className={styles.singleMedia}>
-          {media.type === 'video' ? (
+    // Carousel view (works for single or multiple)
+    const items = post.media;
+    const active = items[currentIndex];
+
+    return (
+      <div className={styles.mediaCarousel}>
+        <div className={styles.carouselViewport}>
+          {active.type === 'video' ? (
             <video
-              src={media.url}
-              poster={media.thumbnailUrl}
+              src={active.url}
+              poster={active.thumbnailUrl}
               controls
               className={styles.mediaItem}
             />
           ) : (
             <img
-              src={media.url}
-              alt="Post media"
+              src={active.url}
+              alt={`Post media ${currentIndex + 1}`}
               className={styles.mediaItem}
             />
           )}
-        </div>
-      );
-    }
 
-    // Multiple media - horizontal scroll gallery
-    return (
-      <div className={styles.mediaGallery}>
-        {post.media.map((media) => (
-          <div key={media.id} className={styles.galleryItem}>
-            {media.type === 'video' ? (
-              <video
-                src={media.url}
-                poster={media.thumbnailUrl}
-                controls
-                className={styles.galleryMedia}
+          {/* Left / Right arrows (show only if >1) */}
+          {items.length > 1 && (
+            <>
+              <button aria-label="Previous" onClick={prev} className={styles.carouselPrev}>
+                <LeftOutlined />
+              </button>
+              <button aria-label="Next" onClick={next} className={styles.carouselNext}>
+                <RightOutlined />
+              </button>
+            </>
+          )}
+        </div>
+
+        {/* Indicators */}
+        {items.length > 1 && (
+          <div className={styles.carouselIndicators}>
+            {items.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentIndex(i)}
+                className={`${styles.indicator} ${i === currentIndex ? styles.indicatorActive : ''}`}
+                aria-label={`Go to slide ${i + 1}`}
               />
-            ) : (
-              <img
-                src={media.url}
-                alt="Post media"
-                className={styles.galleryMedia}
-              />
-            )}
+            ))}
           </div>
-        ))}
+        )}
       </div>
     );
   };
+
+  const menuItems: MenuProps['items'] = [
+    { key: '1', label: 'Edit' },
+    { key: '2', label: 'Delete' },
+    { key: '3', label: 'Report' },
+  ];
 
   return (
     <motion.div
@@ -110,53 +121,42 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
     >
       <Card bordered={false} className={styles.postCard}>
         {/* Header */}
-        <div className={styles.postHeader}>
-          <Space size="middle">
-            <Avatar
-              src={post.authorAvatar}
-              size={48}
-              className={styles.avatar}
-            />
-            <div className={styles.authorInfo}>
-              <div className={styles.authorName}>
-                <Text strong>{post.authorName}</Text>
-                <Text type="secondary" className={styles.username}>
-                  @{post.authorUsername}
-                </Text>
-              </div>
-              <Space size="small" className={styles.metadata}>
-                <Text type="secondary" className={styles.timestamp}>
-                  {formatTimeAgo(post.createdAt)}
-                </Text>
-                {post.location && (
-                  <>
-                    <Text type="secondary">•</Text>
-                    <Space size={4}>
-                      <EnvironmentOutlined style={{ color: '#6B7280' }} />
-                      <Text type="secondary" className={styles.location}>
-                        {post.location}
-                      </Text>
-                    </Space>
-                  </>
+        <div className={styles.postHeaderNew}>
+          <Space size="middle" align="start">
+            <div className={styles.avatarWrapper}>
+              <Avatar src={uiPost.authorAvatar} size={56} className={styles.avatarRing} />
+              {uiPost.petAvatar && (
+                <Avatar src={uiPost.petAvatar} size={28} className={styles.petAvatar} />
+              )}
+            </div>
+
+            <div className={styles.authorInfoNew}>
+              <div className={styles.nameRow}>
+                <Text className={styles.displayName} strong>{uiPost.authorName}</Text>
+                {uiPost.badge && (
+                  <Tag className={styles.badgeTag} color="#EAE6FF">{uiPost.badge}</Tag>
                 )}
-              </Space>
+              </div>
+
+              <div className={styles.subline}>
+                <Text type="secondary">{uiPost.petOwnerName || uiPost.authorName} • {uiPost.petDisplay || ''}</Text>
+                <span className={styles.dot}>•</span>
+                <Text type="secondary">{formatTimeAgo(post.createdAt)}</Text>
+                <span className={styles.dot}>•</span>
+                <GlobalOutlined style={{ color: '#6B7280' }} />
+              </div>
             </div>
           </Space>
 
-          {/* Post type tag */}
-          {post.type !== 'general' && (
-            <Tag
-              style={{
-                backgroundColor: getPostTypeColor(post.type),
-                color: '#fff',
-                border: 'none',
-                borderRadius: 20,
-                fontWeight: 500
-              }}
+          <div className={styles.headerActions}>
+            <Dropdown
+              menu={{ items: menuItems }}
+              placement="bottomRight"
+              trigger={['click']}
             >
-              {getPostTypeText(post.type)}
-            </Tag>
-          )}
+              <Button type="text" icon={<MoreOutlined />} />
+            </Dropdown>
+          </div>
         </div>
 
         {/* Content */}
@@ -169,31 +169,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
           {post.tags && post.tags.length > 0 && (
             <div className={styles.tagsContainer}>
               {post.tags.map((tag) => (
-                <Text key={tag} className={styles.hashtag}>
-                  #{tag}
-                </Text>
+                <Text key={tag} className={styles.hashtag}>#{tag}</Text>
               ))}
-            </div>
-          )}
-
-          {/* Contact info for lost/found/adoption posts */}
-          {post.contactInfo && (
-            <div className={styles.contactInfo}>
-              <Space>
-                <PhoneOutlined style={{ color: '#1890FF' }} />
-                <Text strong style={{ color: '#1890FF' }}>
-                  {post.contactInfo}
-                </Text>
-              </Space>
-            </div>
-          )}
-
-          {/* Pet info */}
-          {post.petName && (
-            <div className={styles.petInfo}>
-              <Text type="secondary">
-                Featuring: <Text strong>{post.petName}</Text>
-              </Text>
             </div>
           )}
         </div>
@@ -209,16 +186,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
             <motion.div whileTap={{ scale: 0.95 }}>
               <Button
                 type="text"
-                icon={post.isLiked ?
+                icon={uiPost.isLiked ?
                   <HeartFilled style={{ color: '#EB5757' }} /> :
                   <HeartOutlined />
                 }
-                onClick={() => onLike(post.id)}
+                onClick={() => onLike(uiPost.id)}
                 className={styles.actionButton}
               >
-                <span className={post.isLiked ? styles.likedText : styles.actionText}>
-                  {post.likeCount}
-                </span>
+                <span className={uiPost.isLiked ? styles.likedText : styles.actionText}>{uiPost.likeCount}</span>
               </Button>
             </motion.div>
 
@@ -229,9 +204,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
                 onClick={() => onComment(post.id)}
                 className={styles.actionButton}
               >
-                <span className={styles.actionText}>
-                  {post.commentCount}
-                </span>
+                <span className={styles.actionText}>{post.commentCount}</span>
               </Button>
             </motion.div>
 
@@ -242,9 +215,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
                 onClick={() => onShare(post.id)}
                 className={styles.actionButton}
               >
-                <span className={styles.actionText}>
-                  {post.shareCount}
-                </span>
+                <span className={styles.actionText}>{post.shareCount}</span>
               </Button>
             </motion.div>
           </Space>
