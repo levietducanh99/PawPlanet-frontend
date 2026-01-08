@@ -22,7 +22,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
   return (
     <div
       className={styles.heroSection}
-      style={{ backgroundImage: `url(${image})` }}
+      style={{ ['--hero-image' as any]: `url(${image})` }}
     >
       <div className={styles.heroOverlay}>
         {status && (

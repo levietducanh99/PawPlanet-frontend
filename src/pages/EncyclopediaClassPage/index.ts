@@ -1,0 +1,2 @@
+export { EncyclopediaClassPage } from './EncyclopediaClassPage';
+
