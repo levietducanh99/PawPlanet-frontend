@@ -9,8 +9,7 @@ import { useUserPets } from '@/hooks/useUserPets';
 import { useNavigate } from 'react-router-dom';
 import { uploadMedia } from '@/services/media.service';
 import type { CloudinaryUploadResponse } from '@/domain/media';
-import type { PetProfileDTO } from '@/services/api';
-import type { PostMediaRequest } from '@/domain/post';
+import type { PetProfileDTO, MediaUrlRequest } from '@/services/api';
 import styles from './CreatePostModal.module.css';
 
 
@@ -89,7 +88,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
 
       // Chuẩn hóa dữ liệu gửi API - Backend chỉ cần publicId và type
       const hashtags = '';
-      const mediaUrls: PostMediaRequest[] = uploadedMedia.map(f => {
+      const mediaUrls: MediaUrlRequest[] = uploadedMedia.map(f => {
         // Detect media type từ resourceType của Cloudinary
         const mediaType = f.resourceType === 'video' ? 'video' : 'image';
 
@@ -104,10 +103,9 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
         hashtags,
         type,
         petIds: selectedPets,
-        mediaUrls: mediaUrls as any, // Cast to any vì API type chưa được regenerate
+        mediaUrls, // No need to cast - already correct type
       };
 
-      console.log('📤 Create Post Request:', data);
 
       const result = await submit(data);
       if (result) {

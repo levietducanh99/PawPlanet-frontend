@@ -19,6 +19,7 @@ import { PetImportantDates } from '../../components/PetImportantDates';
 import { PetAppearanceForm } from '../../components/PetAppearanceForm';
 import { PetProfileSettings } from '../../components/PetProfileSettings';
 import { usePetDetail, useUpdatePet } from '../../hooks';
+import { uploadMediaForPet } from '../../services/media.service';
 import styles from './EditPetPage.module.css';
 import { pageVariants } from '../../animations/variants';
 
@@ -38,6 +39,7 @@ export const EditPetPage: React.FC = () => {
   const [settingsForm] = Form.useForm();
 
   const [saving, setSaving] = useState(false);
+  const [newAvatarFile, setNewAvatarFile] = useState<File | null>(null);
 
   const isSubmitting = saving || updating;
 
@@ -97,6 +99,11 @@ export const EditPetPage: React.FC = () => {
     }
   }, [profile, basicForm, datesForm, appearanceForm, settingsForm]);
 
+  const handleAvatarChange = (file: File | null) => {
+    console.log('🖼️ Avatar changed:', file?.name);
+    setNewAvatarFile(file);
+  };
+
   const handleSettingsChange = (field: string, value: boolean) => {
     console.log(`Settings changed: ${field} = ${value}`);
   };
@@ -113,7 +120,29 @@ export const EditPetPage: React.FC = () => {
         settingsForm.validateFields(),
       ]);
 
-      // Prepare update data for API
+      let avatarUploadSuccess = false;
+
+      // Step 1: Upload new avatar if changed (using uploadMediaForPet with role='avatar')
+      if (newAvatarFile) {
+        console.log('🖼️ EditPet: Uploading new avatar...');
+        console.log('📁 Avatar file:', newAvatarFile.name, 'Type:', newAvatarFile.type, 'Size:', newAvatarFile.size);
+        console.log('🐾 Pet ID:', petId);
+
+        try {
+          // This will: 1) Upload to Cloudinary (PET_AVATAR context)
+          //            2) Update pet via PUT /api/v1/pets/{id} with avatarPublicId
+          const uploadResult = await uploadMediaForPet(petId, newAvatarFile, 'avatar');
+          console.log('✅ Avatar uploaded and linked successfully:', uploadResult);
+          avatarUploadSuccess = true;
+          message.success('Avatar uploaded successfully! 📸');
+        } catch (uploadError) {
+          console.error('❌ Avatar upload failed:', uploadError);
+          message.error('Failed to upload avatar. Continuing with other updates...');
+          // Continue with update even if avatar upload fails
+        }
+      }
+
+      // Step 2: Prepare update data for other pet profile fields
       const updateData = {
         name: basicValues.petName,
         gender: basicValues.gender,
@@ -122,27 +151,31 @@ export const EditPetPage: React.FC = () => {
         status: settingsValues.profileVisibility ? 'PUBLIC' : 'HIDDEN',
         weight: basicValues.weight ? parseFloat(basicValues.weight) : undefined,
         height: basicValues.height ? parseFloat(basicValues.height) : undefined,
-        // Note: Species and breed updates might require separate API calls
-        // or be handled differently based on backend design
+        // Note: Avatar is handled separately via uploadMediaForPet above
+        // It updates avatarPublicId through PUT /api/v1/pets/{id}
       };
 
       console.log('🔄 Pet data to update:', updateData);
 
-      // Call API to update pet
+      // Step 3: Call API to update pet profile (other fields)
       const success = await updatePetData(petId, updateData);
 
       if (success) {
-        message.success('Pet profile updated successfully! 🎉');
+        const successMessage = avatarUploadSuccess
+          ? 'Pet profile and avatar updated successfully! 🎉'
+          : 'Pet profile updated successfully! 🎉';
+        message.success(successMessage);
         navigate(`/pets/${petId}`);
       } else {
         message.error(updateError || 'Failed to update pet profile');
       }
 
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error('❌ Validation or update failed:', error);
       message.error('Please check all required fields');
     } finally {
       setSaving(false);
+      console.log('🏁 EditPet: Save process finished');
     }
   };
 
@@ -206,6 +239,7 @@ export const EditPetPage: React.FC = () => {
                       </Title>
                       <PetPhotoUpload
                         currentPhoto={profile?.avatarUrl}
+                        onPhotoChange={handleAvatarChange}
                       />
                     </div>
 

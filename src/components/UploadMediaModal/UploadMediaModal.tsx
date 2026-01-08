@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Upload, Button, message, Typography, Space, Radio } from 'antd';
+import { Modal, Upload, Button, message, Typography, Space } from 'antd';
 import { PlusOutlined, CloudUploadOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd';
 import { uploadMediaForPet } from '@/services/media.service';
@@ -23,11 +23,16 @@ export const UploadMediaModal: React.FC<UploadMediaModalProps> = ({
 }) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [uploading, setUploading] = useState(false);
-  const [mediaRole, setMediaRole] = useState<'primary' | 'avatar' | 'gallery'>('gallery');
+  // Gallery uploads only - backend will assign roles automatically
+  const mediaRole = 'gallery';
 
   const handleUpload = async () => {
+    console.log('🟢 UploadMediaModal: handleUpload triggered');
+    console.log('📁 Files to upload:', fileList.length);
+    console.log('🐾 Pet ID:', petId);
+
     if (fileList.length === 0) {
-      message.warning('Please select at least one photo');
+      message.warning('Please select at least one photo or video');
       return;
     }
 
@@ -36,18 +41,39 @@ export const UploadMediaModal: React.FC<UploadMediaModalProps> = ({
     let errorCount = 0;
 
     try {
+      console.log('🚀 Starting upload process...');
       // Upload each file
       for (const file of fileList) {
-        if (file.originFileObj) {
+        console.log('📤 Processing file:', file.name, 'UID:', file.uid);
+        console.log('🔍 File structure:', {
+          name: file.name,
+          uid: file.uid,
+          type: file.type,
+          size: file.size,
+          hasOriginFileObj: !!file.originFileObj,
+          fileKeys: Object.keys(file)
+        });
+
+        // The file itself might BE the originFileObj when added via beforeUpload
+        const actualFile = file.originFileObj || (file as any);
+        console.log('🔍 Using file:', actualFile instanceof File ? 'File object' : 'Not a File', actualFile);
+
+        if (actualFile instanceof File) {
           try {
-            await uploadMediaForPet(petId, file.originFileObj, mediaRole);
+            console.log('🔵 Calling uploadMediaForPet for:', file.name);
+            const result = await uploadMediaForPet(petId, actualFile, mediaRole);
+            console.log('✅ Upload success for:', file.name, result);
             successCount++;
           } catch (error) {
-            console.error('Upload error:', error);
+            console.error('❌ Upload error for:', file.name, error);
             errorCount++;
           }
+        } else {
+          console.error('⚠️ No valid File object for:', file.name, 'Type:', typeof actualFile);
         }
       }
+
+      console.log('📊 Upload summary - Success:', successCount, 'Errors:', errorCount);
 
       if (successCount > 0) {
         message.success(`Successfully uploaded ${successCount} file(s)`);
@@ -60,10 +86,11 @@ export const UploadMediaModal: React.FC<UploadMediaModalProps> = ({
         message.error(`Failed to upload ${errorCount} file(s)`);
       }
     } catch (error) {
-      console.error('Upload process error:', error);
+      console.error('💥 Upload process error:', error);
       message.error('Failed to upload photos');
     } finally {
       setUploading(false);
+      console.log('🏁 Upload process finished');
     }
   };
 
@@ -71,12 +98,15 @@ export const UploadMediaModal: React.FC<UploadMediaModalProps> = ({
     listType: 'picture-card',
     fileList,
     beforeUpload: (file) => {
+      console.log('📥 beforeUpload called for:', file.name, 'Type:', file.type);
+
       // Validate file type - allow images and videos
       const isImage = file.type.startsWith('image/');
       const isVideo = file.type.startsWith('video/');
 
       if (!isImage && !isVideo) {
         message.error('You can only upload image or video files!');
+        console.log('❌ Invalid file type:', file.type);
         return Upload.LIST_IGNORE;
       }
 
@@ -86,14 +116,35 @@ export const UploadMediaModal: React.FC<UploadMediaModalProps> = ({
 
       if (!isUnderLimit) {
         message.error(`${isVideo ? 'Video' : 'Image'} must be smaller than ${maxSize}MB!`);
+        console.log('❌ File too large:', file.size / 1024 / 1024, 'MB');
         return Upload.LIST_IGNORE;
       }
 
-      setFileList([...fileList, file as any]);
+      // Add file to list with proper UploadFile structure
+      setFileList(prevList => {
+        const uploadFile: UploadFile = {
+          uid: file.uid,
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          status: 'done',
+          originFileObj: file, // ✅ This is the key property!
+        } as UploadFile;
+
+        const newList = [...prevList, uploadFile];
+        console.log('✅ File added to list. Total files:', newList.length);
+        console.log('🔍 Added file structure:', {
+          name: uploadFile.name,
+          hasOriginFileObj: !!uploadFile.originFileObj
+        });
+        return newList;
+      });
+
       return false; // Prevent auto upload
     },
     onRemove: (file) => {
-      setFileList(fileList.filter(item => item.uid !== file.uid));
+      console.log('🗑️ Removing file:', file.name);
+      setFileList(prevList => prevList.filter(item => item.uid !== file.uid));
     },
     multiple: true,
     accept: 'image/*,video/*'
@@ -101,14 +152,13 @@ export const UploadMediaModal: React.FC<UploadMediaModalProps> = ({
 
   const handleCancel = () => {
     setFileList([]);
-    setMediaRole('gallery');
     onClose();
   };
 
   return (
     <Modal
       open={visible}
-      title={`Upload Photos for ${petName}`}
+      title={`Upload Media to ${petName}'s Gallery`}
       onCancel={handleCancel}
       width={700}
       footer={[
@@ -130,32 +180,12 @@ export const UploadMediaModal: React.FC<UploadMediaModalProps> = ({
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         <div>
           <Paragraph type="secondary">
-            Add beautiful photos and videos to {petName}'s library. Media will be visible to all followers.
+            Add beautiful photos and videos to {petName}'s gallery. Media will be visible to all followers.
           </Paragraph>
         </div>
 
         <div>
-          <Text strong>Photo Role:</Text>
-          <br />
-          <Radio.Group
-            value={mediaRole}
-            onChange={(e) => setMediaRole(e.target.value)}
-            style={{ marginTop: '8px' }}
-          >
-            <Radio.Button value="gallery">Gallery Photo</Radio.Button>
-            <Radio.Button value="primary">Primary Photo</Radio.Button>
-            <Radio.Button value="avatar">Avatar</Radio.Button>
-          </Radio.Group>
-          <br />
-          <Text type="secondary" style={{ fontSize: '12px' }}>
-            {mediaRole === 'gallery' && '📸 Regular photo for the gallery'}
-            {mediaRole === 'primary' && '⭐ Featured photo shown prominently'}
-            {mediaRole === 'avatar' && '👤 Profile picture for this pet'}
-          </Text>
-        </div>
-
-        <div>
-          <Text strong>Select Photos:</Text>
+          <Text strong>Select Media:</Text>
           <Upload {...uploadProps}>
             <div>
               <PlusOutlined />

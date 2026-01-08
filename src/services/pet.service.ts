@@ -3,6 +3,7 @@ import {
   EncyclopediaSpeciesApi,
   EncyclopediaBreedsApi,
   CreatePetRequestDTO,
+  UpdatePetRequestDTO,
   PetProfileDTO,
   AllPetsResponseDTO,
   SpeciesResponse,
@@ -215,26 +216,27 @@ export const petService = {
     try {
       console.log('🔵 petService.updatePet: Updating pet ID:', id, 'with data:', updateData);
 
-      // Convert CreatePetRequest to CreatePetData format
-      const petData: Partial<CreatePetData> = {
+      // Convert CreatePetRequest to UpdatePetRequestDTO format
+      const updatePetRequestDTO: UpdatePetRequestDTO = {
         name: updateData.name,
         speciesId: updateData.speciesId,
         breedId: updateData.breedId,
         birthDate: updateData.birthDate,
-        gender: updateData.gender as 'MALE' | 'FEMALE' | 'OTHER',
-        description: updateData.description
+        gender: updateData.gender,
+        description: updateData.description,
+        status: updateData.status,
+        weight: updateData.weight,
+        height: updateData.height,
       };
 
-      // Manual API call since generated API might not have update method
-      const response = await apiClient.put(`/api/v1/pets/${id}`, petData, {
-        headers: {
-          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
-          'Content-Type': 'application/json'
-        }
+      // Use generated API method
+      const response = await petApi.updatePet({
+        id,
+        updatePetRequestDTO
       });
 
       console.log('🔵 petService.updatePet: Success:', response.data);
-      return response.data;
+      return response.data as unknown as Pet;
     } catch (error: any) {
       console.error('🔴 petService.updatePet - ERROR:', error.response?.status, error.response?.data);
 
