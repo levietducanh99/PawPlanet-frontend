@@ -5,6 +5,7 @@ import {
   EncyclopediaBreedsApi,
   EncyclopediaSearchApi,
 } from '@/services/api';
+import { EncyclopediaMediaApi, AddEncyclopediaMediaRequest } from '@/services/api/api';
 
 import apiClient from '@/services/apiConfig';
 
@@ -36,6 +37,7 @@ const classesApi = new EncyclopediaClassesApi(apiConfiguration, undefined, apiCl
 const speciesApi = new EncyclopediaSpeciesApi(apiConfiguration, undefined, apiClient);
 const breedsApi = new EncyclopediaBreedsApi(apiConfiguration, undefined, apiClient);
 const searchApi = new EncyclopediaSearchApi(apiConfiguration, undefined, apiClient);
+const mediaApi = new EncyclopediaMediaApi(apiConfiguration, undefined, apiClient);
 
 export interface ListSpeciesParams {
   page?: number;
@@ -74,6 +76,25 @@ export const encyclopediaService = {
     return mapSpeciesDetail(dto ?? { id });
   },
 
+  async getSpeciesBySlug(slug: string): Promise<EncyclopediaSpeciesDetail> {
+    // Search for species by slug using the search endpoint, then fetch detail by id
+    const res = await speciesApi.search({ q: slug, page: 0, size: 10 });
+    const items = res.data?.result?.items ?? [];
+    const match = (items as any[]).find((it) => it.slug === slug || String(it.id) === slug);
+    if (match?.id) {
+      const detailRes = await speciesApi.getById({ id: match.id });
+      return mapSpeciesDetail(detailRes.data?.result ?? { id: match.id });
+    }
+    // Fallback: if not found, try a direct id parse
+    const maybeId = Number(slug);
+    if (!Number.isNaN(maybeId)) {
+      const detailRes = await speciesApi.getById({ id: maybeId });
+      return mapSpeciesDetail(detailRes.data?.result ?? { id: maybeId });
+    }
+
+    throw new Error('Species not found');
+  },
+
   async searchSpecies(q: string, params: ListSpeciesParams = {}): Promise<PagedResult<EncyclopediaSpeciesListItem>> {
     const res = await speciesApi.search({ q, page: params.page, size: params.size });
     return mapPagedSpecies(res.data?.result);
@@ -106,9 +127,36 @@ export const encyclopediaService = {
     return mapBreedDetail(dto ?? { id });
   },
 
+  async getBreedBySlug(slug: string): Promise<EncyclopediaBreedDetail> {
+    // Search for breed by slug using the list endpoint, then fetch detail by id
+    const res = await breedsApi.list1({ page: 0, size: 10 });
+    const items = res.data?.result?.items ?? [];
+    const match = (items as any[]).find((it) => it.slug === slug || String(it.id) === slug);
+    if (match?.id) {
+      const detailRes = await breedsApi.getById2({ id: match.id });
+      return mapBreedDetail(detailRes.data?.result ?? { id: match.id });
+    }
+    // Fallback: if not found, try a direct id parse
+    const maybeId = Number(slug);
+    if (!Number.isNaN(maybeId)) {
+      const detailRes = await breedsApi.getById2({ id: maybeId });
+      return mapBreedDetail(detailRes.data?.result ?? { id: maybeId });
+    }
+
+    throw new Error('Breed not found');
+  },
+
   async globalSearch(q: string): Promise<EncyclopediaSearchResult> {
     const res = await searchApi.search1({ q });
     const dto = res.data?.result;
     return mapSearch(dto ?? { items: [] });
+  },
+
+  async addMediaToSpecies(speciesId: number, request: AddEncyclopediaMediaRequest): Promise<void> {
+    await mediaApi.addMediaToSpecies({ speciesId, addEncyclopediaMediaRequest: request });
+  },
+
+  async addMediaToBreed(breedId: number, request: AddEncyclopediaMediaRequest): Promise<void> {
+    await mediaApi.addMediaToBreed({ breedId, addEncyclopediaMediaRequest: request });
   },
 };

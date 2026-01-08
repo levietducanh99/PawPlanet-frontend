@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
@@ -10,20 +10,29 @@ import {
   Typography,
   Image,
   Empty,
-  Spin
+  Spin,
+  message,
+  Popconfirm,
+  Space
 } from 'antd';
 import {
   HeartOutlined,
+  HeartFilled,
   UserOutlined,
   CameraOutlined,
   LockOutlined,
   ArrowLeftOutlined,
-  ShareAltOutlined
+  ShareAltOutlined,
+  PlusOutlined,
+  PlayCircleOutlined,
+  EditOutlined
 } from '@ant-design/icons';
-import { Loading, ErrorMessage } from '../../components';
+import { Sidebar, Header, Loading, ErrorMessage } from '../../components';
 import PostCard from '../../components/PostCard';
+import { PhotoGalleryModal } from '../../components/PhotoGalleryModal';
+import { UploadMediaModal } from '../../components/UploadMediaModal';
 import {
-  usePetProfile,
+  useViewPet,
   usePetTimeline
 } from '../../hooks';
 import styles from './ViewPetPage.module.css';
@@ -31,250 +40,214 @@ import { pageVariants } from '../../animations/variants';
 
 const { Title, Text, Paragraph } = Typography;
 
-// Mock user profiles với different privacy states
-const mockUserProfiles = {
-  'sarah-johnson': {
-    id: 1,
-    username: 'Sarah Johnson',
-    avatar: 'https://i.pravatar.cc/150?img=1',
-    pets: [
-      { id: 1, name: 'Charlie', type: 'dog', isPrivate: false },
-      { id: 2, name: 'Max', type: 'cat', isPrivate: false }
-    ]
-  },
-  'michael-chen': {
-    id: 2,
-    username: 'Michael Chen',
-    avatar: 'https://i.pravatar.cc/150?img=2',
-    pets: [
-      { id: 3, name: 'Buddy', type: 'dog', isPrivate: true }
-    ]
-  },
-  'empty-user': {
-    id: 3,
-    username: 'John Smith',
-    avatar: 'https://i.pravatar.cc/150?img=3',
-    pets: []
-  }
-};
-
 export const ViewPetPage: React.FC = () => {
-  const { username } = useParams<{ username: string }>();
+  const { petId } = useParams<{ petId: string }>();
   const navigate = useNavigate();
 
-  // Get user profile from mock data
-  const userProfile = username ? mockUserProfiles[username as keyof typeof mockUserProfiles] : null;
+  // Convert petId to number
+  const petIdNumber = petId ? parseInt(petId, 10) : null;
 
-  // Determine the state
-  const hasNoPets = userProfile?.pets.length === 0;
-  const hasPrivatePets = userProfile?.pets.some(pet => pet.isPrivate) && userProfile?.pets.every(pet => pet.isPrivate);
+  console.log('🐕 ViewPetPage: URL petId param:', petId);
+  console.log('🐕 ViewPetPage: Parsed petIdNumber:', petIdNumber);
 
-  if (!userProfile) {
-    return <ErrorMessage message="User not found" />;
-  }
+  // State for unfollow button hover effect
+  const [isUnfollowHovered, setIsUnfollowHovered] = useState(false);
 
-  // State 3: No Pets to Show
-  if (hasNoPets) {
-    return (
-      <motion.div
-        className={styles.pageContainer}
-        variants={pageVariants}
-        initial="initial"
-        animate="animate"
-      >
-        <div className={styles.backButton}>
-          <Button
-            icon={<ArrowLeftOutlined />}
-            type="text"
-            onClick={() => navigate(-1)}
-            className={styles.backBtn}
-          >
-            Back
-          </Button>
-        </div>
+  // State for photo gallery modal
+  const [showGalleryModal, setShowGalleryModal] = useState(false);
 
-        <div className={styles.emptyState}>
-          <Card className={styles.emptyCard} bordered={false}>
-            <div className={styles.emptyContent}>
-              <div className={styles.userHeader}>
-                <Avatar
-                  size={64}
-                  src={userProfile.avatar}
-                  className={styles.userAvatar}
-                />
-                <Title level={3} className={styles.userName}>
-                  {userProfile.username}'s Pets
-                </Title>
-              </div>
+  // State for upload media modal
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className={styles.emptyIcon}
-              >
-                <div className={styles.iconContainer}>
-                  ✨
-                </div>
-              </motion.div>
+  // Use the integrated hook
+  const {
+    pet,
+    pageLoading,     // Only for initial page load
+    error,
+    canFollow,
+    isFollowing,
+    handleFollowToggle,
+    followLoading,   // Only for follow/unfollow button
+    isOwner,
+    isPrivate,
+    refetch,
+    isOptimistic // Track if using optimistic state
+  } = useViewPet(petIdNumber);
 
-              <Title level={2} className={styles.emptyTitle}>
-                No Pets to Show
-              </Title>
+  useEffect(() => {
+    console.log('🔥 ViewPetPage MOUNT');
+    return () => {
+      console.log('💀 ViewPetPage UNMOUNT');
+    };
+  }, []);
 
-              <Paragraph className={styles.emptyDescription}>
-                Michael Chen hasn't added any pets yet. Check back later, or
-                explore other amazing pets in the PawPlanet community 🐾
-              </Paragraph>
+  // Get pet timeline
+  const { timeline, loading: timelineLoading } = usePetTimeline(petIdNumber);
 
-              <div className={styles.emptyActions}>
-                <Button
-                  type="primary"
-                  icon={<CameraOutlined />}
-                  size="large"
-                  className={styles.exploreButton}
-                >
-                  Explore Other Pets
-                </Button>
+  // Handle follow button click
+  const handleFollowClick = async () => {
+    const success = await handleFollowToggle();
+    if (success) {
+      if (isFollowing) {
+        message.success(`Unfollowed ${pet?.name} successfully`);
+      } else {
+        message.success(`Now following ${pet?.name}! 🎉`);
+      }
+    } else {
+      message.error('Failed to update follow status. Please try again.');
+    }
+  };
 
-                <Button
-                  type="default"
-                  icon={<UserOutlined />}
-                  size="large"
-                  className={styles.homeButton}
-                  onClick={() => navigate('/my-pets')}
-                >
-                  Go to Home
-                </Button>
-              </div>
+  // Handle upload success - refetch pet data to show new media
+  const handleUploadSuccess = () => {
+    console.log('🔄 Media uploaded, refetching pet data...');
+    if (refetch) {
+      refetch();
+    }
+  };
 
-              <div className={styles.helpSection}>
-                <Text type="secondary" className={styles.helpText}>
-                  Did you know?
-                </Text>
-                <Paragraph className={styles.helpDescription}>
-                  Every pet on PawPlanet has a unique story. Start exploring pets right here and meet new furry friends to
-                  follow!
-                </Paragraph>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // State 2: Private Profile
-  if (hasPrivatePets) {
-    return (
-      <motion.div
-        className={styles.pageContainer}
-        variants={pageVariants}
-        initial="initial"
-        animate="animate"
-      >
-        <div className={styles.backButton}>
-          <Button
-            icon={<ArrowLeftOutlined />}
-            type="text"
-            onClick={() => navigate(-1)}
-            className={styles.backBtn}
-          >
-            Back
-          </Button>
-        </div>
-
-        <div className={styles.privateState}>
-          <Card className={styles.privateCard} bordered={false}>
-            <div className={styles.privateContent}>
-              <div className={styles.userHeader}>
-                <Avatar
-                  size={64}
-                  src={userProfile.avatar}
-                  className={styles.userAvatar}
-                />
-                <Title level={3} className={styles.userName}>
-                  {userProfile.username}'s Pets
-                </Title>
-              </div>
-
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className={styles.lockIcon}
-              >
-                <div className={styles.lockContainer}>
-                  <LockOutlined />
-                </div>
-              </motion.div>
-
-              <Title level={2} className={styles.privateTitle}>
-                This Profile is Private
-              </Title>
-
-              <Paragraph className={styles.privateDescription}>
-                Sarah Johnson has set this pet profile to private. Only they
-                can view this adorable friend's profile. 😊
-              </Paragraph>
-
-              <div className={styles.privacyNote}>
-                <div className={styles.privacyIcon}>
-                  🔒
-                </div>
-                <div className={styles.privacyContent}>
-                  <Text strong>Privacy Protected</Text>
-                  <br />
-                  <Text type="secondary" className={styles.privacyText}>
-                    Respecting privacy by keeping this pet profile. We want to
-                    keep fluffy's information private and anonymous.
-                  </Text>
-                </div>
-              </div>
-
-              <div className={styles.privateActions}>
-                <Button
-                  type="primary"
-                  icon={<CameraOutlined />}
-                  size="large"
-                  className={styles.exploreButton}
-                >
-                  Explore Other Pets
-                </Button>
-
-                <Button
-                  type="default"
-                  icon={<UserOutlined />}
-                  size="large"
-                  className={styles.homeButton}
-                  onClick={() => navigate('/my-pets')}
-                >
-                  Go to Home
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // State 1: Public Pet Profile (existing functionality)
-  const currentPet = userProfile.pets.find(pet => !pet.isPrivate);
-  const { profile, loading: profileLoading } = usePetProfile(currentPet?.id || 1);
-  const { timeline, loading: timelineLoading } = usePetTimeline(currentPet?.id || 1);
-
-  if (profileLoading) {
+  // Loading state - ONLY for initial page load
+  if (pageLoading) {
     return <Loading />;
   }
 
+  // Error state
+  if (error || !pet) {
+    return (
+      <>
+        <Header />
+        <div className={styles.pageContainer}>
+          <Sidebar />
+          <motion.main
+            className={styles.mainContent}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+          >
+            <ErrorMessage message={error || 'Pet not found'} />
+          </motion.main>
+        </div>
+      </>
+    );
+  }
+
+  // State: Private Profile (status = hidden)
+  if (isPrivate && !isOwner) {
+    return (
+      <>
+        <Header />
+        <div className={styles.pageContainer}>
+          <Sidebar />
+
+          <motion.main
+            className={styles.mainContent}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+          >
+            <div className={styles.backButton}>
+              <Button
+                icon={<ArrowLeftOutlined />}
+                type="text"
+                onClick={() => navigate(-1)}
+                className={styles.backBtn}
+              >
+                Back
+              </Button>
+            </div>
+
+            <div className={styles.privateState}>
+              <Card className={styles.privateCard} bordered={false}>
+                <div className={styles.privateContent}>
+                  <div className={styles.userHeader}>
+                    <Avatar
+                      size={64}
+                      icon={<UserOutlined />}
+                      className={styles.userAvatar}
+                    />
+                    <Title level={3} className={styles.userName}>
+                      {pet.ownerUsername}'s Pet
+                    </Title>
+                  </div>
+
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className={styles.lockIcon}
+                  >
+                    <div className={styles.lockContainer}>
+                      <LockOutlined />
+                    </div>
+                  </motion.div>
+
+                  <Title level={2} className={styles.privateTitle}>
+                    This Profile is Private
+                  </Title>
+
+                  <Paragraph className={styles.privateDescription}>
+                    {pet.ownerUsername} has set this pet profile to private. Only they
+                    can view this adorable friend's profile. 😊
+                  </Paragraph>
+
+                  <div className={styles.privacyNote}>
+                    <div className={styles.privacyIcon}>
+                      🔒
+                    </div>
+                    <div className={styles.privacyContent}>
+                      <Text strong>Privacy Protected</Text>
+                      <br />
+                      <Text type="secondary" className={styles.privacyText}>
+                        Respecting privacy by keeping this pet profile. We want to
+                        keep {pet.name}'s information private and secure.
+                      </Text>
+                    </div>
+                  </div>
+
+                  <div className={styles.privateActions}>
+                    <Button
+                      type="primary"
+                      icon={<CameraOutlined />}
+                      size="large"
+                      className={styles.exploreButton}
+                      onClick={() => navigate('/encyclopedia')}
+                    >
+                      Explore Other Pets
+                    </Button>
+
+                    <Button
+                      type="default"
+                      icon={<UserOutlined />}
+                      size="large"
+                      className={styles.homeButton}
+                      onClick={() => navigate('/my-pets')}
+                    >
+                      Go to Home
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </motion.main>
+        </div>
+      </>
+    );
+  }
+
+  // State: Public Pet Profile (existing functionality with real API data)
   return (
-    <motion.div
-      className={styles.pageContainer}
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-    >
+    <>
+      <Header />
+
+      <div className={styles.pageContainer}>
+        <Sidebar />
+
+        <motion.main
+          className={styles.mainContent}
+          variants={pageVariants}
+          initial="initial"
+          animate="animate"
+        >
           <div className={styles.backButton}>
             <Button
               icon={<ArrowLeftOutlined />}
@@ -300,11 +273,11 @@ export const ViewPetPage: React.FC = () => {
                     <div className={styles.ownerHeader}>
                       <Avatar
                         size={40}
-                        src={userProfile.avatar}
+                        icon={<UserOutlined />}
                         className={styles.ownerAvatar}
                       />
                       <div className={styles.ownerInfo}>
-                        <Text strong className={styles.ownerName}>{userProfile.username}</Text>
+                        <Text strong className={styles.ownerName}>{pet.ownerUsername}</Text>
                         <Text type="secondary" className={styles.ownerLabel}>Pet Owner</Text>
                       </div>
                     </div>
@@ -312,26 +285,81 @@ export const ViewPetPage: React.FC = () => {
                     <div className={styles.petHeader}>
                       <Avatar
                         size={80}
-                        src={profile?.avatarUrl}
+                        src={pet.avatarUrl}
                         icon={<UserOutlined />}
                         className={styles.petAvatar}
                       />
                       <div className={styles.petBasicInfo}>
                         <Title level={3} className={styles.petName}>
-                          {profile?.name} 🐕
+                          {pet.name} {pet.speciesName === 'Dog' ? '🐕' : pet.speciesName === 'Cat' ? '🐱' : '🐾'}
                         </Title>
                         <Text className={styles.petSubtitle}>
-                          {profile?.breed}
+                          {pet.breedName || pet.speciesName}
                         </Text>
                         <div className={styles.petActions}>
-                          <Button
-                            type="primary"
-                            icon={<HeartOutlined />}
-                            size="small"
-                            className={styles.followButton}
-                          >
-                            Follow
-                          </Button>
+                          {canFollow && (
+                            <>
+                              {isFollowing ? (
+                                <Popconfirm
+                                  title={`Unfollow ${pet.name}?`}
+                                  description={`You will no longer see ${pet.name}'s updates in your feed.`}
+                                  onConfirm={handleFollowClick}
+                                  okText="Unfollow"
+                                  cancelText="Cancel"
+                                  okButtonProps={{ danger: true, loading: followLoading }}
+                                >
+                                  <Button
+                                    type="default"
+                                    icon={<HeartFilled />}
+                                    size="small"
+                                    className={styles.followButton}
+                                    loading={followLoading}
+                                    onMouseEnter={() => setIsUnfollowHovered(true)}
+                                    onMouseLeave={() => setIsUnfollowHovered(false)}
+                                    danger={isUnfollowHovered}
+                                    style={{ 
+                                      opacity: isOptimistic ? 0.7 : 1,
+                                      transition: 'opacity 0.2s ease'
+                                    }}
+                                  >
+                                    {isUnfollowHovered ? 'Unfollow' : 'Following'}
+                                  </Button>
+                                </Popconfirm>
+                              ) : (
+                                <Button
+                                  type="primary"
+                                  icon={<HeartOutlined />}
+                                  size="small"
+                                  className={styles.followButton}
+                                  onClick={handleFollowClick}
+                                  loading={followLoading}
+                                  style={{ 
+                                    opacity: isOptimistic ? 0.7 : 1,
+                                    transition: 'opacity 0.2s ease'
+                                  }}
+                                >
+                                  Follow
+                                </Button>
+                              )}
+                            </>
+                          )}
+
+                          {/* Edit button - only for owner */}
+                          {isOwner && (
+                            <Button
+                              icon={<EditOutlined />}
+                              size="small"
+                              type="default"
+                              onClick={() => navigate(`/edit-pet/${pet.id}`)}
+                              style={{
+                                borderRadius: '8px',
+                                height: '32px'
+                              }}
+                            >
+                              Edit
+                            </Button>
+                          )}
+
                           <Button
                             icon={<ShareAltOutlined />}
                             size="small"
@@ -343,71 +371,147 @@ export const ViewPetPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <Paragraph className={styles.petDescription}>
-                      {profile?.about}
-                    </Paragraph>
+                    {pet.description && (
+                      <Paragraph className={styles.petDescription}>
+                        {pet.description}
+                      </Paragraph>
+                    )}
                   </Card>
 
                   {/* Pet Photo Library */}
-                  {profile?.photoLibrary && profile.photoLibrary.length > 0 && (
+                  {(pet.media && pet.media.length > 0) || isOwner ? (
                     <Card
                       bordered={false}
                       className={styles.photoLibraryCard}
-                      title="Pet Photo Library"
+                      title="Pet Library"
                       extra={
-                        <Button type="link" size="small">
-                          View all photos
-                        </Button>
+                        <Space size="small">
+                          {pet.media && pet.media.length > 0 && (
+                            <Button
+                              type="link"
+                              size="small"
+                              onClick={() => setShowGalleryModal(true)}
+                            >
+                              View all ({pet.media.length})
+                            </Button>
+                          )}
+                          {isOwner && (
+                            <Button
+                              type="primary"
+                              size="small"
+                              icon={<PlusOutlined />}
+                              onClick={() => setShowUploadModal(true)}
+                            >
+                              Upload
+                            </Button>
+                          )}
+                        </Space>
                       }
                     >
-                      <div className={styles.photoGrid}>
-                        {profile.photoLibrary.slice(0, 4).map((photo, index) => (
-                          <div key={index} className={styles.photoItem}>
-                            <Image
-                              src={photo}
-                              alt={`${profile.name} photo ${index + 1}`}
-                              className={styles.photoThumbnail}
-                            />
-                            {index === 3 && profile.photoLibrary.length > 4 && (
-                              <div className={styles.photoOverlay}>
-                                +{profile.photoLibrary.length - 4}
+                      {pet.media && pet.media.length > 0 ? (
+                        <div className={styles.photoGrid}>
+                          {pet.media.slice(0, 4).map((media, index) => {
+                            const isVideo = media.type?.toLowerCase() === 'video' ||
+                                          media.url?.includes('.mp4') ||
+                                          media.url?.includes('.mov') ||
+                                          media.url?.includes('.avi');
+
+                            return (
+                              <div key={media.id} className={styles.photoItem}>
+                                {isVideo ? (
+                                  <div style={{ position: 'relative' }}>
+                                    <video
+                                      src={media.url}
+                                      className={styles.photoThumbnail}
+                                      style={{ objectFit: 'cover', backgroundColor: '#000' }}
+                                      onClick={() => setShowGalleryModal(true)}
+                                    />
+                                    <div
+                                      style={{
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        transform: 'translate(-50%, -50%)',
+                                        fontSize: '40px',
+                                        color: 'rgba(255, 255, 255, 0.9)',
+                                        pointerEvents: 'none'
+                                      }}
+                                    >
+                                      <PlayCircleOutlined />
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <Image
+                                    src={media.url}
+                                    alt={`${pet.name} photo ${index + 1}`}
+                                    className={styles.photoThumbnail}
+                                  />
+                                )}
+                                {index === 3 && pet.media.length > 4 && (
+                                  <div className={styles.photoOverlay}>
+                                    +{pet.media.length - 4}
+                                  </div>
+                                )}
                               </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <Empty
+                          description="No photos or videos yet"
+                          image={Empty.PRESENTED_IMAGE_SIMPLE}
+                        >
+                          {isOwner && (
+                            <Button
+                              type="primary"
+                              icon={<PlusOutlined />}
+                              onClick={() => setShowUploadModal(true)}
+                            >
+                              Add First Photo/Video
+                            </Button>
+                          )}
+                        </Empty>
+                      )}
                     </Card>
-                  )}
+                  ) : null}
 
                   {/* Pet Details - Read Only */}
                   <Card
                     bordered={false}
                     className={styles.detailsCard}
-                    title={profile?.name}
+                    title={pet.name}
                   >
                     <div className={styles.detailsGrid}>
-                      <div className={styles.detailItem}>
-                        <Text className={styles.detailLabel}>Age</Text>
-                        <Text className={styles.detailValue}>{profile?.age}</Text>
-                      </div>
-                      <div className={styles.detailItem}>
-                        <Text className={styles.detailLabel}>Gender</Text>
-                        <Text className={styles.detailValue}>{profile?.gender}</Text>
-                      </div>
-                      <div className={styles.detailItem}>
-                        <Text className={styles.detailLabel}>Size</Text>
-                        <Text className={styles.detailValue}>{profile?.size}</Text>
-                      </div>
-                      <div className={styles.detailItem}>
-                        <Text className={styles.detailLabel}>Weight</Text>
-                        <Text className={styles.detailValue}>{profile?.weight}</Text>
-                      </div>
+                      {pet.birthDate && (
+                        <div className={styles.detailItem}>
+                          <Text className={styles.detailLabel}>Birth Date</Text>
+                          <Text className={styles.detailValue}>{new Date(pet.birthDate).toLocaleDateString()}</Text>
+                        </div>
+                      )}
+                      {pet.gender && (
+                        <div className={styles.detailItem}>
+                          <Text className={styles.detailLabel}>Gender</Text>
+                          <Text className={styles.detailValue}>{pet.gender}</Text>
+                        </div>
+                      )}
+                      {pet.weight && (
+                        <div className={styles.detailItem}>
+                          <Text className={styles.detailLabel}>Weight</Text>
+                          <Text className={styles.detailValue}>{pet.weight} kg</Text>
+                        </div>
+                      )}
+                      {pet.height && (
+                        <div className={styles.detailItem}>
+                          <Text className={styles.detailLabel}>Height</Text>
+                          <Text className={styles.detailValue}>{pet.height} cm</Text>
+                        </div>
+                      )}
                     </div>
 
                     <div className={styles.colorSection}>
-                      <Text className={styles.detailLabel}>Color</Text>
+                      <Text className={styles.detailLabel}>Species</Text>
                       <Paragraph className={styles.colorDescription}>
-                        {profile?.color}
+                        {pet.speciesName}
                       </Paragraph>
                     </div>
                   </Card>
@@ -423,7 +527,7 @@ export const ViewPetPage: React.FC = () => {
                 >
                   <div className={styles.timelineHeader}>
                     <Title level={3} className={styles.timelineTitle}>
-                      {profile?.name}'s Timeline
+                      {pet.name}'s Timeline
                     </Title>
                   </div>
 
@@ -456,7 +560,7 @@ export const ViewPetPage: React.FC = () => {
                       <Card bordered={false} className={styles.emptyTimelineCard}>
                         <Empty
                           image={Empty.PRESENTED_IMAGE_SIMPLE}
-                          description="No posts yet"
+                          description={`${pet.name} hasn't posted anything yet`}
                         />
                       </Card>
                     )}
@@ -465,6 +569,29 @@ export const ViewPetPage: React.FC = () => {
               </Col>
             </Row>
           </div>
-    </motion.div>
+        </motion.main>
+      </div>
+
+      {/* Photo Gallery Modal */}
+      {pet && (
+        <PhotoGalleryModal
+          visible={showGalleryModal}
+          onClose={() => setShowGalleryModal(false)}
+          petName={pet.name}
+          media={pet.media || []}
+        />
+      )}
+
+      {/* Upload Media Modal */}
+      {pet && isOwner && (
+        <UploadMediaModal
+          visible={showUploadModal}
+          onClose={() => setShowUploadModal(false)}
+          petId={pet.id}
+          petName={pet.name}
+          onUploadSuccess={handleUploadSuccess}
+        />
+      )}
+    </>
   );
 };

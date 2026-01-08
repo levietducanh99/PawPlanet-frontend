@@ -15,7 +15,7 @@ export const mapPetProfileToPet = (dto: PetProfileDTO): Pet => {
     displayOrder: mediaDto.displayOrder || 0
   })) || [];
 
-  // Find avatar URL from media
+  // Find logo URL from media
   const avatarMedia = media.find(m => m.role === 'avatar' || m.role === 'primary');
   const avatarUrl = avatarMedia?.url;
 

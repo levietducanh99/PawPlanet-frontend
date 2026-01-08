@@ -2,7 +2,7 @@
 import { useState, useCallback } from 'react';
 import { createPost } from '@/services/post.service';
 import { Post } from '@/domain/post';
-import { CreatePostRequest } from '@/services/api';
+import type { CreatePostRequest } from '@/services/api'; // Use generated API type
 
 export const useCreatePost = () => {
   const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ export const useCreatePost = () => {
     setLoading(true);
     setError(null);
     try {
+      // Pass API request directly to service
       const post = await createPost(data);
       setResult(post);
       return post;

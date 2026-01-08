@@ -4,14 +4,20 @@ export { useLogin, useRegister, useAuth } from './useAuth';
 export { useLogout } from './useLogout';
 export { useViewProfile, useProfileData } from './useProfile';
 export { useCreatePetWithImages } from './useCreatePetWithImages';
+export { useOptimistic } from './useOptimistic';
 export {
-  usePetProfile,
   usePetTimeline,
   useUserPets,
   usePostActions,
   useCreatePost,
-  usePostComments
+  usePostComments,
+  useNewsFeed,
+  useMyPosts,
+  usePostDetail,
+  usePetPosts,
+  useUserPosts,
 } from './usePost';
+export { usePetProfile } from './usePetProfile';
 export {
   useCreatePet,
   useSpecies,
@@ -33,3 +39,10 @@ export {
   useEncyclopediaSearch,
   useEncyclopediaBreedsBySpecies,
 } from './useEncyclopedia';
+export { useEncyclopediaMedia } from './useEncyclopediaMedia';
+
+// Pet-related hooks
+export { usePetDetail } from './usePetDetail';
+export { usePetFollow } from './usePetFollow';
+export { useUpdatePet } from './useUpdatePet';
+export { useViewPet } from './useViewPet';

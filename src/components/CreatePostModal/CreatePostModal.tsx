@@ -4,18 +4,14 @@ import { motion } from 'framer-motion';
 import { UploadOutlined, CloseOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { useCreatePost } from '@/hooks/useCreatePost';
+import { useUserProfile } from '@/hooks/useUser';
+import { useUserPets } from '@/hooks/useUserPets';
+import { useNavigate } from 'react-router-dom';
+import { uploadMedia } from '@/services/media.service';
+import type { CloudinaryUploadResponse } from '@/domain/media';
+import type { PetProfileDTO, MediaUrlRequest } from '@/services/api';
 import styles from './CreatePostModal.module.css';
 
-// Fake data for demo (replace with real data from hooks)
-const user = {
-  name: 'Sarah Johnson',
-  avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-};
-const pets = [
-  { id: 1, name: 'Charlie', avatar: 'https://images.unsplash.com/photo-1502672023488-70e25813f145?w=80&h=80&fit=crop' },
-  { id: 2, name: 'Luna', avatar: 'https://images.unsplash.com/photo-1518717758536-85ae29035b6d?w=80&h=80&fit=crop' },
-  { id: 3, name: 'Max', avatar: 'https://images.unsplash.com/photo-1517849845537-4d257902454a?w=80&h=80&fit=crop' },
-];
 
 const privacyOptions = [
   { label: 'Public', value: 'public', icon: '🌐' },
@@ -42,38 +38,90 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
   const [mediaList, setMediaList] = useState<UploadFile[]>([]);
   const [posting, setPosting] = useState(false);
   const { submit, loading: apiLoading, error } = useCreatePost();
+  const navigate = useNavigate();
+  const { user, loading: userLoading } = useUserProfile();
+  const { pets, loading: petsLoading } = useUserPets();
+
+  // Nếu chưa login, điều hướng sang /login
+  React.useEffect(() => {
+    if (!userLoading && !user) {
+      onClose();
+      navigate('/login');
+    }
+  }, [user, userLoading, navigate, onClose]);
 
   const handlePetTag = (id: number) => {
     setSelectedPets((prev) => prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]);
   };
 
   const handleUpload = ({ fileList }: { fileList: UploadFile[] }) => {
-    setMediaList(fileList);
+    // Validate file size (max 50MB cho video, 10MB cho ảnh)
+    const validFiles = fileList.filter(file => {
+      const isVideo = file.type?.startsWith('video/');
+      const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024; // 50MB for video, 10MB for image
+
+      if (file.size && file.size > maxSize) {
+        message.error(`${file.name}: File size exceeds ${isVideo ? '50MB' : '10MB'} limit`);
+        return false;
+      }
+      return true;
+    });
+
+    setMediaList(validFiles);
   };
 
   const handlePost = async () => {
     setPosting(true);
-    // Chuẩn hóa dữ liệu gửi API
-    const hashtags = '';
-    const mediaUrls = mediaList.map(f => ({ url: f.url || f.thumbUrl || '', type: f.type || 'image' }));
-    const data = {
-      content,
-      hashtags,
-      type,
-      petIds: selectedPets,
-      mediaUrls,
-      // Thêm các trường khác nếu cần
-    };
-    const result = await submit(data);
-    setPosting(false);
-    if (result) {
-      message.success('Post created successfully!');
-      setContent('');
-      setMediaList([]);
-      setSelectedPets([]);
-      onClose();
-    } else if (error) {
-      message.error(error);
+    try {
+      // Upload media lên Cloudinary nếu có file local (chưa có url)
+      const uploadedMedia: CloudinaryUploadResponse[] = [];
+      for (const file of mediaList) {
+        if (!file.url && file.originFileObj) {
+          // context POST_MEDIA, ownerId là user?.id
+          const res = await uploadMedia(file.originFileObj, { context: 'POST_MEDIA', ownerId: user?.id });
+          uploadedMedia.push(res);
+        } else if (file.url) {
+          // Đã có url (có thể là ảnh đã upload trước đó)
+          uploadedMedia.push({ url: file.url, secureUrl: file.url, resourceType: 'image' } as CloudinaryUploadResponse);
+        }
+      }
+
+      // Chuẩn hóa dữ liệu gửi API - Backend chỉ cần publicId và type
+      const hashtags = '';
+      const mediaUrls: MediaUrlRequest[] = uploadedMedia.map(f => {
+        // Detect media type từ resourceType của Cloudinary
+        const mediaType = f.resourceType === 'video' ? 'video' : 'image';
+
+        return {
+          publicId: f.publicId, // Backend nhận publicId thay vì url
+          type: mediaType
+        };
+      });
+
+      const data = {
+        content,
+        hashtags,
+        type,
+        petIds: selectedPets,
+        mediaUrls, // No need to cast - already correct type
+      };
+
+
+      const result = await submit(data);
+      if (result) {
+        message.success('Post created successfully!');
+        setContent('');
+        setMediaList([]);
+        setSelectedPets([]);
+        onClose();
+      } else if (error) {
+        message.error(error);
+      }
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to upload media';
+      message.error(errorMessage);
+    } finally {
+      setPosting(false);
     }
   };
 
@@ -107,9 +155,9 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
     >
       {/* Header with User Info and Controls */}
       <div className={styles.header}>
-        <Avatar src={user.avatar} size={48} className={styles.avatar} />
+        <Avatar src={user?.avatarUrl} size={48} className={styles.avatar} />
         <div className={styles.userInfo}>
-          <span className={styles.displayName}>{user.name}</span>
+          <span className={styles.displayName}>{user?.username || user?.email}</span>
           <Select
             className={styles.privacySelect}
             value={privacy}
@@ -161,10 +209,13 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
       >
         <UploadOutlined style={{ fontSize: 24, color: '#1890FF', marginBottom: 8 }} />
         <div style={{ color: '#6B7280', fontSize: 16, fontWeight: 500 }}>
-          Add Photos/Videos
+          Add Photos & Videos
         </div>
         <div style={{ color: '#9CA3AF', fontSize: 14, marginTop: 4 }}>
-          Drag & drop or click to upload
+          Drag & drop or click to upload multiple files
+        </div>
+        <div style={{ color: '#9CA3AF', fontSize: 12, marginTop: 4 }}>
+          Images (max 10MB) • Videos (max 50MB)
         </div>
       </Upload.Dragger>
 
@@ -172,16 +223,26 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
       <div className={styles.petSection}>
         <span className={styles.petLabel}>Tag Your Pets:</span>
         <div className={styles.petTagList}>
-          {pets.map(pet => (
-            <div
-              key={pet.id}
-              className={`${styles.petTag} ${selectedPets.includes(pet.id) ? styles.selected : ''}`}
-              onClick={() => handlePetTag(pet.id)}
-            >
-              <Avatar src={pet.avatar} size={44} className={styles.petAvatar} />
-              <span className={styles.petName}>{pet.name}</span>
-            </div>
-          ))}
+          {petsLoading ? (
+            <span>Loading pets...</span>
+          ) : pets.length === 0 ? (
+            <span>No pets found</span>
+          ) : pets.map((pet: PetProfileDTO) => {
+            const petId = pet.id ?? 0;
+            const petName = pet.name ?? 'Unknown Pet';
+            const avatarUrl = pet.media?.find(m => m.role === 'avatar')?.url;
+
+            return (
+              <div
+                key={petId}
+                className={`${styles.petTag} ${selectedPets.includes(petId) ? styles.selected : ''}`}
+                onClick={() => handlePetTag(petId)}
+              >
+                <Avatar src={avatarUrl} size={44} className={styles.petAvatar} />
+                <span className={styles.petName}>{petName}</span>
+              </div>
+            );
+          })}
         </div>
       </div>
 

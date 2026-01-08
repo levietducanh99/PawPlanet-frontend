@@ -6,8 +6,8 @@
  */
 
 export type MediaContext =
-  | 'USER_AVATAR'           // User avatar image - requires ownerId (userId)
-  | 'PET_AVATAR'            // Pet avatar image - requires ownerId (petId)
+  | 'USER_AVATAR'           // User logo image - requires ownerId (userId)
+  | 'PET_AVATAR'            // Pet logo image - requires ownerId (petId)
   | 'PET_GALLERY'           // Pet gallery images - requires ownerId (petId)
   | 'POST_MEDIA'            // Post media (images/videos) - requires ownerId (postId)
   | 'ENCYCLOPEDIA_CLASS'    // Encyclopedia class images - requires slug
@@ -18,6 +18,7 @@ export interface SignMediaRequest {
   context: MediaContext;
   ownerId?: number;
   slug?: string;
+  resourceType?: 'image' | 'video'; // Optional: if not provided, backend will use default (image)
 }
 
 export interface SignMediaResponse {

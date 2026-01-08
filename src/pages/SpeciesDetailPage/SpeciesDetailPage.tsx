@@ -13,7 +13,9 @@ import {
   SpeciesCard,
   SpeciesCardData,
 } from '@/components/Encyclopedia';
-import { useEncyclopediaSpeciesDetail, useEncyclopediaBreedsBySpecies } from '@/hooks';
+import { useEncyclopediaSpeciesDetail, useEncyclopediaBreedsBySpecies, useEncyclopediaSpeciesList } from '@/hooks';
+import { useAuth } from '@/hooks';
+import { isAdmin } from '@/domain/auth';
 import styles from './SpeciesDetailPage.module.css';
 
 const { Title, Paragraph } = Typography;
@@ -29,20 +31,31 @@ const tabs: TabItem[] = [
 ];
 
 export const SpeciesDetailPage: React.FC = () => {
-  const { speciesId } = useParams<{ speciesId: string }>();
+  const { speciesId } = useParams<{ speciesId?: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const { user } = useAuth();
+  const userIsAdmin = isAdmin(user);
 
-  const numericId = Number(speciesId);
-  const { data: species, loading, error } = useEncyclopediaSpeciesDetail(
-    Number.isFinite(numericId) ? numericId : undefined
-  );
+  // Parse slug to get actual ID
+  const { data: searchResult } = useEncyclopediaSpeciesList({
+    q: speciesId,
+    page: 0,
+    size: 10,
+  });
 
-  const {
-    data: breedsList,
-    loading: breedsLoading,
-    error: breedsError,
-  } = useEncyclopediaBreedsBySpecies(Number.isFinite(numericId) ? numericId : undefined);
+  // Find species by slug or use numeric ID directly
+  const actualSpeciesId = useMemo(() => {
+    if (!speciesId) return undefined;
+    const numericId = Number(speciesId);
+    if (Number.isFinite(numericId)) return numericId;
+
+    // Find by slug
+    const found = searchResult.items.find((s) => s.slug === speciesId);
+    return found?.id;
+  }, [speciesId, searchResult.items]);
+
+  const { data: species, loading, error } = useEncyclopediaSpeciesDetail(actualSpeciesId);
 
   const heroImage =
     species?.heroUrl ||
@@ -68,14 +81,21 @@ export const SpeciesDetailPage: React.FC = () => {
     return (species?.galleryPreview ?? []).map((m) => m.url).filter(Boolean);
   }, [species?.galleryPreview]);
 
+  const {
+    data: breedsList,
+    loading: breedsLoading,
+    error: breedsError,
+  } = useEncyclopediaBreedsBySpecies(species?.id);
+
   const breeds: SpeciesCardData[] = useMemo(() => {
-    return breedsList.map((b) => ({
+    return (breedsList ?? []).map((b) => ({
       id: String(b.id),
       name: b.name,
       scientificName: b.origin,
       status: b.taxonomyType,
       statusColor: '#27AE60',
       image: b.avatarUrl || 'https://images.unsplash.com/photo-1552053831-71594a27632d?w=800',
+      slug: b.slug,
     }));
   }, [breedsList]);
 
@@ -194,9 +214,15 @@ export const SpeciesDetailPage: React.FC = () => {
             )}
 
             {/* Photo Gallery */}
-            {galleryImages.length > 0 && (
-              <PhotoGallery images={galleryImages} altPrefix={species.name} />
-            )}
+            <PhotoGallery
+              images={galleryImages}
+              altPrefix={species.name}
+              isAdmin={userIsAdmin}
+              entityType="species"
+              entityId={species.id}
+              entitySlug={species.slug}
+              onImageAdded={() => window.location.reload()}
+            />
 
             {/* Breeds */}
             {breeds.length > 0 && (
@@ -251,13 +277,15 @@ export const SpeciesDetailPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {galleryImages.length > 0 ? (
-              <PhotoGallery images={galleryImages} altPrefix={species.name} />
-            ) : (
-              <div className={styles.emptyState}>
-                <Paragraph>No gallery images available.</Paragraph>
-              </div>
-            )}
+            <PhotoGallery
+              images={galleryImages}
+              altPrefix={species.name}
+              isAdmin={userIsAdmin}
+              entityType="species"
+              entityId={species.id}
+              entitySlug={species.slug}
+              onImageAdded={() => window.location.reload()}
+            />
           </motion.div>
         )}
 

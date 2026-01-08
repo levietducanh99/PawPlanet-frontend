@@ -40,8 +40,8 @@ export const MyPetsPage: React.FC = () => {
   const { profile, loading: profileLoading } = usePetProfile(currentPetId);
   const { timeline, loading: timelineLoading } = usePetTimeline(currentPetId);
 
-  const [profileVisibility, setProfileVisibility] = useState(profile?.isVisible ?? true);
-  const [lookingForAdoption, setLookingForAdoption] = useState(profile?.lookingForAdoption ?? false);
+  const [profileVisibility, setProfileVisibility] = useState(profile?.status === 'Public');
+  const [lookingForAdoption, setLookingForAdoption] = useState(profile?.status === 'For Adoption');
 
   const loading = userPetsLoading || profileLoading || timelineLoading;
 
@@ -80,7 +80,7 @@ export const MyPetsPage: React.FC = () => {
                           {profile?.name} 🐕
                         </Title>
                         <Text className={styles.petBreed}>
-                          {profile?.breed}
+                          {profile?.breedName || profile?.speciesName}
                         </Text>
                       </div>
                       <Button
@@ -103,16 +103,16 @@ export const MyPetsPage: React.FC = () => {
                     }
                   >
                     <div className={styles.photoGrid}>
-                      {profile?.photoLibrary?.slice(0, 4).map((photo, index) => (
-                        <div key={index} className={styles.photoItem}>
+                      {profile?.media?.slice(0, 4).map((photo, index) => (
+                        <div key={photo.id} className={styles.photoItem}>
                           <Image
-                            src={photo}
+                            src={photo.url}
                             alt={`${profile.name} photo ${index + 1}`}
                             className={styles.photoThumbnail}
                           />
-                          {index === 3 && (profile?.photoLibrary?.length || 0) > 4 && (
+                          {index === 3 && (profile?.media?.length || 0) > 4 && (
                             <div className={styles.photoOverlay}>
-                              +{(profile?.photoLibrary?.length || 4) - 4}
+                              +{(profile?.media?.length || 4) - 4}
                             </div>
                           )}
                         </div>

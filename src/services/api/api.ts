@@ -26,6 +26,31 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface ActorInfo
+ */
+export interface ActorInfo {
+    /**
+     * 
+     * @type {number}
+     * @memberof ActorInfo
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ActorInfo
+     */
+    'username'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ActorInfo
+     */
+    'avatarUrl'?: string;
+}
+/**
+ * 
+ * @export
  * @interface AddEncyclopediaMediaRequest
  */
 export interface AddEncyclopediaMediaRequest {
@@ -104,6 +129,37 @@ export interface AddPetMediaResponse {
      * @memberof AddPetMediaResponse
      */
     'message'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface AllPetsResponseDTO
+ */
+export interface AllPetsResponseDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof AllPetsResponseDTO
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AllPetsResponseDTO
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AllPetsResponseDTO
+     */
+    'avatar'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AllPetsResponseDTO
+     */
+    'speciesName'?: string;
 }
 /**
  * 
@@ -451,6 +507,31 @@ export interface ApiResponseListUserResponse {
 /**
  * 
  * @export
+ * @interface ApiResponseLong
+ */
+export interface ApiResponseLong {
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiResponseLong
+     */
+    'result'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiResponseLong
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiResponseLong
+     */
+    'statusCode'?: number;
+}
+/**
+ * 
+ * @export
  * @interface ApiResponseObject
  */
 export interface ApiResponseObject {
@@ -520,6 +601,31 @@ export interface ApiResponsePagedResultEncyclopediaMediaResponse {
      * 
      * @type {number}
      * @memberof ApiResponsePagedResultEncyclopediaMediaResponse
+     */
+    'statusCode'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface ApiResponsePagedResultNotificationResponse
+ */
+export interface ApiResponsePagedResultNotificationResponse {
+    /**
+     * 
+     * @type {PagedResultNotificationResponse}
+     * @memberof ApiResponsePagedResultNotificationResponse
+     */
+    'result'?: PagedResultNotificationResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiResponsePagedResultNotificationResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiResponsePagedResultNotificationResponse
      */
     'statusCode'?: number;
 }
@@ -1097,7 +1203,7 @@ export interface CreatePetRequestDTO {
      */
     'status'?: string;
     /**
-     * Cloudinary public_id for pet avatar (optional)
+     * 
      * @type {string}
      * @memberof CreatePetRequestDTO
      */
@@ -1373,25 +1479,25 @@ export interface MediaItem {
  */
 export interface MediaSignRequest {
     /**
-     * Upload context determining folder structure
+     * 
      * @type {string}
      * @memberof MediaSignRequest
      */
     'context': MediaSignRequestContextEnum;
     /**
-     * Owner ID - Required for USER_AVATAR, PET_GALLERY, POST_MEDIA. Optional for PET_AVATAR (when creating new pet).
+     * 
      * @type {number}
      * @memberof MediaSignRequest
      */
     'ownerId'?: number;
     /**
-     * Required for ENCYCLOPEDIA contexts
+     * 
      * @type {string}
      * @memberof MediaSignRequest
      */
     'slug'?: string;
     /**
-     * Resource type: image (default), video, raw, auto
+     * 
      * @type {string}
      * @memberof MediaSignRequest
      */
@@ -1471,13 +1577,62 @@ export interface MediaUrlRequest {
      * @type {string}
      * @memberof MediaUrlRequest
      */
-    'url'?: string;
+    'publicId'?: string;
     /**
      * 
      * @type {string}
      * @memberof MediaUrlRequest
      */
     'type'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface NotificationResponse
+ */
+export interface NotificationResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof NotificationResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'type'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof NotificationResponse
+     */
+    'isRead'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof NotificationResponse
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {ActorInfo}
+     * @memberof NotificationResponse
+     */
+    'actor'?: ActorInfo;
+    /**
+     * 
+     * @type {TargetInfo}
+     * @memberof NotificationResponse
+     */
+    'target'?: TargetInfo;
+    /**
+     * 
+     * @type {{ [key: string]: object; }}
+     * @memberof NotificationResponse
+     */
+    'metadata'?: { [key: string]: object; };
 }
 /**
  * 
@@ -1538,6 +1693,37 @@ export interface PagedResultEncyclopediaMediaResponse {
      * 
      * @type {number}
      * @memberof PagedResultEncyclopediaMediaResponse
+     */
+    'size'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface PagedResultNotificationResponse
+ */
+export interface PagedResultNotificationResponse {
+    /**
+     * 
+     * @type {Array<NotificationResponse>}
+     * @memberof PagedResultNotificationResponse
+     */
+    'items'?: Array<NotificationResponse>;
+    /**
+     * 
+     * @type {number}
+     * @memberof PagedResultNotificationResponse
+     */
+    'totalElements'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PagedResultNotificationResponse
+     */
+    'page'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PagedResultNotificationResponse
      */
     'size'?: number;
 }
@@ -2232,6 +2418,25 @@ export interface SpeciesSectionContentResponse {
      * @memberof SpeciesSectionContentResponse
      */
     'displayOrder'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface TargetInfo
+ */
+export interface TargetInfo {
+    /**
+     * 
+     * @type {string}
+     * @memberof TargetInfo
+     */
+    'type'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof TargetInfo
+     */
+    'id'?: number;
 }
 /**
  * 
@@ -6818,6 +7023,553 @@ export class MediaControllerApi extends BaseAPI {
 
 
 /**
+ * NotificationsApi - axios parameter creator
+ * @export
+ */
+export const NotificationsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Xóa một thông báo
+         * @summary Xóa thông báo
+         * @param {number} notificationId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteNotification: async (notificationId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'notificationId' is not null or undefined
+            assertParamExists('deleteNotification', 'notificationId', notificationId)
+            const localVarPath = `/api/v1/notifications/{notificationId}`
+                .replace(`{${"notificationId"}}`, encodeURIComponent(String(notificationId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lấy tất cả thông báo của user hiện tại (có phân trang)
+         * @summary Lấy danh sách thông báo
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyNotifications: async (page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/notifications`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lấy danh sách thông báo chưa đọc của user hiện tại (có phân trang)
+         * @summary Lấy thông báo chưa đọc
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyUnreadNotifications: async (page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/notifications/unread`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (page !== undefined) {
+                localVarQueryParameter['page'] = page;
+            }
+
+            if (size !== undefined) {
+                localVarQueryParameter['size'] = size;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Lấy số lượng thông báo chưa đọc của user hiện tại
+         * @summary Đếm thông báo chưa đọc
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUnreadCount: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/notifications/unread/count`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Đánh dấu tất cả thông báo là đã đọc
+         * @summary Đánh dấu tất cả đã đọc
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAllAsRead: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/notifications/read-all`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Đánh dấu một thông báo là đã đọc
+         * @summary Đánh dấu đã đọc
+         * @param {number} notificationId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAsRead: async (notificationId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'notificationId' is not null or undefined
+            assertParamExists('markAsRead', 'notificationId', notificationId)
+            const localVarPath = `/api/v1/notifications/{notificationId}/read`
+                .replace(`{${"notificationId"}}`, encodeURIComponent(String(notificationId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * NotificationsApi - functional programming interface
+ * @export
+ */
+export const NotificationsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = NotificationsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Xóa một thông báo
+         * @summary Xóa thông báo
+         * @param {number} notificationId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteNotification(notificationId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseVoid>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteNotification(notificationId, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['NotificationsApi.deleteNotification']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * Lấy tất cả thông báo của user hiện tại (có phân trang)
+         * @summary Lấy danh sách thông báo
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyNotifications(page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponsePagedResultNotificationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyNotifications(page, size, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['NotificationsApi.getMyNotifications']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * Lấy danh sách thông báo chưa đọc của user hiện tại (có phân trang)
+         * @summary Lấy thông báo chưa đọc
+         * @param {number} [page] 
+         * @param {number} [size] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getMyUnreadNotifications(page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponsePagedResultNotificationResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getMyUnreadNotifications(page, size, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['NotificationsApi.getMyUnreadNotifications']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * Lấy số lượng thông báo chưa đọc của user hiện tại
+         * @summary Đếm thông báo chưa đọc
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUnreadCount(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseLong>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUnreadCount(options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['NotificationsApi.getUnreadCount']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * Đánh dấu tất cả thông báo là đã đọc
+         * @summary Đánh dấu tất cả đã đọc
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markAllAsRead(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseVoid>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markAllAsRead(options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['NotificationsApi.markAllAsRead']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * Đánh dấu một thông báo là đã đọc
+         * @summary Đánh dấu đã đọc
+         * @param {number} notificationId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async markAsRead(notificationId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseVoid>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.markAsRead(notificationId, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['NotificationsApi.markAsRead']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * NotificationsApi - factory interface
+ * @export
+ */
+export const NotificationsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = NotificationsApiFp(configuration)
+    return {
+        /**
+         * Xóa một thông báo
+         * @summary Xóa thông báo
+         * @param {NotificationsApiDeleteNotificationRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteNotification(requestParameters: NotificationsApiDeleteNotificationRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseVoid> {
+            return localVarFp.deleteNotification(requestParameters.notificationId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lấy tất cả thông báo của user hiện tại (có phân trang)
+         * @summary Lấy danh sách thông báo
+         * @param {NotificationsApiGetMyNotificationsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyNotifications(requestParameters: NotificationsApiGetMyNotificationsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponsePagedResultNotificationResponse> {
+            return localVarFp.getMyNotifications(requestParameters.page, requestParameters.size, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lấy danh sách thông báo chưa đọc của user hiện tại (có phân trang)
+         * @summary Lấy thông báo chưa đọc
+         * @param {NotificationsApiGetMyUnreadNotificationsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getMyUnreadNotifications(requestParameters: NotificationsApiGetMyUnreadNotificationsRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponsePagedResultNotificationResponse> {
+            return localVarFp.getMyUnreadNotifications(requestParameters.page, requestParameters.size, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Lấy số lượng thông báo chưa đọc của user hiện tại
+         * @summary Đếm thông báo chưa đọc
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUnreadCount(options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseLong> {
+            return localVarFp.getUnreadCount(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Đánh dấu tất cả thông báo là đã đọc
+         * @summary Đánh dấu tất cả đã đọc
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAllAsRead(options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseVoid> {
+            return localVarFp.markAllAsRead(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Đánh dấu một thông báo là đã đọc
+         * @summary Đánh dấu đã đọc
+         * @param {NotificationsApiMarkAsReadRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        markAsRead(requestParameters: NotificationsApiMarkAsReadRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseVoid> {
+            return localVarFp.markAsRead(requestParameters.notificationId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for deleteNotification operation in NotificationsApi.
+ * @export
+ * @interface NotificationsApiDeleteNotificationRequest
+ */
+export interface NotificationsApiDeleteNotificationRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof NotificationsApiDeleteNotification
+     */
+    readonly notificationId: number
+}
+
+/**
+ * Request parameters for getMyNotifications operation in NotificationsApi.
+ * @export
+ * @interface NotificationsApiGetMyNotificationsRequest
+ */
+export interface NotificationsApiGetMyNotificationsRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof NotificationsApiGetMyNotifications
+     */
+    readonly page?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof NotificationsApiGetMyNotifications
+     */
+    readonly size?: number
+}
+
+/**
+ * Request parameters for getMyUnreadNotifications operation in NotificationsApi.
+ * @export
+ * @interface NotificationsApiGetMyUnreadNotificationsRequest
+ */
+export interface NotificationsApiGetMyUnreadNotificationsRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof NotificationsApiGetMyUnreadNotifications
+     */
+    readonly page?: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof NotificationsApiGetMyUnreadNotifications
+     */
+    readonly size?: number
+}
+
+/**
+ * Request parameters for markAsRead operation in NotificationsApi.
+ * @export
+ * @interface NotificationsApiMarkAsReadRequest
+ */
+export interface NotificationsApiMarkAsReadRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof NotificationsApiMarkAsRead
+     */
+    readonly notificationId: number
+}
+
+/**
+ * NotificationsApi - object-oriented interface
+ * @export
+ * @class NotificationsApi
+ * @extends {BaseAPI}
+ */
+export class NotificationsApi extends BaseAPI {
+    /**
+     * Xóa một thông báo
+     * @summary Xóa thông báo
+     * @param {NotificationsApiDeleteNotificationRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public deleteNotification(requestParameters: NotificationsApiDeleteNotificationRequest, options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).deleteNotification(requestParameters.notificationId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lấy tất cả thông báo của user hiện tại (có phân trang)
+     * @summary Lấy danh sách thông báo
+     * @param {NotificationsApiGetMyNotificationsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public getMyNotifications(requestParameters: NotificationsApiGetMyNotificationsRequest = {}, options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).getMyNotifications(requestParameters.page, requestParameters.size, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lấy danh sách thông báo chưa đọc của user hiện tại (có phân trang)
+     * @summary Lấy thông báo chưa đọc
+     * @param {NotificationsApiGetMyUnreadNotificationsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public getMyUnreadNotifications(requestParameters: NotificationsApiGetMyUnreadNotificationsRequest = {}, options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).getMyUnreadNotifications(requestParameters.page, requestParameters.size, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Lấy số lượng thông báo chưa đọc của user hiện tại
+     * @summary Đếm thông báo chưa đọc
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public getUnreadCount(options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).getUnreadCount(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Đánh dấu tất cả thông báo là đã đọc
+     * @summary Đánh dấu tất cả đã đọc
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public markAllAsRead(options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).markAllAsRead(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Đánh dấu một thông báo là đã đọc
+     * @summary Đánh dấu đã đọc
+     * @param {NotificationsApiMarkAsReadRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NotificationsApi
+     */
+    public markAsRead(requestParameters: NotificationsApiMarkAsReadRequest, options?: RawAxiosRequestConfig) {
+        return NotificationsApiFp(this.configuration).markAsRead(requestParameters.notificationId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * PetControllerApi - axios parameter creator
  * @export
  */
@@ -6899,6 +7651,39 @@ export const PetControllerApiAxiosParamCreator = function (configuration?: Confi
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
             localVarRequestOptions.data = serializeDataIfNeeded(createPetRequestDTO, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllMyPets: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/pets/my-pets`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -7022,6 +7807,17 @@ export const PetControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllMyPets(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AllPetsResponseDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllMyPets(options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetControllerApi.getAllMyPets']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -7072,6 +7868,14 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
          */
         createPet(requestParameters: PetControllerApiCreatePetRequest, options?: RawAxiosRequestConfig): AxiosPromise<PetProfileDTO> {
             return localVarFp.createPet(requestParameters.createPetRequestDTO, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllMyPets(options?: RawAxiosRequestConfig): AxiosPromise<Array<AllPetsResponseDTO>> {
+            return localVarFp.getAllMyPets(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7191,6 +7995,16 @@ export class PetControllerApi extends BaseAPI {
      */
     public createPet(requestParameters: PetControllerApiCreatePetRequest, options?: RawAxiosRequestConfig) {
         return PetControllerApiFp(this.configuration).createPet(requestParameters.createPetRequestDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetControllerApi
+     */
+    public getAllMyPets(options?: RawAxiosRequestConfig) {
+        return PetControllerApiFp(this.configuration).getAllMyPets(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

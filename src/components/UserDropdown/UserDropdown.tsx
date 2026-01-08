@@ -1,6 +1,6 @@
 /**
  * User Dropdown Component
- * Displays user avatar and dropdown with profile/logout options
+ * Displays user logo and dropdown with profile/logout options
  */
 
 import React from 'react';

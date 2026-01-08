@@ -1,6 +1,41 @@
 /* MainFeedPage.module.css */
 .feedContainer {
   min-height: 100%;
+  padding: 24px 0;
+}
+
+/* Feed Header */
+.feedHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 16px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.feedTitle {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1F2937;
+  margin: 0;
+}
+
+.feedActions {
+  display: flex;
+  gap: 12px;
+}
+
+.refreshButton {
+  border-radius: 8px;
+}
+
+.errorContainer {
+  max-width: 680px;
+  margin: 48px auto;
+  padding: 0 16px;
 }
 
 .loadingContainer {
@@ -140,9 +175,3 @@
   }
 }
 
-/* Dark mode support (future) */
-@media (prefers-color-scheme: dark) {
-  .feedContainer {
-    background: #111827;
-  }
-}

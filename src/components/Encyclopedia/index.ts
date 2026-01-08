@@ -14,5 +14,7 @@ export type { AttributeData } from './AttributeCard';
 
 export { PhotoGallery } from './PhotoGallery';
 
+export { AddImageCard } from './AddImageCard';
+
 export { SpeciesCard } from './SpeciesCard';
 export type { SpeciesCardData } from './SpeciesCard';
