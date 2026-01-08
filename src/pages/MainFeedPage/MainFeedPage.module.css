@@ -1,0 +1,148 @@
+/* MainFeedPage.module.css */
+.feedContainer {
+  min-height: 100%;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 16px;
+}
+
+.loadingText {
+  color: #6B7280;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Content */
+.feedContent {
+  width: 100%;
+}
+
+.postsContainer {
+  padding: 0 8px;
+}
+
+/* Empty state */
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 0 8px;
+}
+
+.createFirstPostButton {
+  border-radius: 8px;
+  height: 44px;
+  padding: 0 24px;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(24, 144, 255, 0.2);
+}
+
+.createFirstPostButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+}
+
+/* Load more */
+.loadMoreContainer {
+  text-align: center;
+  margin: 32px 0;
+  padding: 0 8px;
+}
+
+.loadMoreButton {
+  border-radius: 8px;
+  height: 48px;
+  padding: 0 32px;
+  font-weight: 600;
+  border: 1px solid #D1D5DB;
+  background: #fff;
+  color: #6B7280;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.loadMoreButton:hover {
+  border-color: #1890FF;
+  color: #1890FF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.endMessage {
+  text-align: center;
+  padding: 40px 20px;
+  margin: 32px 8px 0;
+  background: linear-gradient(135deg, #E6F7FF 0%, #F0F9FF 100%);
+  border-radius: 16px;
+  border: 1px solid #BAE7FF;
+}
+
+.endMessage p {
+  font-size: 16px;
+  color: #1890FF;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .postsContainer {
+    padding: 0;
+  }
+
+  .emptyState {
+    margin: 0;
+    padding: 40px 16px;
+  }
+
+  .loadMoreContainer {
+    margin: 24px 0;
+    padding: 0;
+  }
+
+  .loadMoreButton {
+    width: 100%;
+  }
+
+  .endMessage {
+    margin: 24px 0 0;
+    padding: 32px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .emptyState {
+    padding: 32px 12px;
+  }
+
+  .endMessage {
+    padding: 24px 12px;
+  }
+
+  .endMessage p {
+    font-size: 15px;
+  }
+}
+
+/* Scroll behavior */
+@media (prefers-reduced-motion: no-preference) {
+  .feedContainer {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Dark mode support (future) */
+@media (prefers-color-scheme: dark) {
+  .feedContainer {
+    background: #111827;
+  }
+}

@@ -1,0 +1,342 @@
+.pageContainer {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.contentWrapper {
+  width: 100%;
+  padding: 24px 0;
+}
+
+.leftColumn {
+  position: sticky;
+  top: 120px;
+  height: fit-content;
+}
+
+.rightColumn {
+  min-height: 80vh;
+}
+
+/* Profile Card */
+.profileCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.petHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.petAvatar {
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.petBasicInfo {
+  flex: 1;
+}
+
+.petName {
+  color: #1F2937 !important;
+  margin-bottom: 2px !important;
+  font-size: 18px !important;
+  font-weight: 600 !important;
+}
+
+.petBreed {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.editButton {
+  border-radius: 6px;
+  border-color: #D1D5DB;
+}
+
+/* Photo Library */
+.photoLibraryCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.photoItem {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.photoThumbnail {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+}
+
+.photoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Settings Card */
+.settingsCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.settingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 12px 0;
+}
+
+.settingItem:not(:last-child) {
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.settingInfo {
+  flex: 1;
+}
+
+.settingDescription {
+  display: block;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+/* Details Card */
+.detailsCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.petDetailsGrid {
+  margin-bottom: 16px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.detailRow:not(:last-child) {
+  border-bottom: 1px solid #F9FAFB;
+}
+
+.detailLabel {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.detailValue {
+  color: #1F2937;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.sectionTitle {
+  font-size: 16px !important;
+  color: #1F2937 !important;
+  margin-bottom: 12px;
+  display: block;
+}
+
+/* Dates Section */
+.datesSection {
+  margin-bottom: 20px;
+}
+
+.datesList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dateItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dateIcon {
+  color: #1890FF;
+  font-size: 16px;
+  margin-top: 2px;
+}
+
+.dateInfo {
+  flex: 1;
+}
+
+.dateInfo .ant-typography {
+  margin-bottom: 2px !important;
+}
+
+.dateText {
+  color: #6B7280;
+  font-size: 13px;
+}
+
+/* Care Section */
+.careSection {
+  margin-top: 16px;
+}
+
+.caretakersList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.caretakerItem {
+  padding: 6px 12px;
+  background: #F9FAFB;
+  border-radius: 8px;
+  border-left: 3px solid #1890FF;
+}
+
+.caretakerItem .ant-typography {
+  font-size: 14px;
+  margin-bottom: 0 !important;
+}
+
+/* Timeline */
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 4px;
+}
+
+.timelineTitle {
+  color: #1F2937 !important;
+  margin-bottom: 0 !important;
+  font-size: 24px !important;
+}
+
+.addPostButton {
+  border-radius: 12px;
+  height: 40px;
+  padding: 0 16px;
+  font-weight: 600;
+}
+
+.timelineContent {
+  min-height: 400px;
+}
+
+.timelineLoading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.postsContainer {
+  margin-bottom: 32px;
+}
+
+.loadMore {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.emptyTimelineCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 48px;
+  text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .leftColumn {
+    position: relative;
+    top: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding: 96px 16px 32px;
+  }
+
+  .timelineHeader {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .addPostButton {
+    width: 100%;
+  }
+
+  .petDetailsGrid {
+    gap: 8px;
+  }
+
+  .settingItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .photoThumbnail {
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .petHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .petBasicInfo {
+    text-align: center;
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dateItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .emptyTimelineCard {
+    padding: 32px 16px;
+  }
+}

@@ -1,0 +1,630 @@
+.pageContainer {
+  width: 100%;
+  min-height: 100vh;
+  padding: 24px 0;
+}
+
+.contentRow {
+  width: 100%;
+  margin: 0;
+}
+
+.leftColumn {
+  position: sticky;
+  top: 120px;
+  height: fit-content;
+}
+
+.rightColumn {
+  min-height: 80vh;
+}
+
+/* Empty State */
+.emptyState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 48px;
+}
+
+.emptyCard {
+  border-radius: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  max-width: 500px;
+  width: 100%;
+}
+
+.emptyContent {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.emptyIcon {
+  font-size: 80px;
+  color: #1890FF;
+  margin-bottom: 24px;
+}
+
+.emptyTitle {
+  color: #1F2937 !important;
+  margin-bottom: 16px !important;
+  font-size: 28px !important;
+}
+
+.emptyDescription {
+  color: #6B7280 !important;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 32px !important;
+}
+
+.addFirstPetButton {
+  height: 56px;
+  border-radius: 16px;
+  padding: 0 32px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Profile Cards */
+.profileCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.petHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.petAvatar {
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.petBasicInfo {
+  flex: 1;
+}
+
+.petName {
+  color: #1F2937 !important;
+  margin-bottom: 4px !important;
+  font-size: 20px !important;
+}
+
+.petSubtitle {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.petDescription {
+  color: #4B5563 !important;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 0 !important;
+}
+
+/* Photo Library */
+.photoLibraryCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.photoItem {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.photoThumbnail {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+}
+
+.photoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Settings Card */
+.settingsCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.settingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.settingItem:not(:last-child) {
+  border-bottom: 1px solid #F3F4F6;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+}
+
+.settingLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #4B5563;
+}
+
+/* Details Card */
+.detailsCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.detailItem {
+  text-align: center;
+}
+
+.detailLabel {
+  display: block;
+  font-size: 12px;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.detailValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.colorSection {
+  border-top: 1px solid #F3F4F6;
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+
+.colorDescription {
+  font-size: 13px;
+  color: #4B5563 !important;
+  line-height: 1.4;
+  margin-bottom: 0 !important;
+  margin-top: 4px;
+}
+
+.traitsSection {
+  border-top: 1px solid #F3F4F6;
+  padding-top: 16px;
+}
+
+/* Dates Card */
+.datesCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.datesList {
+  width: 100%;
+}
+
+.dateItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.dateIcon {
+  color: #1890FF;
+  font-size: 16px;
+}
+
+.dateText {
+  color: #6B7280;
+  font-size: 13px;
+}
+
+/* Care Card */
+.careCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.caretakersList {
+  width: 100%;
+}
+
+.caretakerItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 14px;
+  color: #4B5563;
+}
+
+.caretakerIcon {
+  color: #6B7280;
+}
+
+/* Timeline */
+.timelineHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 0 4px;
+}
+
+.timelineTitle {
+  color: #1F2937 !important;
+  margin-bottom: 0 !important;
+  font-size: 24px !important;
+}
+
+.addPostButton {
+  border-radius: 12px;
+  height: 40px;
+  padding: 0 16px;
+  font-weight: 600;
+}
+
+.timelineContent {
+  min-height: 400px;
+}
+
+.timelineLoading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+
+.postsContainer {
+  margin-bottom: 32px;
+}
+
+.loadMore {
+  text-align: center;
+  margin-top: 32px;
+}
+
+.emptyTimelineCard {
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  padding: 48px;
+  text-align: center;
+}
+
+/* Back Button */
+.backButton {
+  margin-bottom: 24px;
+}
+
+.backBtn {
+  font-size: 14px;
+  color: #6B7280;
+  padding: 8px 0;
+}
+
+.backBtn:hover {
+  color: #1890FF;
+}
+
+/* User Header */
+.userHeader {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.userAvatar {
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 16px;
+}
+
+.userName {
+  color: #1F2937 !important;
+  margin-bottom: 4px !important;
+  font-size: 20px !important;
+}
+
+/* Owner Header (for public pet view) */
+.ownerHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.ownerAvatar {
+  border: 2px solid #E6F7FF;
+}
+
+.ownerInfo {
+  flex: 1;
+}
+
+.ownerName {
+  color: #1F2937;
+  font-size: 14px;
+}
+
+.ownerLabel {
+  display: block;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+/* Pet Actions (Follow/Share) */
+.petActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.followButton {
+  border-radius: 8px;
+  height: 32px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.shareButton {
+  border-radius: 8px;
+  height: 32px;
+  border-color: #D1D5DB;
+}
+
+/* Private State */
+.privateState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+  padding: 48px;
+}
+
+.privateCard {
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  max-width: 600px;
+  width: 100%;
+}
+
+.privateContent {
+  text-align: center;
+  padding: 48px 32px;
+}
+
+.lockIcon {
+  margin: 32px 0;
+}
+
+.lockContainer {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #E6F7FF 0%, #F0F9FF 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 48px;
+  color: #1890FF;
+}
+
+.privateTitle {
+  color: #1F2937 !important;
+  margin-bottom: 16px !important;
+  font-size: 28px !important;
+}
+
+.privateDescription {
+  color: #6B7280 !important;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 32px !important;
+}
+
+.privacyNote {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+}
+
+.privacyIcon {
+  font-size: 24px;
+  margin-top: 2px;
+}
+
+.privacyContent {
+  flex: 1;
+}
+
+.privacyText {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.privateActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Empty State Updates */
+.iconContainer {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FEF9E7 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-size: 48px;
+}
+
+.emptyActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.exploreButton {
+  height: 48px;
+  border-radius: 16px;
+  padding: 0 24px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.homeButton {
+  height: 48px;
+  border-radius: 16px;
+  padding: 0 24px;
+  font-size: 16px;
+  border-color: #D1D5DB;
+}
+
+.helpSection {
+  background: #F8FAFC;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.helpText {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4B5563;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.helpDescription {
+  color: #6B7280 !important;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 0 !important;
+}
+
+/* Content Wrapper */
+.contentWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .leftColumn {
+    position: relative;
+    top: auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0;
+    padding: 96px 16px 32px;
+  }
+
+  .timelineHeader {
+    flex-direction: column;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .addPostButton {
+    width: 100%;
+  }
+
+  .detailsGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .emptyState {
+    min-height: 50vh;
+    padding: 24px 16px;
+  }
+
+  .emptyContent {
+    padding: 32px 16px;
+  }
+
+  .emptyIcon {
+    font-size: 60px;
+  }
+
+  .emptyTitle {
+    font-size: 24px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .petHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .photoGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .photoThumbnail {
+    height: 60px;
+  }
+
+  .detailsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}

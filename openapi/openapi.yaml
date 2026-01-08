@@ -104,6 +104,35 @@
       }
     },
     "/api/v1/posts/{id}": {
+      "get": {
+        "tags": [
+          "post-controller"
+        ],
+        "operationId": "getPostById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "put": {
         "tags": [
           "post-controller"
@@ -355,6 +384,47 @@
         }
       }
     },
+    "/api/v1/pets/{id}/gallery": {
+      "post": {
+        "tags": [
+          "pet-controller"
+        ],
+        "operationId": "addMediaToGallery",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddPetMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddPetMediaResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/pets/{id}/follow": {
       "post": {
         "tags": [
@@ -438,6 +508,210 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/MediaSignResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/likes": {
+      "post": {
+        "tags": [
+          "like-controller"
+        ],
+        "operationId": "toggleLike",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LikeRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LikeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/encyclopedia/species/{speciesId}/media": {
+      "post": {
+        "tags": [
+          "Encyclopedia - Media"
+        ],
+        "summary": "[ADMIN] Thêm media vào species",
+        "description": "Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.",
+        "operationId": "addMediaToSpecies",
+        "parameters": [
+          {
+            "name": "speciesId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEncyclopediaMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAddEncyclopediaMediaResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/encyclopedia/classes/{classId}/media": {
+      "post": {
+        "tags": [
+          "Encyclopedia - Media"
+        ],
+        "summary": "[ADMIN] Thêm media vào animal class",
+        "description": "Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.",
+        "operationId": "addMediaToClass",
+        "parameters": [
+          {
+            "name": "classId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEncyclopediaMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAddEncyclopediaMediaResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/encyclopedia/breeds/{breedId}/media": {
+      "post": {
+        "tags": [
+          "Encyclopedia - Media"
+        ],
+        "summary": "[ADMIN] Thêm media vào breed",
+        "description": "Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.",
+        "operationId": "addMediaToBreed",
+        "parameters": [
+          {
+            "name": "breedId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddEncyclopediaMediaRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAddEncyclopediaMediaResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/comments": {
+      "post": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "createComment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CommentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponse"
                 }
               }
             }
@@ -893,6 +1167,29 @@
         }
       }
     },
+    "/api/v1/posts/feed": {
+      "get": {
+        "tags": [
+          "post-controller"
+        ],
+        "operationId": "getNewsFeed",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PostResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/pets/{id}/followers": {
       "get": {
         "tags": [
@@ -1005,6 +1302,40 @@
           }
         },
         "deprecated": true
+      }
+    },
+    "/api/v1/likes/{postId}": {
+      "get": {
+        "tags": [
+          "like-controller"
+        ],
+        "operationId": "getAllLikes",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LikeDetailResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/v1/health": {
@@ -1678,6 +2009,40 @@
         }
       }
     },
+    "/api/v1/comments/{postId}": {
+      "get": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "getAllComments",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CommentDetailResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/{userId}": {
       "get": {
         "tags": [
@@ -1752,7 +2117,13 @@
       "UpdateProfileRequestDTO": {
         "type": "object",
         "properties": {
-          "avatarUrl": {
+          "fullName": {
+            "type": "string"
+          },
+          "avatarPublicId": {
+            "type": "string"
+          },
+          "coverImagePublicId": {
             "type": "string"
           },
           "bio": {
@@ -1773,10 +2144,16 @@
           "username": {
             "type": "string"
           },
+          "fullName": {
+            "type": "string"
+          },
           "role": {
             "type": "string"
           },
           "avatarUrl": {
+            "type": "string"
+          },
+          "coverImageUrl": {
             "type": "string"
           },
           "bio": {
@@ -1800,6 +2177,18 @@
           "petsCount": {
             "type": "integer",
             "format": "int64"
+          },
+          "isMe": {
+            "type": "boolean"
+          },
+          "isFollowing": {
+            "type": "boolean"
+          },
+          "isFollowedBy": {
+            "type": "boolean"
+          },
+          "canFollow": {
+            "type": "boolean"
           }
         }
       },
@@ -1869,9 +2258,28 @@
       "PostPetDTO": {
         "type": "object",
         "properties": {
-          "petId": {
+          "id": {
             "type": "integer",
             "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "breedName": {
+            "type": "string"
+          },
+          "speciesName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ownerUsername": {
+            "type": "string"
           }
         }
       },
@@ -1963,7 +2371,7 @@
           "status": {
             "type": "string"
           },
-          "url": {
+          "avatarPublicId": {
             "type": "string"
           },
           "weight": {
@@ -2138,14 +2546,67 @@
           "status": {
             "type": "string"
           },
-          "url": {
-            "type": "string"
+          "avatarPublicId": {
+            "type": "string",
+            "description": "Cloudinary public_id for pet avatar (optional)"
           },
           "weight": {
             "type": "number"
           },
           "height": {
             "type": "number"
+          }
+        }
+      },
+      "AddPetMediaRequest": {
+        "required": [
+          "mediaItems"
+        ],
+        "type": "object",
+        "properties": {
+          "mediaItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItem"
+            }
+          }
+        }
+      },
+      "MediaItem": {
+        "required": [
+          "publicId",
+          "type"
+        ],
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "type": {
+            "pattern": "^(image|video)$",
+            "type": "string"
+          }
+        }
+      },
+      "AddPetMediaResponse": {
+        "type": "object",
+        "properties": {
+          "petId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "addedMedia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PetMediaDTO"
+            }
+          },
+          "totalGalleryCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
           }
         }
       },
@@ -2157,8 +2618,10 @@
         "properties": {
           "context": {
             "type": "string",
+            "description": "Upload context determining folder structure",
             "enum": [
               "USER_AVATAR",
+              "USER_COVER",
               "PET_AVATAR",
               "PET_GALLERY",
               "POST_MEDIA",
@@ -2169,13 +2632,16 @@
           },
           "ownerId": {
             "type": "integer",
-            "format": "int64"
+            "format": "int64",
+            "description": "Owner ID - Required for USER_AVATAR, PET_GALLERY, POST_MEDIA. Optional for PET_AVATAR (when creating new pet)."
           },
           "slug": {
-            "type": "string"
+            "type": "string",
+            "description": "Required for ENCYCLOPEDIA contexts"
           },
           "resourceType": {
-            "type": "string"
+            "type": "string",
+            "description": "Resource type: image (default), video, raw, auto"
           }
         }
       },
@@ -2203,6 +2669,147 @@
           },
           "resource_type": {
             "type": "string"
+          }
+        }
+      },
+      "LikeRequest": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "LikeResponse": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "liked": {
+            "type": "boolean"
+          },
+          "likeCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "AddEncyclopediaMediaRequest": {
+        "required": [
+          "mediaItems"
+        ],
+        "type": "object",
+        "properties": {
+          "mediaItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItem"
+            }
+          }
+        }
+      },
+      "AddEncyclopediaMediaResponse": {
+        "type": "object",
+        "properties": {
+          "addedMedia": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EncyclopediaMediaResponse"
+            }
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ApiResponseAddEncyclopediaMediaResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/AddEncyclopediaMediaResponse"
+          },
+          "message": {
+            "type": "string"
+          },
+          "statusCode": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "EncyclopediaMediaResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "type": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          },
+          "displayOrder": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "CommentRequest": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "content": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "CommentResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "postId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "content": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -2287,7 +2894,19 @@
           "role": {
             "type": "string"
           },
+          "fullName": {
+            "type": "string"
+          },
+          "avatarPublicId": {
+            "type": "string"
+          },
           "avatarUrl": {
+            "type": "string"
+          },
+          "coverImagePublicId": {
+            "type": "string"
+          },
+          "coverImageUrl": {
             "type": "string"
           },
           "bio": {
@@ -2477,6 +3096,21 @@
           }
         }
       },
+      "LikeDetailResponse": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userAvatar": {
+            "type": "string"
+          }
+        }
+      },
       "ApiResponsePagedResultSpeciesResponse": {
         "type": "object",
         "properties": {
@@ -2553,35 +3187,6 @@
             "type": "string"
           },
           "statusCode": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "EncyclopediaMediaResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "entityType": {
-            "type": "string"
-          },
-          "entityId": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "type": {
-            "type": "string"
-          },
-          "role": {
-            "type": "string"
-          },
-          "url": {
-            "type": "string"
-          },
-          "displayOrder": {
             "type": "integer",
             "format": "int32"
           }
@@ -3086,6 +3691,32 @@
           "statusCode": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "CommentDetailResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userAvatar": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

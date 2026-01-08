@@ -9,7 +9,7 @@
 import axios from 'axios';
 
 // Get base URL from environment variables
-const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://pawplanet-ae61a47d7179.herokuapp.com/api';
+const baseURL = import.meta.env.VITE_API_BASE_URL || 'https://pawplanet-ae61a47d7179.herokuapp.com';
 
 // Create axios instance with default configuration
 export const apiClient = axios.create({
@@ -23,9 +23,13 @@ export const apiClient = axios.create({
 // Request interceptor for adding auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    // Check both sessionStorage and localStorage for auth token
+    const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log(`API Request: ${config.method?.toUpperCase()} ${config.url} - Token attached`);
+    } else {
+      console.log(`API Request: ${config.method?.toUpperCase()} ${config.url} - No token found`);
     }
     return config;
   },
@@ -39,8 +43,9 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Handle unauthorized access
+      // Handle unauthorized access - clear both storage types
       localStorage.removeItem('authToken');
+      sessionStorage.removeItem('authToken');
       window.location.href = '/login';
     }
     return Promise.reject(error);

@@ -13,10 +13,23 @@ export { Divider } from './Divider/Divider';
 export { InputField } from './InputField/InputField';
 export { SocialButton } from './SocialButton/SocialButton';
 export { AvatarUpload } from './AvatarUpload/AvatarUpload';
+export { SearchBar } from './SearchBar/SearchBar';
+export { PetCreationDebugComponent } from './PetCreationDebugComponent';
+
+// Post Components
+export { default as PostCard } from './PostCard';
+export { CreatePostModal } from './CreatePostModal';
 
 // Other
 export { Loading } from './Loading';
 export { ErrorMessage } from './ErrorMessage';
 export { EditProfilePage } from './EditProfileExample';
 export { MediaUploadDemo } from './MediaUploadExamples';
+export { MockDataBanner } from './MockDataBanner';
 
+// Pet Edit Components
+export { PetPhotoUpload } from './PetPhotoUpload';
+export { PetBasicForm } from './PetBasicForm';
+export { PetImportantDates } from './PetImportantDates';
+export { PetAppearanceForm } from './PetAppearanceForm';
+export { PetProfileSettings } from './PetProfileSettings';

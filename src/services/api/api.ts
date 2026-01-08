@@ -26,6 +26,88 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface AddEncyclopediaMediaRequest
+ */
+export interface AddEncyclopediaMediaRequest {
+    /**
+     * 
+     * @type {Array<MediaItem>}
+     * @memberof AddEncyclopediaMediaRequest
+     */
+    'mediaItems': Array<MediaItem>;
+}
+/**
+ * 
+ * @export
+ * @interface AddEncyclopediaMediaResponse
+ */
+export interface AddEncyclopediaMediaResponse {
+    /**
+     * 
+     * @type {Array<EncyclopediaMediaResponse>}
+     * @memberof AddEncyclopediaMediaResponse
+     */
+    'addedMedia'?: Array<EncyclopediaMediaResponse>;
+    /**
+     * 
+     * @type {number}
+     * @memberof AddEncyclopediaMediaResponse
+     */
+    'totalCount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AddEncyclopediaMediaResponse
+     */
+    'message'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface AddPetMediaRequest
+ */
+export interface AddPetMediaRequest {
+    /**
+     * 
+     * @type {Array<MediaItem>}
+     * @memberof AddPetMediaRequest
+     */
+    'mediaItems': Array<MediaItem>;
+}
+/**
+ * 
+ * @export
+ * @interface AddPetMediaResponse
+ */
+export interface AddPetMediaResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof AddPetMediaResponse
+     */
+    'petId'?: number;
+    /**
+     * 
+     * @type {Array<PetMediaDTO>}
+     * @memberof AddPetMediaResponse
+     */
+    'addedMedia'?: Array<PetMediaDTO>;
+    /**
+     * 
+     * @type {number}
+     * @memberof AddPetMediaResponse
+     */
+    'totalGalleryCount'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof AddPetMediaResponse
+     */
+    'message'?: string;
+}
+/**
+ * 
+ * @export
  * @interface AnimalClassResponse
  */
 export interface AnimalClassResponse {
@@ -65,6 +147,31 @@ export interface AnimalClassResponse {
      * @memberof AnimalClassResponse
      */
     'avatarUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface ApiResponseAddEncyclopediaMediaResponse
+ */
+export interface ApiResponseAddEncyclopediaMediaResponse {
+    /**
+     * 
+     * @type {AddEncyclopediaMediaResponse}
+     * @memberof ApiResponseAddEncyclopediaMediaResponse
+     */
+    'result'?: AddEncyclopediaMediaResponse;
+    /**
+     * 
+     * @type {string}
+     * @memberof ApiResponseAddEncyclopediaMediaResponse
+     */
+    'message'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ApiResponseAddEncyclopediaMediaResponse
+     */
+    'statusCode'?: number;
 }
 /**
  * 
@@ -839,6 +946,111 @@ export interface ChangePasswordRequest {
 /**
  * 
  * @export
+ * @interface CommentDetailResponse
+ */
+export interface CommentDetailResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentDetailResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentDetailResponse
+     */
+    'userId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentDetailResponse
+     */
+    'userName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentDetailResponse
+     */
+    'userAvatar'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentDetailResponse
+     */
+    'content'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentDetailResponse
+     */
+    'createdAt'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface CommentRequest
+ */
+export interface CommentRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentRequest
+     */
+    'postId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentRequest
+     */
+    'content'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentRequest
+     */
+    'parentId'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface CommentResponse
+ */
+export interface CommentResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentResponse
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentResponse
+     */
+    'postId'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentResponse
+     */
+    'userId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResponse
+     */
+    'content'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CommentResponse
+     */
+    'createdAt'?: string;
+}
+/**
+ * 
+ * @export
  * @interface CreatePetRequestDTO
  */
 export interface CreatePetRequestDTO {
@@ -885,11 +1097,11 @@ export interface CreatePetRequestDTO {
      */
     'status'?: string;
     /**
-     * 
+     * Cloudinary public_id for pet avatar (optional)
      * @type {string}
      * @memberof CreatePetRequestDTO
      */
-    'url'?: string;
+    'avatarPublicId'?: string;
     /**
      * 
      * @type {number}
@@ -1043,6 +1255,69 @@ export interface IntrospectResponse {
 /**
  * 
  * @export
+ * @interface LikeDetailResponse
+ */
+export interface LikeDetailResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof LikeDetailResponse
+     */
+    'userId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LikeDetailResponse
+     */
+    'userName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LikeDetailResponse
+     */
+    'userAvatar'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LikeRequest
+ */
+export interface LikeRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof LikeRequest
+     */
+    'postId'?: number;
+}
+/**
+ * 
+ * @export
+ * @interface LikeResponse
+ */
+export interface LikeResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof LikeResponse
+     */
+    'postId'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof LikeResponse
+     */
+    'liked'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof LikeResponse
+     */
+    'likeCount'?: number;
+}
+/**
+ * 
+ * @export
  * @interface LoginRequest
  */
 export interface LoginRequest {
@@ -1075,29 +1350,48 @@ export interface LogoutRequest {
 /**
  * 
  * @export
+ * @interface MediaItem
+ */
+export interface MediaItem {
+    /**
+     * 
+     * @type {string}
+     * @memberof MediaItem
+     */
+    'publicId': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MediaItem
+     */
+    'type': string;
+}
+/**
+ * 
+ * @export
  * @interface MediaSignRequest
  */
 export interface MediaSignRequest {
     /**
-     * 
+     * Upload context determining folder structure
      * @type {string}
      * @memberof MediaSignRequest
      */
     'context': MediaSignRequestContextEnum;
     /**
-     * 
+     * Owner ID - Required for USER_AVATAR, PET_GALLERY, POST_MEDIA. Optional for PET_AVATAR (when creating new pet).
      * @type {number}
      * @memberof MediaSignRequest
      */
     'ownerId'?: number;
     /**
-     * 
+     * Required for ENCYCLOPEDIA contexts
      * @type {string}
      * @memberof MediaSignRequest
      */
     'slug'?: string;
     /**
-     * 
+     * Resource type: image (default), video, raw, auto
      * @type {string}
      * @memberof MediaSignRequest
      */
@@ -1106,6 +1400,7 @@ export interface MediaSignRequest {
 
 export const MediaSignRequestContextEnum = {
     UserAvatar: 'USER_AVATAR',
+    UserCover: 'USER_COVER',
     PetAvatar: 'PET_AVATAR',
     PetGallery: 'PET_GALLERY',
     PostMedia: 'POST_MEDIA',
@@ -1471,7 +1766,43 @@ export interface PostPetDTO {
      * @type {number}
      * @memberof PostPetDTO
      */
-    'petId'?: number;
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostPetDTO
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostPetDTO
+     */
+    'breedName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostPetDTO
+     */
+    'speciesName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostPetDTO
+     */
+    'avatarUrl'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof PostPetDTO
+     */
+    'ownerId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PostPetDTO
+     */
+    'ownerUsername'?: string;
 }
 /**
  * 
@@ -1955,7 +2286,7 @@ export interface UpdatePetRequestDTO {
      * @type {string}
      * @memberof UpdatePetRequestDTO
      */
-    'url'?: string;
+    'avatarPublicId'?: string;
     /**
      * 
      * @type {number}
@@ -2029,7 +2360,19 @@ export interface UpdateProfileRequestDTO {
      * @type {string}
      * @memberof UpdateProfileRequestDTO
      */
-    'avatarUrl'?: string;
+    'fullName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProfileRequestDTO
+     */
+    'avatarPublicId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateProfileRequestDTO
+     */
+    'coverImagePublicId'?: string;
     /**
      * 
      * @type {string}
@@ -2078,7 +2421,31 @@ export interface UserEntity {
      * @type {string}
      * @memberof UserEntity
      */
+    'fullName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEntity
+     */
+    'avatarPublicId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEntity
+     */
     'avatarUrl'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEntity
+     */
+    'coverImagePublicId'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEntity
+     */
+    'coverImageUrl'?: string;
     /**
      * 
      * @type {string}
@@ -2133,6 +2500,12 @@ export interface UserProfileDTO {
      * @type {string}
      * @memberof UserProfileDTO
      */
+    'fullName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserProfileDTO
+     */
     'role'?: string;
     /**
      * 
@@ -2140,6 +2513,12 @@ export interface UserProfileDTO {
      * @memberof UserProfileDTO
      */
     'avatarUrl'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserProfileDTO
+     */
+    'coverImageUrl'?: string;
     /**
      * 
      * @type {string}
@@ -2176,6 +2555,30 @@ export interface UserProfileDTO {
      * @memberof UserProfileDTO
      */
     'petsCount'?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserProfileDTO
+     */
+    'isMe'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserProfileDTO
+     */
+    'isFollowing'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserProfileDTO
+     */
+    'isFollowedBy'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserProfileDTO
+     */
+    'canFollow'?: boolean;
 }
 /**
  * 
@@ -3135,6 +3538,213 @@ export class AuthenticationApi extends BaseAPI {
 
 
 /**
+ * CommentControllerApi - axios parameter creator
+ * @export
+ */
+export const CommentControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {CommentRequest} commentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createComment: async (commentRequest: CommentRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'commentRequest' is not null or undefined
+            assertParamExists('createComment', 'commentRequest', commentRequest)
+            const localVarPath = `/api/v1/comments`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(commentRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllComments: async (postId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postId' is not null or undefined
+            assertParamExists('getAllComments', 'postId', postId)
+            const localVarPath = `/api/v1/comments/{postId}`
+                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * CommentControllerApi - functional programming interface
+ * @export
+ */
+export const CommentControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = CommentControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {CommentRequest} commentRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createComment(commentRequest: CommentRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<CommentResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createComment(commentRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CommentControllerApi.createComment']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllComments(postId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<CommentDetailResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllComments(postId, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CommentControllerApi.getAllComments']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * CommentControllerApi - factory interface
+ * @export
+ */
+export const CommentControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = CommentControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {CommentControllerApiCreateCommentRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createComment(requestParameters: CommentControllerApiCreateCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<CommentResponse> {
+            return localVarFp.createComment(requestParameters.commentRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {CommentControllerApiGetAllCommentsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllComments(requestParameters: CommentControllerApiGetAllCommentsRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<CommentDetailResponse>> {
+            return localVarFp.getAllComments(requestParameters.postId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for createComment operation in CommentControllerApi.
+ * @export
+ * @interface CommentControllerApiCreateCommentRequest
+ */
+export interface CommentControllerApiCreateCommentRequest {
+    /**
+     * 
+     * @type {CommentRequest}
+     * @memberof CommentControllerApiCreateComment
+     */
+    readonly commentRequest: CommentRequest
+}
+
+/**
+ * Request parameters for getAllComments operation in CommentControllerApi.
+ * @export
+ * @interface CommentControllerApiGetAllCommentsRequest
+ */
+export interface CommentControllerApiGetAllCommentsRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentControllerApiGetAllComments
+     */
+    readonly postId: number
+}
+
+/**
+ * CommentControllerApi - object-oriented interface
+ * @export
+ * @class CommentControllerApi
+ * @extends {BaseAPI}
+ */
+export class CommentControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {CommentControllerApiCreateCommentRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentControllerApi
+     */
+    public createComment(requestParameters: CommentControllerApiCreateCommentRequest, options?: RawAxiosRequestConfig) {
+        return CommentControllerApiFp(this.configuration).createComment(requestParameters.commentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CommentControllerApiGetAllCommentsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentControllerApi
+     */
+    public getAllComments(requestParameters: CommentControllerApiGetAllCommentsRequest, options?: RawAxiosRequestConfig) {
+        return CommentControllerApiFp(this.configuration).getAllComments(requestParameters.postId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * EncyclopediaBreedsApi - axios parameter creator
  * @export
  */
@@ -3963,6 +4573,138 @@ export class EncyclopediaClassesApi extends BaseAPI {
 export const EncyclopediaMediaApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào breed
+         * @param {number} breedId 
+         * @param {AddEncyclopediaMediaRequest} addEncyclopediaMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToBreed: async (breedId: number, addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'breedId' is not null or undefined
+            assertParamExists('addMediaToBreed', 'breedId', breedId)
+            // verify required parameter 'addEncyclopediaMediaRequest' is not null or undefined
+            assertParamExists('addMediaToBreed', 'addEncyclopediaMediaRequest', addEncyclopediaMediaRequest)
+            const localVarPath = `/api/v1/encyclopedia/breeds/{breedId}/media`
+                .replace(`{${"breedId"}}`, encodeURIComponent(String(breedId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(addEncyclopediaMediaRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào animal class
+         * @param {number} classId 
+         * @param {AddEncyclopediaMediaRequest} addEncyclopediaMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToClass: async (classId: number, addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'classId' is not null or undefined
+            assertParamExists('addMediaToClass', 'classId', classId)
+            // verify required parameter 'addEncyclopediaMediaRequest' is not null or undefined
+            assertParamExists('addMediaToClass', 'addEncyclopediaMediaRequest', addEncyclopediaMediaRequest)
+            const localVarPath = `/api/v1/encyclopedia/classes/{classId}/media`
+                .replace(`{${"classId"}}`, encodeURIComponent(String(classId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(addEncyclopediaMediaRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào species
+         * @param {number} speciesId 
+         * @param {AddEncyclopediaMediaRequest} addEncyclopediaMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToSpecies: async (speciesId: number, addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'speciesId' is not null or undefined
+            assertParamExists('addMediaToSpecies', 'speciesId', speciesId)
+            // verify required parameter 'addEncyclopediaMediaRequest' is not null or undefined
+            assertParamExists('addMediaToSpecies', 'addEncyclopediaMediaRequest', addEncyclopediaMediaRequest)
+            const localVarPath = `/api/v1/encyclopedia/species/{speciesId}/media`
+                .replace(`{${"speciesId"}}`, encodeURIComponent(String(speciesId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(addEncyclopediaMediaRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @summary Lấy gallery của breed với phân trang
          * @param {number} breedId 
@@ -4117,6 +4859,48 @@ export const EncyclopediaMediaApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = EncyclopediaMediaApiAxiosParamCreator(configuration)
     return {
         /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào breed
+         * @param {number} breedId 
+         * @param {AddEncyclopediaMediaRequest} addEncyclopediaMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addMediaToBreed(breedId: number, addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseAddEncyclopediaMediaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addMediaToBreed(breedId, addEncyclopediaMediaRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['EncyclopediaMediaApi.addMediaToBreed']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào animal class
+         * @param {number} classId 
+         * @param {AddEncyclopediaMediaRequest} addEncyclopediaMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addMediaToClass(classId: number, addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseAddEncyclopediaMediaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addMediaToClass(classId, addEncyclopediaMediaRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['EncyclopediaMediaApi.addMediaToClass']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào species
+         * @param {number} speciesId 
+         * @param {AddEncyclopediaMediaRequest} addEncyclopediaMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addMediaToSpecies(speciesId: number, addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseAddEncyclopediaMediaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addMediaToSpecies(speciesId, addEncyclopediaMediaRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['EncyclopediaMediaApi.addMediaToSpecies']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
          * 
          * @summary Lấy gallery của breed với phân trang
          * @param {number} breedId 
@@ -4172,6 +4956,36 @@ export const EncyclopediaMediaApiFactory = function (configuration?: Configurati
     const localVarFp = EncyclopediaMediaApiFp(configuration)
     return {
         /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào breed
+         * @param {EncyclopediaMediaApiAddMediaToBreedRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToBreed(requestParameters: EncyclopediaMediaApiAddMediaToBreedRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseAddEncyclopediaMediaResponse> {
+            return localVarFp.addMediaToBreed(requestParameters.breedId, requestParameters.addEncyclopediaMediaRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào animal class
+         * @param {EncyclopediaMediaApiAddMediaToClassRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToClass(requestParameters: EncyclopediaMediaApiAddMediaToClassRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseAddEncyclopediaMediaResponse> {
+            return localVarFp.addMediaToClass(requestParameters.classId, requestParameters.addEncyclopediaMediaRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+         * @summary [ADMIN] Thêm media vào species
+         * @param {EncyclopediaMediaApiAddMediaToSpeciesRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToSpecies(requestParameters: EncyclopediaMediaApiAddMediaToSpeciesRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseAddEncyclopediaMediaResponse> {
+            return localVarFp.addMediaToSpecies(requestParameters.speciesId, requestParameters.addEncyclopediaMediaRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @summary Lấy gallery của breed với phân trang
          * @param {EncyclopediaMediaApiGetBreedGalleryRequest} requestParameters Request parameters.
@@ -4203,6 +5017,69 @@ export const EncyclopediaMediaApiFactory = function (configuration?: Configurati
         },
     };
 };
+
+/**
+ * Request parameters for addMediaToBreed operation in EncyclopediaMediaApi.
+ * @export
+ * @interface EncyclopediaMediaApiAddMediaToBreedRequest
+ */
+export interface EncyclopediaMediaApiAddMediaToBreedRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof EncyclopediaMediaApiAddMediaToBreed
+     */
+    readonly breedId: number
+
+    /**
+     * 
+     * @type {AddEncyclopediaMediaRequest}
+     * @memberof EncyclopediaMediaApiAddMediaToBreed
+     */
+    readonly addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest
+}
+
+/**
+ * Request parameters for addMediaToClass operation in EncyclopediaMediaApi.
+ * @export
+ * @interface EncyclopediaMediaApiAddMediaToClassRequest
+ */
+export interface EncyclopediaMediaApiAddMediaToClassRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof EncyclopediaMediaApiAddMediaToClass
+     */
+    readonly classId: number
+
+    /**
+     * 
+     * @type {AddEncyclopediaMediaRequest}
+     * @memberof EncyclopediaMediaApiAddMediaToClass
+     */
+    readonly addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest
+}
+
+/**
+ * Request parameters for addMediaToSpecies operation in EncyclopediaMediaApi.
+ * @export
+ * @interface EncyclopediaMediaApiAddMediaToSpeciesRequest
+ */
+export interface EncyclopediaMediaApiAddMediaToSpeciesRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof EncyclopediaMediaApiAddMediaToSpecies
+     */
+    readonly speciesId: number
+
+    /**
+     * 
+     * @type {AddEncyclopediaMediaRequest}
+     * @memberof EncyclopediaMediaApiAddMediaToSpecies
+     */
+    readonly addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest
+}
 
 /**
  * Request parameters for getBreedGallery operation in EncyclopediaMediaApi.
@@ -4295,6 +5172,42 @@ export interface EncyclopediaMediaApiGetSpeciesGalleryRequest {
  * @extends {BaseAPI}
  */
 export class EncyclopediaMediaApi extends BaseAPI {
+    /**
+     * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+     * @summary [ADMIN] Thêm media vào breed
+     * @param {EncyclopediaMediaApiAddMediaToBreedRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EncyclopediaMediaApi
+     */
+    public addMediaToBreed(requestParameters: EncyclopediaMediaApiAddMediaToBreedRequest, options?: RawAxiosRequestConfig) {
+        return EncyclopediaMediaApiFp(this.configuration).addMediaToBreed(requestParameters.breedId, requestParameters.addEncyclopediaMediaRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+     * @summary [ADMIN] Thêm media vào animal class
+     * @param {EncyclopediaMediaApiAddMediaToClassRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EncyclopediaMediaApi
+     */
+    public addMediaToClass(requestParameters: EncyclopediaMediaApiAddMediaToClassRequest, options?: RawAxiosRequestConfig) {
+        return EncyclopediaMediaApiFp(this.configuration).addMediaToClass(requestParameters.classId, requestParameters.addEncyclopediaMediaRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Chỉ admin mới có thể thêm ảnh/video vào encyclopedia. Có thể thêm hero, gallery, hoặc thumbnail.
+     * @summary [ADMIN] Thêm media vào species
+     * @param {EncyclopediaMediaApiAddMediaToSpeciesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EncyclopediaMediaApi
+     */
+    public addMediaToSpecies(requestParameters: EncyclopediaMediaApiAddMediaToSpeciesRequest, options?: RawAxiosRequestConfig) {
+        return EncyclopediaMediaApiFp(this.configuration).addMediaToSpecies(requestParameters.speciesId, requestParameters.addEncyclopediaMediaRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @summary Lấy gallery của breed với phân trang
@@ -5508,6 +6421,213 @@ export class HealthApi extends BaseAPI {
 
 
 /**
+ * LikeControllerApi - axios parameter creator
+ * @export
+ */
+export const LikeControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {number} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllLikes: async (postId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'postId' is not null or undefined
+            assertParamExists('getAllLikes', 'postId', postId)
+            const localVarPath = `/api/v1/likes/{postId}`
+                .replace(`{${"postId"}}`, encodeURIComponent(String(postId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {LikeRequest} likeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        toggleLike: async (likeRequest: LikeRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'likeRequest' is not null or undefined
+            assertParamExists('toggleLike', 'likeRequest', likeRequest)
+            const localVarPath = `/api/v1/likes`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(likeRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * LikeControllerApi - functional programming interface
+ * @export
+ */
+export const LikeControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = LikeControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {number} postId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getAllLikes(postId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<LikeDetailResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllLikes(postId, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['LikeControllerApi.getAllLikes']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {LikeRequest} likeRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async toggleLike(likeRequest: LikeRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LikeResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.toggleLike(likeRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['LikeControllerApi.toggleLike']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * LikeControllerApi - factory interface
+ * @export
+ */
+export const LikeControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = LikeControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {LikeControllerApiGetAllLikesRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllLikes(requestParameters: LikeControllerApiGetAllLikesRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<LikeDetailResponse>> {
+            return localVarFp.getAllLikes(requestParameters.postId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {LikeControllerApiToggleLikeRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        toggleLike(requestParameters: LikeControllerApiToggleLikeRequest, options?: RawAxiosRequestConfig): AxiosPromise<LikeResponse> {
+            return localVarFp.toggleLike(requestParameters.likeRequest, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for getAllLikes operation in LikeControllerApi.
+ * @export
+ * @interface LikeControllerApiGetAllLikesRequest
+ */
+export interface LikeControllerApiGetAllLikesRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof LikeControllerApiGetAllLikes
+     */
+    readonly postId: number
+}
+
+/**
+ * Request parameters for toggleLike operation in LikeControllerApi.
+ * @export
+ * @interface LikeControllerApiToggleLikeRequest
+ */
+export interface LikeControllerApiToggleLikeRequest {
+    /**
+     * 
+     * @type {LikeRequest}
+     * @memberof LikeControllerApiToggleLike
+     */
+    readonly likeRequest: LikeRequest
+}
+
+/**
+ * LikeControllerApi - object-oriented interface
+ * @export
+ * @class LikeControllerApi
+ * @extends {BaseAPI}
+ */
+export class LikeControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {LikeControllerApiGetAllLikesRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LikeControllerApi
+     */
+    public getAllLikes(requestParameters: LikeControllerApiGetAllLikesRequest, options?: RawAxiosRequestConfig) {
+        return LikeControllerApiFp(this.configuration).getAllLikes(requestParameters.postId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {LikeControllerApiToggleLikeRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof LikeControllerApi
+     */
+    public toggleLike(requestParameters: LikeControllerApiToggleLikeRequest, options?: RawAxiosRequestConfig) {
+        return LikeControllerApiFp(this.configuration).toggleLike(requestParameters.likeRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * MediaControllerApi - axios parameter creator
  * @export
  */
@@ -5705,6 +6825,49 @@ export const PetControllerApiAxiosParamCreator = function (configuration?: Confi
     return {
         /**
          * 
+         * @param {number} id 
+         * @param {AddPetMediaRequest} addPetMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToGallery: async (id: number, addPetMediaRequest: AddPetMediaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('addMediaToGallery', 'id', id)
+            // verify required parameter 'addPetMediaRequest' is not null or undefined
+            assertParamExists('addMediaToGallery', 'addPetMediaRequest', addPetMediaRequest)
+            const localVarPath = `/api/v1/pets/{id}/gallery`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(addPetMediaRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {CreatePetRequestDTO} createPetRequestDTO 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5834,6 +6997,19 @@ export const PetControllerApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
+         * @param {number} id 
+         * @param {AddPetMediaRequest} addPetMediaRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async addMediaToGallery(id: number, addPetMediaRequest: AddPetMediaRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<AddPetMediaResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addMediaToGallery(id, addPetMediaRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetControllerApi.addMediaToGallery']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @param {CreatePetRequestDTO} createPetRequestDTO 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5881,6 +7057,15 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
     return {
         /**
          * 
+         * @param {PetControllerApiAddMediaToGalleryRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        addMediaToGallery(requestParameters: PetControllerApiAddMediaToGalleryRequest, options?: RawAxiosRequestConfig): AxiosPromise<AddPetMediaResponse> {
+            return localVarFp.addMediaToGallery(requestParameters.id, requestParameters.addPetMediaRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {PetControllerApiCreatePetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -5908,6 +7093,27 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
         },
     };
 };
+
+/**
+ * Request parameters for addMediaToGallery operation in PetControllerApi.
+ * @export
+ * @interface PetControllerApiAddMediaToGalleryRequest
+ */
+export interface PetControllerApiAddMediaToGalleryRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetControllerApiAddMediaToGallery
+     */
+    readonly id: number
+
+    /**
+     * 
+     * @type {AddPetMediaRequest}
+     * @memberof PetControllerApiAddMediaToGallery
+     */
+    readonly addPetMediaRequest: AddPetMediaRequest
+}
 
 /**
  * Request parameters for createPet operation in PetControllerApi.
@@ -5965,6 +7171,17 @@ export interface PetControllerApiUpdatePetRequest {
  * @extends {BaseAPI}
  */
 export class PetControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {PetControllerApiAddMediaToGalleryRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetControllerApi
+     */
+    public addMediaToGallery(requestParameters: PetControllerApiAddMediaToGalleryRequest, options?: RawAxiosRequestConfig) {
+        return PetControllerApiFp(this.configuration).addMediaToGallery(requestParameters.id, requestParameters.addPetMediaRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {PetControllerApiCreatePetRequest} requestParameters Request parameters.
@@ -6535,6 +7752,76 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getNewsFeed: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/posts/feed`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPostById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getPostById', 'id', id)
+            const localVarPath = `/api/v1/posts/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} petId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6685,6 +7972,29 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getNewsFeed(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getNewsFeed(options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PostControllerApi.getNewsFeed']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getPostById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PostResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getPostById(id, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PostControllerApi.getPostById']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} petId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6749,6 +8059,23 @@ export const PostControllerApiFactory = function (configuration?: Configuration,
         },
         /**
          * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getNewsFeed(options?: RawAxiosRequestConfig): AxiosPromise<Array<PostResponse>> {
+            return localVarFp.getNewsFeed(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PostControllerApiGetPostByIdRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getPostById(requestParameters: PostControllerApiGetPostByIdRequest, options?: RawAxiosRequestConfig): AxiosPromise<PostResponse> {
+            return localVarFp.getPostById(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {PostControllerApiGetPostsByPetIdRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -6789,6 +8116,20 @@ export interface PostControllerApiCreatePostRequest {
      * @memberof PostControllerApiCreatePost
      */
     readonly createPostRequest: CreatePostRequest
+}
+
+/**
+ * Request parameters for getPostById operation in PostControllerApi.
+ * @export
+ * @interface PostControllerApiGetPostByIdRequest
+ */
+export interface PostControllerApiGetPostByIdRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PostControllerApiGetPostById
+     */
+    readonly id: number
 }
 
 /**
@@ -6866,6 +8207,27 @@ export class PostControllerApi extends BaseAPI {
      */
     public getMyPosts(options?: RawAxiosRequestConfig) {
         return PostControllerApiFp(this.configuration).getMyPosts(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostControllerApi
+     */
+    public getNewsFeed(options?: RawAxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).getNewsFeed(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PostControllerApiGetPostByIdRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostControllerApi
+     */
+    public getPostById(requestParameters: PostControllerApiGetPostByIdRequest, options?: RawAxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).getPostById(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

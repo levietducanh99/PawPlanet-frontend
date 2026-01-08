@@ -34,7 +34,7 @@ export const SpeciesCard: React.FC<SpeciesCardProps> = ({
       <Card bordered={false} className={styles.speciesCard}>
         <div
           className={styles.speciesImage}
-          style={{ backgroundImage: `url(${species.image})` }}
+          style={{ ['--species-image' as any]: `url(${species.image})` }}
         >
           {species.status && (
             <Tag

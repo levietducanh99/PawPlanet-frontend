@@ -24,14 +24,18 @@ import type {
 export const signMediaUpload = async (
   request: SignMediaRequest
 ): Promise<SignMediaResponse> => {
+  console.log('🔵 Backend sign request:', request);
+
   const response = await apiClient.post('/api/v1/media/sign', {
     context: request.context,
     ownerId: request.ownerId,
     slug: request.slug,
   });
 
+  console.log('🔵 Backend sign response:', response.data);
+
   // Map backend response to frontend domain model
-  return {
+  const signData = {
     signature: response.data.signature,
     timestamp: response.data.timestamp,
     apiKey: response.data.api_key,
@@ -40,6 +44,9 @@ export const signMediaUpload = async (
     publicId: response.data.public_id,
     resourceType: response.data.resource_type,
   };
+
+  console.log('🔵 Mapped signData:', signData);
+  return signData;
 };
 
 /**
@@ -53,29 +60,62 @@ export const uploadToCloudinary = async (
   file: File,
   signData: SignMediaResponse
 ): Promise<CloudinaryUploadResponse> => {
+  console.log('🔵 Cloudinary upload debug - signData:', signData);
+
+  // Validate required fields
+  if (!signData.signature || !signData.timestamp || !signData.apiKey || !signData.cloudName) {
+    throw new Error('Missing required Cloudinary parameters from backend');
+  }
+
   const formData = new FormData();
   formData.append('file', file);
   formData.append('signature', signData.signature);
   formData.append('timestamp', signData.timestamp.toString());
   formData.append('api_key', signData.apiKey);
-  formData.append('folder', signData.assetFolder);
 
+  // Add folder if provided
+  if (signData.assetFolder) {
+    // Cloudinary signed uploads expect the backend-provided key 'asset_folder' in our flow
+    // Backend sends 'assetFolder' in the sign response; we must pass it as 'asset_folder'
+    formData.append('asset_folder', signData.assetFolder);
+  }
+
+  // Add public_id if provided
   if (signData.publicId) {
     formData.append('public_id', signData.publicId);
   }
 
-  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${signData.cloudName}/${signData.resourceType}/upload`;
+  // Add resource_type if provided (default to 'image')
+  const resourceType = signData.resourceType || 'image';
+
+  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${signData.cloudName}/${resourceType}/upload`;
+
+  console.log('🔵 Cloudinary upload URL:', cloudinaryUrl);
+  console.log('🔵 FormData entries:');
+  for (const [key, value] of formData.entries()) {
+    if (key === 'file') {
+      console.log(`  ${key}:`, file.name, file.size, 'bytes', file.type);
+    } else {
+      console.log(`  ${key}:`, value);
+    }
+  }
 
   const response = await fetch(cloudinaryUrl, {
     method: 'POST',
     body: formData,
   });
 
+  console.log('🔵 Cloudinary response status:', response.status);
+  console.log('🔵 Cloudinary response headers:', Object.fromEntries(response.headers.entries()));
+
   if (!response.ok) {
-    throw new Error(`Cloudinary upload failed: ${response.statusText}`);
+    const errorText = await response.text();
+    console.error('🔴 Cloudinary error response:', errorText);
+    throw new Error(`Cloudinary upload failed: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   const data = await response.json();
+  console.log('🟢 Cloudinary success response:', data);
 
   // Map Cloudinary response to frontend domain model
   return {

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Input, Tag, Typography } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Alert, Tag, Typography } from 'antd';
 import { pageVariants } from '@/animations/variants';
+import { SearchBar } from '@/components';
 import {
   AnimalClassCard,
   AnimalClassData,
@@ -11,71 +11,12 @@ import {
   PillTabs,
   TabItem,
 } from '@/components/Encyclopedia';
+import { useEncyclopediaClasses, useEncyclopediaSearch } from '@/hooks';
 import styles from './EncyclopediaPage.module.css';
 
 const { Paragraph } = Typography;
 
-// Mock data for animal classes
-const animalClasses: AnimalClassData[] = [
-  {
-    id: 'mammal',
-    name: 'Mammal',
-    description: 'Warm-blooded animals with fur or hair, producing milk for their young.',
-    image: 'https://images.unsplash.com/photo-1474511320723-9a56873571b7?w=800',
-    size: 'large',
-  },
-  {
-    id: 'bird',
-    name: 'Bird',
-    description: 'Warm-blooded animals with feathers and wings, laying eggs.',
-    image: 'https://images.unsplash.com/photo-1444464666168-49d633b86797?w=800',
-    size: 'large',
-  },
-  {
-    id: 'reptile',
-    name: 'Reptile',
-    description: 'Cold-blooded animals with dry, scaly skin.',
-    image: 'https://images.unsplash.com/photo-1504450874802-0ba2bcd9b5ae?w=800',
-    size: 'small',
-  },
-  {
-    id: 'amphibian',
-    name: 'Amphibian',
-    description: 'Animals that can live both in water and on land.',
-    image: 'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=800',
-    size: 'small',
-  },
-  {
-    id: 'fish',
-    name: 'Fish',
-    description: 'Aquatic animals that breathe through gills.',
-    image: 'https://images.unsplash.com/photo-1524704654690-b56c05c78a00?w=800',
-    size: 'small',
-  },
-  {
-    id: 'insect',
-    name: 'Insect',
-    description: 'Invertebrate animals with six legs.',
-    image: 'https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=800',
-    size: 'small',
-  },
-  {
-    id: 'mollusk',
-    name: 'Mollusk',
-    description: 'Invertebrate animals with soft bodies, often with shells.',
-    image: 'https://images.unsplash.com/photo-1545671913-b89ac1b4ac10?w=800',
-    size: 'small',
-  },
-  {
-    id: 'other',
-    name: 'Other',
-    description: 'Other animal types not included in the above categories.',
-    image: 'https://images.unsplash.com/photo-1484406566174-9da000fda645?w=800',
-    size: 'small',
-  },
-];
-
-// Demo species for quick access
+// Demo species for quick access (kept as UI-only shortcuts)
 const demoSpecies = [
   { id: 'lion', name: 'Demo: Lion (Standard)', emoji: '🦁', color: '#F2994A' },
   { id: 'snake', name: 'Demo: Snake (Venomous)', emoji: '🐍', color: '#EB5757' },
@@ -88,12 +29,35 @@ const tabs: TabItem[] = [
   { key: 'random', label: 'Random Discovery' },
 ];
 
+const mapDomainClassToCard = (c: { id: number; name: string; description?: string; avatarUrl?: string }): AnimalClassData => {
+  // The UI card expects an id string; we keep it stable via slug fallback.
+  const id = String(c.id);
+  return {
+    id,
+    name: c.name,
+    description: c.description || 'Learn more about this animal class.',
+    image:
+      c.avatarUrl ||
+      'https://images.unsplash.com/photo-1484406566174-9da000fda645?w=800',
+    size: 'small',
+  };
+};
+
 export const EncyclopediaPage: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('animal-classes');
   const [searchValue, setSearchValue] = useState('');
   const [selectedClass, setSelectedClass] = useState<AnimalClassData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { data: classes, loading: classesLoading, error: classesError } = useEncyclopediaClasses();
+  const { data: searchResult, loading: searchLoading, error: searchError, search } = useEncyclopediaSearch();
+
+  const animalClasses: AnimalClassData[] = useMemo(() => {
+    // First 2 big, rest small (to mimic the existing grid layout)
+    const cards = classes.map(mapDomainClassToCard);
+    return cards.map((c, idx) => ({ ...c, size: idx < 2 ? 'large' : 'small' }));
+  }, [classes]);
 
   const handleClassClick = (animalClass: AnimalClassData) => {
     setSelectedClass(animalClass);
@@ -134,22 +98,44 @@ export const EncyclopediaPage: React.FC = () => {
 
       {/* Search Bar */}
       <div className={styles.searchContainer}>
-        <Input
-          size="large"
-          placeholder="Search for animals..."
-          prefix={<SearchOutlined className={styles.searchIcon} />}
+        <SearchBar
           value={searchValue}
-          onChange={(e) => setSearchValue(e.target.value)}
-          className={styles.searchInput}
+          onChange={setSearchValue}
+          placeholder="Search for animals, species, or breeds..."
+          loading={searchLoading}
+          onSearch={(value) => {
+            void search(value);
+          }}
         />
       </div>
 
+      {searchError && (
+        <div style={{ marginBottom: 16 }}>
+          <Alert type="error" message={searchError.message} showIcon />
+        </div>
+      )}
+
+      {/* If we have search results, show them above tabs (minimal integration) */}
+      {searchValue.trim() && searchResult.items.length > 0 && (
+        <div className={styles.demoTags}>
+          {searchResult.items.slice(0, 8).map((item) => (
+            <Tag
+              key={item.key}
+              className={styles.demoTag}
+              onClick={() => {
+                if (item.type === 'SPECIES') navigate(`/encyclopedia/species/${item.id}`);
+                if (item.type === 'BREED') navigate(`/encyclopedia/breed/${item.id}`);
+                if (item.type === 'CLASS') navigate(`/encyclopedia/class/${item.id}`);
+              }}
+            >
+              {item.title}
+            </Tag>
+          ))}
+        </div>
+      )}
+
       {/* Tab Navigation */}
-      <PillTabs
-        tabs={tabs}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-      />
+      <PillTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
 
       {/* Animal Classes Grid */}
       <AnimatePresence mode="wait">
@@ -161,31 +147,43 @@ export const EncyclopediaPage: React.FC = () => {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Large Cards Row */}
-            <div className={styles.largeCardsRow}>
-              {animalClasses
-                .filter((c) => c.size === 'large')
-                .map((animalClass) => (
-                  <AnimalClassCard
-                    key={animalClass.id}
-                    animalClass={animalClass}
-                    onClick={handleClassClick}
-                  />
-                ))}
-            </div>
+            {classesError && (
+              <div style={{ marginBottom: 16 }}>
+                <Alert type="error" message={classesError.message} showIcon />
+              </div>
+            )}
 
-            {/* Small Cards Row */}
-            <div className={styles.smallCardsRow}>
-              {animalClasses
-                .filter((c) => c.size === 'small')
-                .map((animalClass) => (
-                  <AnimalClassCard
-                    key={animalClass.id}
-                    animalClass={animalClass}
-                    onClick={handleClassClick}
-                  />
-                ))}
-            </div>
+            {classesLoading ? (
+              <Paragraph className={styles.placeholderText}>Loading classes...</Paragraph>
+            ) : (
+              <>
+                {/* Large Cards Row */}
+                <div className={styles.largeCardsRow}>
+                  {animalClasses
+                    .filter((c) => c.size === 'large')
+                    .map((animalClass) => (
+                      <AnimalClassCard
+                        key={animalClass.id}
+                        animalClass={animalClass}
+                        onClick={handleClassClick}
+                      />
+                    ))}
+                </div>
+
+                {/* Small Cards Row */}
+                <div className={styles.smallCardsRow}>
+                  {animalClasses
+                    .filter((c) => c.size === 'small')
+                    .map((animalClass) => (
+                      <AnimalClassCard
+                        key={animalClass.id}
+                        animalClass={animalClass}
+                        onClick={handleClassClick}
+                      />
+                    ))}
+                </div>
+              </>
+            )}
           </motion.div>
         )}
 

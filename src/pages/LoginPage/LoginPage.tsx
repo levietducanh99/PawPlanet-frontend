@@ -1,38 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Form, Input, Button, Checkbox, Divider, message } from 'antd';
+import { Form, Input, Button, Checkbox, Divider, message, Alert } from 'antd';
 import { MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined, LoginOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
 import { fadeInUp } from '@/animations/variants.ts';
+import { useLogin, useAuth } from '@/hooks';
+import type { LoginCredentials } from '@/domain/auth';
 import './auth.css';
 import './login.css';
+import { useNavigate } from 'react-router-dom';
 
 interface LoginPageProps {
   onSwitchToRegister: () => void;
+  onLoginSuccess?: () => void;
 }
 
-interface LoginFormValues {
-  email: string;
-  password: string;
-  remember?: boolean;
-}
-
-export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
-  const [loading, setLoading] = useState(false);
+export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLoginSuccess }) => {
   const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const { login, loading, error, clearError, isAuthenticated } = useLogin();
+  const { isAuthenticated: authStatus } = useAuth();
 
-  const handleSubmit = async (values: LoginFormValues) => {
-    setLoading(true);
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 800));
+  // Redirect authenticated users to home
+  useEffect(() => {
+    if (authStatus) {
+      navigate('/');
+    }
+  }, [authStatus, navigate]);
+
+  // Handle successful login
+  useEffect(() => {
+    if (isAuthenticated && onLoginSuccess) {
+      onLoginSuccess();
+    }
+  }, [isAuthenticated, onLoginSuccess]);
+
+  const handleSubmit = async (values: LoginCredentials) => {
+    clearError();
+
+    const result = await login(values);
+
+    if (result?.success) {
       message.success('Login successful!');
-      console.log('Login values:', values);
-    } catch (error) {
-      message.error('Login failed. Please try again.');
-    } finally {
-      setLoading(false);
+      form.resetFields();
+      navigate('/');
     }
   };
 
@@ -46,6 +58,20 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister }) => {
         <SimpleAvatar />
 
         <motion.div {...fadeInUp}>
+          {error && (
+            <Alert
+              type="error"
+              message={error.message}
+              showIcon
+              closable
+              onClose={clearError}
+              style={{
+                marginBottom: 24,
+                borderRadius: 12
+              }}
+            />
+          )}
+
           <Form
             form={form}
             onFinish={handleSubmit}

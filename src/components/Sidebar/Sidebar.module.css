@@ -283,6 +283,18 @@
   transform: translateY(0);
 }
 
+.addPetButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.petsLoading {
+  padding: 16px;
+  text-align: center;
+  color: #6B7280;
+  font-size: 14px;
+}
+
 .plusIcon {
   font-size: 18px;
   font-weight: bold;
@@ -312,4 +324,3 @@
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(24, 144, 255, 0.3);
 }
-
