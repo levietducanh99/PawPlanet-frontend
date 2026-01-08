@@ -61,7 +61,7 @@ function ProfilePage() {
   const { upload, uploading } = useMediaUpload({
     onSuccess: (result) => {
       message.success('Avatar updated!');
-      console.log('New avatar URL:', result.secureUrl);
+      console.log('New logo URL:', result.secureUrl);
     }
   });
 

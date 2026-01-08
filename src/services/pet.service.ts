@@ -32,6 +32,7 @@ export interface CreatePetData {
   weight?: number;
   height?: number;
   status?: string;
+  avatarPublicId?: string; // Cloudinary public_id from upload response
   url?: string;
 }
 
@@ -61,6 +62,7 @@ export const petService = {
         weight: petData.weight,
         height: petData.height,
         status: petData.status || 'ACTIVE',
+        avatarPublicId: petData.avatarPublicId, // Send Cloudinary public_id
       };
 
       const response = await petApi.createPet({

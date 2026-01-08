@@ -28,7 +28,12 @@ export interface User {
   username?: string;
   avatarUrl?: string;
   bio?: string;
+  role?: string;
 }
+
+export const isAdmin = (user: User | null): boolean => {
+  return user?.role === 'ADMIN' || user?.role === 'MODERATOR';
+};
 
 export interface LoginResult {
   token: AuthToken;

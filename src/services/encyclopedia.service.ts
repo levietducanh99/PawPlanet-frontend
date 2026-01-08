@@ -5,6 +5,7 @@ import {
   EncyclopediaBreedsApi,
   EncyclopediaSearchApi,
 } from '@/services/api';
+import { EncyclopediaMediaApi, AddEncyclopediaMediaRequest } from '@/services/api/api';
 
 import apiClient from '@/services/apiConfig';
 
@@ -36,6 +37,7 @@ const classesApi = new EncyclopediaClassesApi(apiConfiguration, undefined, apiCl
 const speciesApi = new EncyclopediaSpeciesApi(apiConfiguration, undefined, apiClient);
 const breedsApi = new EncyclopediaBreedsApi(apiConfiguration, undefined, apiClient);
 const searchApi = new EncyclopediaSearchApi(apiConfiguration, undefined, apiClient);
+const mediaApi = new EncyclopediaMediaApi(apiConfiguration, undefined, apiClient);
 
 export interface ListSpeciesParams {
   page?: number;
@@ -148,5 +150,13 @@ export const encyclopediaService = {
     const res = await searchApi.search1({ q });
     const dto = res.data?.result;
     return mapSearch(dto ?? { items: [] });
+  },
+
+  async addMediaToSpecies(speciesId: number, request: AddEncyclopediaMediaRequest): Promise<void> {
+    await mediaApi.addMediaToSpecies({ speciesId, addEncyclopediaMediaRequest: request });
+  },
+
+  async addMediaToBreed(breedId: number, request: AddEncyclopediaMediaRequest): Promise<void> {
+    await mediaApi.addMediaToBreed({ breedId, addEncyclopediaMediaRequest: request });
   },
 };

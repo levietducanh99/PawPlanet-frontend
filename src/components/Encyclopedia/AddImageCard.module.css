@@ -1,0 +1,80 @@
+/* Add Image Card Styles */
+
+.addImageCard {
+  break-inside: avoid;
+  margin-bottom: 16px;
+  cursor: pointer;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #E6F7FF 0%, #F0F9FF 100%);
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+  transition: all 0.3s ease;
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #1890FF;
+}
+
+.addImageCard:hover .content {
+  box-shadow: 0 12px 32px rgba(24, 144, 255, 0.25);
+  background: linear-gradient(135deg, #D6EFFF 0%, #E6F7FF 100%);
+}
+
+.iconWrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+}
+
+.icon {
+  font-size: 28px;
+  color: #1890FF;
+}
+
+.text {
+  color: #1890FF;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .addImageCard {
+    min-height: 150px;
+  }
+
+  .content {
+    min-height: 150px;
+  }
+
+  .iconWrapper {
+    width: 50px;
+    height: 50px;
+  }
+
+  .icon {
+    font-size: 24px;
+  }
+
+  .text {
+    font-size: 14px;
+  }
+}
+
