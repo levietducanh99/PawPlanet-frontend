@@ -1,0 +1,2 @@
+export { PhotoGalleryModal } from './PhotoGalleryModal';
+

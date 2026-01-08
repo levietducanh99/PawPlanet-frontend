@@ -7,7 +7,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import {
-  getPetProfile,
   getPetTimeline,
   getUserPets,
   createPost,
@@ -15,44 +14,7 @@ import {
   getPostComments,
   sharePost
 } from '@/services/post.service.mock';
-import type { Post, PetTimeline, CreatePostRequest, Comment, PetProfile } from '@/domain/post';
-
-/**
- * Hook for managing pet profile data
- */
-export const usePetProfile = (petId: number | null) => {
-  const [profile, setProfile] = useState<PetProfile | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const loadProfile = useCallback(async () => {
-    if (!petId) return;
-
-    try {
-      setLoading(true);
-      setError(null);
-      const profileData = await getPetProfile(petId);
-      setProfile(profileData);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to load pet profile';
-      setError(errorMessage);
-      console.error('Error loading pet profile:', err);
-    } finally {
-      setLoading(false);
-    }
-  }, [petId]);
-
-  useEffect(() => {
-    loadProfile();
-  }, [loadProfile]);
-
-  return {
-    profile,
-    loading,
-    error,
-    refetch: loadProfile
-  };
-};
+import type { Post, PetTimeline, CreatePostRequest, Comment } from '@/domain/post';
 
 /**
  * Hook for managing pet timeline

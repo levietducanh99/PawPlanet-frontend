@@ -204,7 +204,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
               className={`${styles.petTag} ${selectedPets.includes(pet.id) ? styles.selected : ''}`}
               onClick={() => handlePetTag(pet.id)}
             >
-              <Avatar src={pet.avatarUrl} size={44} className={styles.petAvatar} />
+              <Avatar src={pet.avatar} size={44} className={styles.petAvatar} />
               <span className={styles.petName}>{pet.name}</span>
             </div>
           ))}

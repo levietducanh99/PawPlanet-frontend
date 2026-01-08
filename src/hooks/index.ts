@@ -5,13 +5,13 @@ export { useLogout } from './useLogout';
 export { useViewProfile, useProfileData } from './useProfile';
 export { useCreatePetWithImages } from './useCreatePetWithImages';
 export {
-  usePetProfile,
   usePetTimeline,
   useUserPets,
   usePostActions,
   useCreatePost,
   usePostComments
 } from './usePost';
+export { usePetProfile } from './usePetProfile';
 export {
   useCreatePet,
   useSpecies,
@@ -33,3 +33,9 @@ export {
   useEncyclopediaSearch,
   useEncyclopediaBreedsBySpecies,
 } from './useEncyclopedia';
+
+// Pet-related hooks
+export { usePetDetail } from './usePetDetail';
+export { usePetFollow } from './usePetFollow';
+export { useUpdatePet } from './useUpdatePet';
+export { useViewPet } from './useViewPet';

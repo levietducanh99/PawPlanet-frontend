@@ -185,6 +185,7 @@
   font-size: 16px;
   font-weight: 600;
   color: #1F2937;
+  flex: 1;
 }
 
 .petsList {
@@ -323,4 +324,66 @@
 
 .sidebar::-webkit-scrollbar-thumb:hover {
   background: rgba(24, 144, 255, 0.3);
+}
+
+/* Additional styles for List Pet section */
+.petIcon {
+  font-size: 20px;
+}
+
+.petCount {
+  font-size: 14px;
+  color: #6B7280;
+  background: #F3F4F6;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-left: auto;
+}
+
+.noPets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.noPetsIcon {
+  font-size: 32px;
+  opacity: 0.5;
+}
+
+.noPetsText {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.noPetsSubtext {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+.petsError {
+  padding: 16px;
+  text-align: center;
+}
+
+.errorText {
+  color: #EF4444;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.loadingText {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.petSpecies {
+  font-size: 13px;
+  color: #6B7280;
+  text-transform: capitalize;
 }

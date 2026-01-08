@@ -277,3 +277,44 @@ export const uploadEncyclopediaSpecies = async (
   });
 };
 
+/**
+ * Upload media for pet and link it to pet's gallery
+ * 
+ * This function:
+ * 1. Uploads file to Cloudinary using PET_GALLERY context
+ * 2. Links the uploaded media to the pet via backend API
+ * 
+ * @param petId - Pet ID to add media to
+ * @param file - File to upload
+ * @param role - Media role: 'avatar', 'primary', or 'gallery'
+ * @returns Backend response with added media info
+ */
+export const uploadMediaForPet = async (
+  petId: number,
+  file: File,
+  role: 'avatar' | 'primary' | 'gallery' = 'gallery'
+): Promise<any> => {
+  // Step 1: Upload to Cloudinary
+  const cloudinaryResponse = await uploadMedia(file, {
+    context: 'PET_GALLERY',
+    ownerId: petId,
+  });
+
+  console.log('🔵 Cloudinary upload successful:', cloudinaryResponse);
+
+  // Step 2: Link media to pet via backend API
+  const mediaItem = {
+    publicId: cloudinaryResponse.publicId,
+    type: role.toUpperCase(), // AVATAR, PRIMARY, GALLERY
+  };
+
+  console.log('🔵 Linking media to pet:', { petId, mediaItem });
+
+  const response = await apiClient.post(`/api/v1/pets/${petId}/media`, {
+    mediaItems: [mediaItem],
+  });
+
+  console.log('🔵 Backend link response:', response.data);
+
+  return response.data;
+};

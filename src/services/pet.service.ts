@@ -4,6 +4,7 @@ import {
   EncyclopediaBreedsApi,
   CreatePetRequestDTO,
   PetProfileDTO,
+  AllPetsResponseDTO,
   SpeciesResponse,
   BreedResponse,
   Configuration
@@ -133,12 +134,117 @@ export const petService = {
   // Get pet by ID
   async getPetById(id: number): Promise<PetProfileDTO> {
     try {
+      console.log('🔵 petService.getPetById: Fetching pet ID:', id);
+
       const response = await petApi.getPetById({ id });
+      console.log('🔵 petService.getPetById: API Response:', response.data);
+
       return response.data;
     } catch (error: any) {
-      console.error('STATUS:', error.response?.status);
-      console.error('BACKEND MESSAGE:', error.response?.data);
-      throw error;
+      console.error('🔴 petService.getPetById - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch pet details');
+      }
+    }
+  },
+
+  // Follow a pet
+  async followPet(petId: number): Promise<void> {
+    try {
+      console.log('🔵 petService.followPet: Following pet ID:', petId);
+
+      // Sử dụng generated API nếu có, hoặc manual call
+      await apiClient.post(`/api/v1/pets/${petId}/follow`, {}, {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('🔵 petService.followPet: Success');
+    } catch (error: any) {
+      console.error('🔴 petService.followPet - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else if (error.response?.status === 409) {
+        throw new Error('Already following this pet');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to follow pet');
+      }
+    }
+  },
+
+  // Unfollow a pet
+  async unfollowPet(petId: number): Promise<void> {
+    try {
+      console.log('🔵 petService.unfollowPet: Unfollowing pet ID:', petId);
+
+      await apiClient.delete(`/api/v1/pets/${petId}/follow`, {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('🔵 petService.unfollowPet: Success');
+    } catch (error: any) {
+      console.error('🔴 petService.unfollowPet - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to unfollow pet');
+      }
+    }
+  },
+
+  // Update pet
+  async updatePet(id: number, updateData: Partial<CreatePetRequest>): Promise<Pet> {
+    try {
+      console.log('🔵 petService.updatePet: Updating pet ID:', id, 'with data:', updateData);
+
+      // Convert CreatePetRequest to CreatePetData format
+      const petData: Partial<CreatePetData> = {
+        name: updateData.name,
+        speciesId: updateData.speciesId,
+        breedId: updateData.breedId,
+        birthDate: updateData.birthDate,
+        gender: updateData.gender as 'MALE' | 'FEMALE' | 'OTHER',
+        description: updateData.description
+      };
+
+      // Manual API call since generated API might not have update method
+      const response = await apiClient.put(`/api/v1/pets/${id}`, petData, {
+        headers: {
+          'Authorization': `Bearer ${sessionStorage.getItem('authToken') || localStorage.getItem('authToken')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('🔵 petService.updatePet: Success:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('🔴 petService.updatePet - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else if (error.response?.status === 403) {
+        throw new Error('You do not have permission to edit this pet');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to update pet');
+      }
     }
   },
 
@@ -158,24 +264,59 @@ export const petService = {
   },
 
   // Get all pets of the current user
-  async getAllMyPets(): Promise<PetProfileDTO[]> {
+  async getAllMyPets(): Promise<AllPetsResponseDTO[]> {
     try {
+      console.log('🔵 petService.getAllMyPets: Using generated API...');
+
+      // Check auth token availability
+      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
+      console.log('🔵 petService.getAllMyPets: Token available:', token ? 'Yes' : 'No');
+
+      // Check API configuration
+      console.log('🔵 petService.getAllMyPets: Base path:', apiConfiguration.basePath);
+
+      // Sử dụng generated API client đã có configuration và auth
       const response = await petApi.getAllMyPets();
-      return response.data;
+      console.log('🔵 petService.getAllMyPets: API Response status:', response.status);
+      console.log('🔵 petService.getAllMyPets: API Response data:', response.data);
+
+      // Response trực tiếp trả về Array<AllPetsResponseDTO>
+      const petData: AllPetsResponseDTO[] = response.data || [];
+      console.log('🔵 petService.getAllMyPets: Pet count:', petData.length);
+
+      // Log first pet để debug structure
+      if (petData.length > 0) {
+        console.log('🔵 petService.getAllMyPets: First pet structure:', {
+          id: petData[0].id,
+          name: petData[0].name,
+          avatar: petData[0].avatar,
+          speciesName: petData[0].speciesName
+        });
+      }
+
+      return petData;
     } catch (error: any) {
-      console.error('STATUS:', error.response?.status);
-      console.error('BACKEND MESSAGE:', error.response?.data);
-      throw error;
+      console.error('🔴 petService.getAllMyPets - ERROR:', error.response?.status, error.response?.data);
+      console.error('🔴 petService.getAllMyPets - Full error:', error);
+
+      // Better error handling
+      if (error.response?.status === 401) {
+        throw new Error('Authentication failed. Please login again.');
+      } else if (error.response?.status === 404) {
+        throw new Error('Pets not found');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch pets');
+      }
     }
   }
 };
 
 // Legacy functions for backward compatibility
 export const getPetById = async (id: number): Promise<Pet> => {
-  // Convert PetProfileDTO to Pet domain model if needed
   const profile = await petService.getPetById(id);
-  // Add mapping logic here if Pet and PetProfileDTO are different
-  return profile as unknown as Pet;
+  // Import mapper to convert PetProfileDTO to Pet
+  const { mapPetProfileToPet } = await import('@/mappers/pet.mapper');
+  return mapPetProfileToPet(profile);
 };
 
 export const createPet = async (request: CreatePetRequest): Promise<Pet> => {
@@ -195,17 +336,14 @@ export const createPet = async (request: CreatePetRequest): Promise<Pet> => {
   return profile as unknown as Pet;
 };
 
-export const updatePet = async (_id: number, _request: Partial<CreatePetRequest>): Promise<Pet> => {
-  // Implementation for update will be added later
-  throw new Error('Update pet API not implemented yet');
+export const updatePet = async (id: number, request: Partial<CreatePetRequest>): Promise<Pet> => {
+  return await petService.updatePet(id, request);
 };
 
-export const followPet = async (_petId: number): Promise<void> => {
-  // Implementation for follow will be added later
-  throw new Error('Follow pet API not implemented yet');
+export const followPet = async (petId: number): Promise<void> => {
+  return await petService.followPet(petId);
 };
 
-export const unfollowPet = async (_petId: number): Promise<void> => {
-  // Implementation for unfollow will be added later
-  throw new Error('Unfollow pet API not implemented yet');
+export const unfollowPet = async (petId: number): Promise<void> => {
+  return await petService.unfollowPet(petId);
 };

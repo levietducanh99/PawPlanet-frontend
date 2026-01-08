@@ -329,9 +329,6 @@
 }
 
 /* Back Button */
-.backButton {
-  margin-bottom: 24px;
-}
 
 .backBtn {
   font-size: 14px;
@@ -402,6 +399,24 @@
   height: 32px;
   font-size: 14px;
   font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.followButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.followButton[aria-pressed="true"] {
+  /* When following - shows filled heart */
+  color: #1890FF;
+  border-color: #1890FF;
+}
+
+.followButton.ant-btn-dangerous:hover {
+  /* When hovering to unfollow */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
 }
 
 .shareButton {
