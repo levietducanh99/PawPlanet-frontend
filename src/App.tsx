@@ -19,6 +19,7 @@ import { EditPetPage } from './pages/EditPetPage';
 import { ViewUserPage } from './pages/ViewUserPage';
 import { AuthProvider } from '@/context/AuthContext';
 import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
+import { LandingPage } from '@/pages/LandingPage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -40,6 +41,15 @@ function RegisterRouteWrapper() {
   );
 }
 
+function LandingPageWrapper() {
+  const navigate = useNavigate();
+  return (
+    <LandingPage
+      onGetStarted={() => navigate('/login')}
+    />
+  );
+}
+
 function App() {
   return (
     <AuthProvider>
@@ -47,6 +57,9 @@ function App() {
         <AntdApp>
           <BrowserRouter>
             <Routes>
+              {/* Landing Page */}
+              <Route path="/landing" element={<LandingPageWrapper />} />
+
               {/* Auth pages without layout */}
               <Route path="/login" element={<LoginRouteWrapper />} />
               <Route path="/register" element={<RegisterRouteWrapper />} />
