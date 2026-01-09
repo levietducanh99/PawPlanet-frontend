@@ -14,8 +14,11 @@ import { motion } from 'motion/react';
 import type { Post } from '@/domain/post';
 import { PetTag } from '@/components/PetTag';
 import styles from './PostCard.module.css';
+import {useNavigate} from "react-router-dom";
+import LikesPopover from '@/components/LikesPopover/LikesPopover';
 
 const { Text, Paragraph } = Typography;
+
 
 interface PostCardProps {
   post: Post;
@@ -24,10 +27,15 @@ interface PostCardProps {
   onShare: (postId: number) => void;
   onDelete?: (postId: number) => void;
   onEdit?: (postId: number) => void;
+  onViewLikes?: (postId: number) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, onDelete, onEdit }) => {
+
+
+const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, onDelete, onEdit, onViewLikes }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+
 
   // uiPost extends Post with optional UI-only fields used by the component
   const uiPost = post as Post & {
@@ -58,6 +66,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
   const renderPetTags = () => {
     if (!post.taggedPets || post.taggedPets.length === 0) return null;
 
+
     return (
       <div className={styles.petTagsContainer}>
         {post.taggedPets.map((pet) => (
@@ -68,10 +77,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
             species={pet.species}
             breed={pet.breed}
             avatarUrl={pet.avatarUrl}
-            onClick={() => {
-              // TODO: Navigate to pet profile
-              console.log('Navigate to pet:', pet.id);
-            }}
+            onClick={() => navigate(`/pet/${pet?.id}`)}
           />
         ))}
       </div>
@@ -167,7 +173,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
         {/* Header */}
         <div className={styles.postHeaderNew}>
           <Space size="middle" align="start">
-            <div className={styles.avatarWrapper}>
+            <div className={styles.avatarWrapper} 
+                 onClick={() => navigate(`/user/${post?.authorId}`)}
+                 style={{cursor: 'pointer'}}>
               <Avatar src={uiPost.authorAvatar} size={56} className={styles.avatarRing} />
               {uiPost.petAvatar && (
                 <Avatar src={uiPost.petAvatar} size={28} className={styles.petAvatar} />
@@ -228,17 +236,19 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
         <div className={styles.postActions}>
           <Space size="large" className={styles.actionButtons}>
             <motion.div whileTap={{ scale: 0.95 }}>
-              <Button
-                type="text"
-                icon={uiPost.isLiked ?
-                  <HeartFilled style={{ color: '#EB5757' }} /> :
-                  <HeartOutlined />
-                }
-                onClick={() => onLike(uiPost.id)}
-                className={styles.actionButton}
-              >
-                <span className={uiPost.isLiked ? styles.likedText : styles.actionText}>{uiPost.likeCount}</span>
-              </Button>
+              <LikesPopover postId={uiPost.id} onViewAll={(id) => onViewLikes && onViewLikes(id)}>
+                <Button
+                  type="text"
+                  icon={uiPost.isLiked ?
+                    <HeartFilled style={{ color: '#EB5757' }} /> :
+                    <HeartOutlined />
+                  }
+                  onClick={() => onLike(uiPost.id)}
+                  className={styles.actionButton}
+                >
+                  <span className={uiPost.isLiked ? styles.likedText : styles.actionText}>{uiPost.likeCount}</span>
+                </Button>
+              </LikesPopover>
             </motion.div>
 
             <motion.div whileTap={{ scale: 0.95 }}>

@@ -31,21 +31,54 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ open, on
       await markAsRead(notification.id);
     }
 
-    // Navigate based on notification type
-    if (notification.target) {
-      switch (notification.target.type) {
+    // Navigate based on notification type and metadata
+    const { type, target, metadata } = notification;
+
+    // Use metadata for more accurate navigation
+    if (type === 'COMMENT_POST' || type === 'COMMENT') {
+      // For comment notifications, navigate to the post (using metadata.postId)
+      const postId = metadata?.postId || target?.id;
+      if (postId) {
+        navigate(`/post/${postId}`);
+      }
+    } else if (type === 'LIKE_POST' || type === 'LIKE') {
+      // For like notifications, navigate to the post
+      const postId = metadata?.postId || target?.id;
+      if (postId) {
+        navigate(`/post/${postId}`);
+      }
+    } else if (type === 'FOLLOW_USER' || type === 'FOLLOW') {
+      // For follow notifications, navigate to the actor's profile
+      navigate(`/user/${notification.actor.id}`);
+    } else if (type === 'FOLLOW_PET' || type === 'PET_FOLLOW') {
+      // For pet follow notifications, navigate to the pet profile
+      const petId = metadata?.petId || target?.id;
+      if (petId) {
+        navigate(`/pet/${petId}`);
+      }
+    } else if (type === 'MENTION') {
+      // For mentions, navigate to the post
+      const postId = metadata?.postId || target?.id;
+      if (postId) {
+        navigate(`/post/${postId}`);
+      }
+    } else if (type === 'SHARE_POST') {
+      // For share notifications, navigate to the post
+      const postId = metadata?.postId || target?.id;
+      if (postId) {
+        navigate(`/post/${postId}`);
+      }
+    } else if (target) {
+      // Fallback to target-based navigation
+      switch (target.type) {
         case 'POST':
-          navigate(`/post/${notification.target.id}`);
+          navigate(`/post/${target.id}`);
           break;
         case 'USER':
-          navigate(`/profile/${notification.target.id}`);
+          navigate(`/user/${target.id}`);
           break;
         case 'PET':
-          navigate(`/pet/${notification.target.id}`);
-          break;
-        case 'COMMENT':
-          // Navigate to post with comment highlighted
-          navigate(`/post/${notification.target.id}`);
+          navigate(`/pet/${target.id}`);
           break;
         default:
           break;
@@ -163,4 +196,3 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ open, on
     </Drawer>
   );
 };
-

@@ -1,5 +1,5 @@
 // src/services/comment.service.ts
-import { CommentControllerApi, CommentRequest } from '@/services/api';
+import { CommentControllerApi, CommentRequest, CommentDetailResponse } from '@/services/api';
 import { apiClient } from './apiConfig';
 
 const api = new CommentControllerApi(undefined, undefined, apiClient);
@@ -14,6 +14,8 @@ export interface Comment {
   createdAt: string;
   likeCount: number;
   liked: boolean;
+  parentId?: number | null;
+  replies?: Comment[];
 }
 
 /**
@@ -22,7 +24,8 @@ export interface Comment {
 export const getCommentsByPostId = async (postId: number): Promise<Comment[]> => {
   const res = await api.getAllComments({ postId });
 
-  return (res.data || []).map(dto => ({
+  // Helper to map possible nested dto replies
+  const mapDtoToComment = (dto: CommentDetailResponse): Comment => ({
     id: dto.id ?? 0,
     postId: postId,
     userId: dto.userId ?? 0,
@@ -30,18 +33,23 @@ export const getCommentsByPostId = async (postId: number): Promise<Comment[]> =>
     userAvatar: dto.userAvatar,
     content: dto.content ?? '',
     createdAt: dto.createdAt ?? new Date().toISOString(),
-    likeCount: 0, // Backend chưa có field này
-    liked: false, // Backend chưa có field này
-  }));
+    likeCount: 0,
+    liked: false,
+    parentId: dto.parentId ?? null,
+    replies: ((dto as any).replies || (dto as any).children || []).map((r: CommentDetailResponse) => mapDtoToComment(r)),
+  });
+
+  return (res.data || []).map(mapDtoToComment);
 };
 
 /**
  * Create a new comment on a post
  */
-export const createComment = async (postId: number, content: string): Promise<Comment> => {
+export const createComment = async (postId: number, content: string, parentId?: number): Promise<Comment> => {
   const commentRequest: CommentRequest = {
     postId,
     content,
+    parentId,
   };
 
   const res = await api.createComment({ commentRequest });
@@ -57,4 +65,3 @@ export const createComment = async (postId: number, content: string): Promise<Co
     liked: false,
   };
 };
-

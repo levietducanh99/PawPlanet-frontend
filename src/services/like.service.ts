@@ -1,5 +1,5 @@
 // src/services/like.service.ts
-import { LikeControllerApi, LikeRequest } from '@/services/api';
+import { LikeControllerApi, LikeRequest, LikeDetailResponse } from '@/services/api';
 import { apiClient } from './apiConfig';
 
 const api = new LikeControllerApi(undefined, undefined, apiClient);
@@ -20,3 +20,15 @@ export const togglePostLike = async (postId: number): Promise<{ liked: boolean; 
   };
 };
 
+/**
+ * Get all likes for a post
+ */
+export const getAllLikes = async (postId: number): Promise<{ userId: number; username: string; avatarUrl?: string }[]> => {
+  const res = await api.getAllLikes({ postId });
+  const data: LikeDetailResponse[] = res.data || [];
+  return data.map((dto) => ({
+    userId: dto.userId ?? 0,
+    username: dto.userName || 'Unknown',
+    avatarUrl: dto.userAvatar,
+  }));
+};

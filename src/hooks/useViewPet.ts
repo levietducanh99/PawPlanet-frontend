@@ -56,12 +56,15 @@ export const useViewPet = (petId: number | null) => {
   }, [petId, pet?.isFollowing, optimisticState]);
 
   const isPrivate = useMemo(() => {
-    return pet?.status?.toLowerCase() === 'hidden';
+    if (!pet?.status) return false;
+    const status = pet.status.toUpperCase();
+    return status === 'HIDDEN' || status === 'PRIVATE';
   }, [pet?.status]);
 
   const petStatus = useMemo(() => {
     if (!pet?.status) return 'public';
-    return pet.status.toLowerCase() === 'hidden' ? 'private' : 'public';
+    const status = pet.status.toUpperCase();
+    return (status === 'HIDDEN' || status === 'PRIVATE') ? 'private' : 'public';
   }, [pet?.status]);
 
 

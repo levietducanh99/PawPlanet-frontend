@@ -11,7 +11,7 @@ import {
   SafetyOutlined
 } from '@ant-design/icons';
 import styles from './LandingPage.module.css';
-import logoImage from '/logo/logo_pawplanet.png';
+import logoImage from '/logo/pawplanet-vertical-logo.png';
 
 export interface LandingPageProps {
   onGetStarted: () => void;
@@ -251,7 +251,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </div>
             </motion.div>
 
-            {/* Right Logo with 3D Animation */}
+            {/* Right Logo */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -261,7 +261,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               <motion.div
                 animate={{
                   y: [0, -20, 0],
-                  rotateY: [0, 10, 0, -10, 0],
                 }}
                 transition={{
                   duration: 4,
@@ -278,6 +277,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
               </motion.div>
 
               {/* Floating paw prints */}
+              {/* ...existing code... */}
               {[...Array(5)].map((_, i) => (
                 <motion.div
                   key={i}

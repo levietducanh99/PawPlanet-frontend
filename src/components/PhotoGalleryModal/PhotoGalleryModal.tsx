@@ -2,6 +2,7 @@ import React from 'react';
 import { Modal, Image, Typography, Empty, Row, Col, Tag } from 'antd';
 import { CrownOutlined } from '@ant-design/icons';
 import { PetMedia } from '@/domain/pet';
+import styles from './PhotoGalleryModal.module.css'; // Import the CSS module
 
 const { Text } = Typography;
 
@@ -41,7 +42,8 @@ export const PhotoGalleryModal: React.FC<PhotoGalleryModalProps> = ({
       width={1000}
       title={`${petName}'s Photo Gallery (${media.length} photos)`}
       centered
-      bodyStyle={{ padding: '24px' }}
+      style={{ top: 20 }}
+      className={styles.modal} // Add the CSS module class here
     >
       <Row gutter={[16, 16]}>
         {media.map((item, index) => (

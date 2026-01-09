@@ -239,31 +239,32 @@ export const ViewPetPage: React.FC = () => {
   const handleAdoptionToggle = async (enabled: boolean) => {
     if (!petIdNumber || !pet) return;
 
+    // If enabling adoption: show form first, don't update status yet
+    if (enabled) {
+      // Show form modal immediately
+      setShowAdoptionForm(true);
+      return; // Don't update status yet, wait for form submission
+    }
+
+    // If disabling adoption: update status to NORMAL
     setAdoptionToggleLoading(true);
 
     try {
-      // Update pet status
-      const newStatus = enabled ? 'FOR_ADOPTION' : 'NORMAL';
-      await petService.updatePet(petIdNumber, { status: newStatus });
+      await petService.updatePet(petIdNumber, { status: 'NORMAL' });
 
-      message.success(
-        enabled
-          ? `${pet.name} is now available for adoption`
-          : `${pet.name} is no longer available for adoption`
-      );
+      message.success(`${pet.name} is no longer available for adoption`);
 
-      // If enabling adoption and no profile exists, show form
-      if (enabled && !adoptionProfile) {
-        setShowAdoptionForm(true);
-      }
+      // Close form if it was open
+      setShowAdoptionForm(false);
 
       // Refetch pet data to update status
       if (refetch) {
         refetch();
       }
-    } catch (error: any) {
-      console.error('Failed to toggle adoption status:', error);
-      message.error(error.message || 'Failed to update adoption status');
+    } catch (error: unknown) {
+      console.error('Failed to disable adoption status:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update adoption status';
+      message.error(errorMessage);
     } finally {
       setAdoptionToggleLoading(false);
     }
@@ -273,18 +274,29 @@ export const ViewPetPage: React.FC = () => {
   const handleCreateAdoptionProfile = async (values: CreateAdoptionProfileRequest) => {
     if (!petIdNumber) return;
 
-    const success = await createProfile(petIdNumber, values);
+    try {
+      // Step 1: Create adoption profile
+      const success = await createProfile(petIdNumber, values);
 
-    if (success) {
+      if (!success) {
+        message.error(adoptionError || 'Failed to create adoption profile');
+        return;
+      }
+
+      // Step 2: Update pet status to FOR_ADOPTION (only after profile created)
+      await petService.updatePet(petIdNumber, { status: 'FOR_ADOPTION' });
+
       message.success('Adoption profile created successfully! 🎉');
       setShowAdoptionForm(false);
       
-      // Refetch pet data
+      // Refetch pet data to show updated status
       if (refetch) {
         refetch();
       }
-    } else {
-      message.error(adoptionError || 'Failed to create adoption profile');
+    } catch (error: unknown) {
+      console.error('Failed to create adoption profile:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create adoption profile';
+      message.error(errorMessage);
     }
   };
 
@@ -300,20 +312,11 @@ export const ViewPetPage: React.FC = () => {
     }
   };
 
-  // Fetch adoption profile when pet is FOR_ADOPTION
-  useEffect(() => {
-    if (pet && pet.status === 'For Adoption' && petIdNumber) {
-      // Only fetch if we don't have it yet
-      if (!adoptionProfile && !adoptionLoading) {
-        fetchProfile(petIdNumber).catch((err) => {
-          // Silently ignore 404 errors (profile doesn't exist yet)
-          if (!err.message?.includes('not found')) {
-            console.error('Failed to fetch adoption profile:', err);
-          }
-        });
-      }
-    }
-  }, [pet, petIdNumber, adoptionProfile, adoptionLoading, fetchProfile]);
+  // Note: Removed auto-fetch to prevent 404 spam
+  // Adoption profile will only be fetched when:
+  // 1. User explicitly views it (handleViewAdoptionProfile)
+  // 2. After successful profile creation (handleCreateAdoptionProfile)
+  // This prevents API spam when toggling adoption status without a profile
 
   // Loading state - ONLY for initial page load
   if (pageLoading) {
@@ -340,8 +343,10 @@ export const ViewPetPage: React.FC = () => {
     );
   }
 
-  // State: Private Profile (status = hidden)
-  if (isPrivate && !isOwner) {
+  // State: Private or Hidden Profile (status = HIDDEN or PRIVATE)
+  if ((pet.status === 'HIDDEN' || pet.status === 'PRIVATE' || isPrivate) && !isOwner) {
+    const isHidden = pet.status === 'HIDDEN';
+
     return (
       <>
         <Header />
@@ -368,7 +373,7 @@ export const ViewPetPage: React.FC = () => {
             <div className={styles.privateState}>
               <Card className={styles.privateCard} bordered={false}>
                 <div className={styles.privateContent}>
-                  <div className={styles.userHeader}>
+                  <div className={styles.userHeader} >
                     <Avatar
                       size={64}
                       icon={<UserOutlined />}
@@ -385,32 +390,59 @@ export const ViewPetPage: React.FC = () => {
                     transition={{ delay: 0.2 }}
                     className={styles.lockIcon}
                   >
-                    <div className={styles.lockContainer}>
-                      <LockOutlined />
+                    <div className={isHidden ? styles.hiddenContainer : styles.lockContainer}>
+                      {isHidden ? '🙈' : <LockOutlined />}
                     </div>
                   </motion.div>
 
                   <Title level={2} className={styles.privateTitle}>
-                    This Profile is Private
+                    {isHidden ? 'This Pet is Hidden' : 'This Profile is Private'}
                   </Title>
 
                   <Paragraph className={styles.privateDescription}>
-                    {pet.ownerUsername} has set this pet profile to private. Only they
-                    can view this adorable friend's profile. 😊
+                    {isHidden
+                      ? `${pet.ownerUsername} has hidden this pet profile from public view. This adorable friend prefers to stay out of the spotlight for now. 🐾`
+                      : `${pet.ownerUsername} has set this pet profile to private. Only they can view this adorable friend's profile. 😊`
+                    }
                   </Paragraph>
 
                   <div className={styles.privacyNote}>
                     <div className={styles.privacyIcon}>
-                      🔒
+                      {isHidden ? '🔕' : '🔒'}
                     </div>
                     <div className={styles.privacyContent}>
-                      <Text strong>Privacy Protected</Text>
+                      <Text strong>
+                        {isHidden ? 'Hidden Profile' : 'Privacy Protected'}
+                      </Text>
                       <br />
                       <Text type="secondary" className={styles.privacyText}>
-                        Respecting privacy by keeping this pet profile. We want to
-                        keep {pet.name}'s information private and secure.
+                        {isHidden
+                          ? `This pet profile is temporarily hidden and not visible to other users. ${pet.name}'s owner has chosen to keep this profile away from public discovery.`
+                          : `Respecting privacy by keeping this pet profile secure. We want to keep ${pet.name}'s information private and secure.`
+                        }
                       </Text>
                     </div>
+                  </div>
+
+                  <div className={styles.statusBadge}>
+                    <motion.div
+                      className={isHidden ? styles.hiddenBadge : styles.privateBadge}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      {isHidden ? (
+                        <>
+                          <span className={styles.badgeIcon}>👻</span>
+                          <span className={styles.badgeText}>Hidden from Discovery</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={styles.badgeIcon}>🛡️</span>
+                          <span className={styles.badgeText}>Private Profile</span>
+                        </>
+                      )}
+                    </motion.div>
                   </div>
 
                   <div className={styles.privateActions}>
@@ -419,7 +451,7 @@ export const ViewPetPage: React.FC = () => {
                       icon={<CameraOutlined />}
                       size="large"
                       className={styles.exploreButton}
-                      onClick={() => navigate('/encyclopedia')}
+                      onClick={() => navigate('/explore')}
                     >
                       Explore Other Pets
                     </Button>
@@ -469,7 +501,7 @@ export const ViewPetPage: React.FC = () => {
                 >
                   {/* Pet Header */}
                   <Card bordered={false} className={styles.profileCard}>
-                    <div className={styles.ownerHeader}>
+                    <div className={styles.ownerHeader} onClick={()=> navigate(`/user/${pet.ownerId}`)} style={{cursor: 'pointer'}}>
                       <Avatar
                         size={40}
                         icon={<UserOutlined />}
@@ -654,26 +686,8 @@ export const ViewPetPage: React.FC = () => {
                         loading={adoptionToggleLoading}
                       />
 
-                      {/* Adoption Form (show when enabled and no profile) */}
-                      {showAdoptionForm && pet.status === 'For Adoption' && (
-                        <Card
-                          bordered={false}
-                          style={{
-                            borderRadius: '16px',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-                            marginBottom: '16px',
-                          }}
-                        >
-                          <AdoptionProfileForm
-                            onSubmit={handleCreateAdoptionProfile}
-                            loading={adoptionLoading}
-                            onCancel={() => setShowAdoptionForm(false)}
-                          />
-                        </Card>
-                      )}
-
                       {/* Adoption Profile Status (when profile exists) */}
-                      {pet.status === 'For Adoption' && adoptionProfile && !showAdoptionForm && (
+                      {pet.status === 'For Adoption' && adoptionProfile && (
                         <Card
                           bordered={false}
                           style={{
@@ -959,6 +973,22 @@ export const ViewPetPage: React.FC = () => {
         }}
         title={activePostId && optimisticPosts ? `${optimisticPosts.find(p => p.id === activePostId)?.authorName || pet?.name || 'Post'}'s Post` : 'Comments'}
       />
+
+      {/* Adoption Profile Form Modal (for creating adoption profile) */}
+      <Modal
+        open={showAdoptionForm}
+        onCancel={() => setShowAdoptionForm(false)}
+        footer={null}
+        width={700}
+        style={{ top: 20 }}
+        title="Create Adoption Profile"
+      >
+        <AdoptionProfileForm
+          onSubmit={handleCreateAdoptionProfile}
+          loading={adoptionLoading}
+          onCancel={() => setShowAdoptionForm(false)}
+        />
+      </Modal>
 
       {/* Adoption Profile Modal (for viewers) */}
       <Modal

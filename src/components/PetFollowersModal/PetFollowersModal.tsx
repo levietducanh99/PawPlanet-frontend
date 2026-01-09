@@ -34,8 +34,12 @@ export const PetFollowersModal: React.FC<PetFollowersModalProps> = ({
 
   const handleUserClick = (username: string | undefined) => {
     if (username) {
-      onClose();
-      navigate(`/profile/${username}`);
+      // We have only username here; try to resolve to user id via followers list
+      const user = followers.find(f => f.username === username);
+      if (user) {
+        onClose();
+        navigate(`/user/${user.id}`);
+      }
     }
   };
 
@@ -97,4 +101,3 @@ export const PetFollowersModal: React.FC<PetFollowersModalProps> = ({
     </Modal>
   );
 };
-

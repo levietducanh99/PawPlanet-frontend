@@ -248,12 +248,12 @@ export const usePostComments = (postId: number | null) => {
     }
   }, [postId]);
 
-  const addComment = useCallback(async (content: string) => {
+  const addComment = useCallback(async (content: string, parentId?: number) => {
     if (!postId) return null;
     try {
       setCreating(true);
       setError(null);
-      const newComment = await createComment(postId, content);
+      const newComment = await createComment(postId, content, parentId);
       setComments(prev => [...prev, newComment]);
       return newComment;
     } catch (err) {

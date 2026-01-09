@@ -1,0 +1,51 @@
+.gridContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* True Masonry Layout using CSS Columns */
+.masonryGrid {
+  column-count: 3;
+  column-gap: 24px;
+}
+
+.loadMoreTrigger {
+  height: 1px;
+  margin-top: 40px;
+}
+
+/* Responsive breakpoints */
+@media (min-width: 1200px) {
+  .masonryGrid {
+    column-count: 3;
+    column-gap: 24px;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  .masonryGrid {
+    column-count: 2;
+    column-gap: 20px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 899px) {
+  .masonryGrid {
+    column-count: 2;
+    column-gap: 18px;
+  }
+}
+
+@media (max-width: 599px) {
+  .masonryGrid {
+    column-count: 1;
+    column-gap: 0;
+  }
+
+  .gridContainer {
+    padding: 12px;
+  }
+}
+

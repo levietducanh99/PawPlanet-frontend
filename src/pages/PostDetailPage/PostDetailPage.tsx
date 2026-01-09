@@ -224,6 +224,7 @@ export const PostDetailPage: React.FC = () => {
           onShare={handleShare}
           onDelete={handleDelete}
           onEdit={handleEdit}
+
         />
       </div>
 
@@ -280,15 +281,19 @@ export const PostDetailPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <div className={styles.commentAvatar}>
+                <div className={styles.commentAvatar}
+                     onClick={() => navigate(`/user/${comment?.userId}`)}
+                     style={{cursor: 'pointer'}}>
                   <img
                     src={comment.userAvatar || '/placeholder-avatar.svg'}
                     alt={comment.userName}
                     className={styles.avatar}
                   />
                 </div>
-                <div className={styles.commentContent}>
-                  <div className={styles.commentAuthor}>
+                <div className={styles.commentContent} >
+                  <div className={styles.commentAuthor}
+                       onClick={() => navigate(`/user/${comment?.userId}`)}
+                       style={{cursor: 'pointer'}}>
                     {comment.userName}
                   </div>
                   <div className={styles.commentText}>{comment.content}</div>

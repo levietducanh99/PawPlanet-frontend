@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Modal, Avatar, Button, Input, List, Typography, Space, Spin } from 'antd';
-import { CloseOutlined, HeartOutlined, SendOutlined } from '@ant-design/icons';
+import { Modal, Avatar, Button, Input, List, Typography, Spin, Space } from 'antd';
+import { CloseOutlined, SendOutlined, HeartOutlined } from '@ant-design/icons';
 import {usePostComments, useUserProfile} from '@/hooks';
 import styles from './CommentDrawer.module.css';
 
@@ -10,23 +10,39 @@ interface CommentModalProps {
   postId: number | null;
   open: boolean;
   onClose: (updatedCommentCount?: number) => void;
+  onCommentAdded?: (newCount: number) => void;
   title?: string;
 }
 
-export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClose, title }) => {
+export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClose, title, onCommentAdded }) => {
   const { comments, loading, creating, addComment, refetch } = usePostComments(postId);
   const { user } = useUserProfile();
   const [value, setValue] = useState('');
+  const [replyingToId, setReplyingToId] = useState<number | null>(null);
+
 
   const commentCount = useMemo(() => comments?.length ?? 0, [comments]);
 
   const handleSend = async () => {
     if (!value.trim() || !postId) return;
     try {
-      await addComment(value.trim());
+      const newComment = await addComment(value.trim(), replyingToId ?? undefined);
       setValue('');
+      // Notify parent immediately so UI (feed) can update comment count optimistically
+      const newCount = (comments?.length ?? 0) + (newComment ? 1 : 0);
+      if (onCommentAdded) onCommentAdded(newCount);
+      // Refresh internal list to include server-sent data
       refetch();
-    } catch (err) {}
+      // Reset reply state
+      setReplyingToId(null);
+    } catch (err) {
+      console.error('Failed to add comment:', err);
+    }
+  };
+
+  const startReply = (id: number, name: string) => {
+    setReplyingToId(id);
+    setValue(`@${name} `);
   };
 
   const handleClose = () => {
@@ -42,14 +58,13 @@ export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClos
       centered
       width={700}
       closeIcon={<CloseOutlined />}
-      bodyStyle={{ padding: 0, borderRadius: 16, overflow: 'hidden', background: '#fff' }}
+      style={{ top: 20 }}
       className={styles.modal}
-      destroyOnClose
     >
       <div className={styles.header}>
         <div>
           <div className={styles.title}>{title || 'Comments'}</div>
-          <div className={styles.subtitle}>{commentCount} comment{commentCount !== 1 ? 's' : ''}</div>
+
         </div>
       </div>
       <div className={styles.content} style={{ minHeight: 220 }}>
@@ -72,8 +87,32 @@ export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClos
                       <HeartOutlined style={{ color: '#EB5757' }} />
                       <Text type="secondary">{c.likeCount ?? 0}</Text>
                     </Space>
+                    <Button type="link" onClick={() => startReply(c.id, c.userName)}>Reply</Button>
                   </Space>
                 </div>
+
+                {/* Nested replies (if any) */}
+                {c.replies && c.replies.length > 0 && (
+                  <div className={styles.repliesContainer}>
+                    {c.replies.map((r) => (
+                      <div key={r.id} className={styles.replyItem}>
+                        <Avatar src={r.userAvatar} size={20} />
+                        <div className={styles.replyContent}>
+                          <span className={styles.replyUserName}>{r.userName}</span>
+                          <span className={styles.replyText}>{r.content}</span>
+                          <Button
+                            type="link"
+                            size="small"
+                            onClick={() => startReply(c.id, r.userName)}
+                            className={styles.replyButtonInline}
+                          >
+                            Reply
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </List.Item>
             )}
           />
