@@ -5,6 +5,7 @@ import { motion } from 'motion/react';
 import PostCard from '@/components/PostCard/PostCard';
 import { CreatePostModal } from '@/components/CreatePostModal/CreatePostModal';
 import CommentModal from '@/components/CommentDrawer/CommentDrawer';
+import LikesModal from '@/components/LikesModal/LikesModal';
 import { pageVariants } from '@/animations/variants';
 import { useNewsFeed, usePostActions } from '@/hooks';
 import styles from './MainFeedPage.module.css';
@@ -13,6 +14,8 @@ const MainFeedPage: React.FC = () => {
   const [createPostModalVisible, setCreatePostModalVisible] = useState(false);
   const [commentDrawerOpen, setCommentDrawerOpen] = useState(false);
   const [activePostId, setActivePostId] = useState<number | null>(null);
+  const [likesModalOpen, setLikesModalOpen] = useState(false);
+  const [activeLikesPostId, setActiveLikesPostId] = useState<number | null>(null);
 
   // Sử dụng hooks API thực thay vì mock
   const { posts, loading, error, refreshing, refresh } = useNewsFeed();
@@ -69,6 +72,11 @@ const MainFeedPage: React.FC = () => {
     // Open comment drawer for the selected post
     setActivePostId(postId);
     setCommentDrawerOpen(true);
+  };
+
+  const handleViewLikes = (postId: number) => {
+    setActiveLikesPostId(postId);
+    setLikesModalOpen(true);
   };
 
   // Called when a new comment is added in the comment modal
@@ -175,6 +183,7 @@ const MainFeedPage: React.FC = () => {
                           onLike={handlePostLike}
                           onComment={handlePostComment}
                           onShare={handlePostShare}
+                          onViewLikes={handleViewLikes}
                         />
                       </motion.div>
                     ))}
@@ -200,6 +209,9 @@ const MainFeedPage: React.FC = () => {
         open={createPostModalVisible}
         onClose={() => setCreatePostModalVisible(false)}
       />
+
+      {/* Likes Modal */}
+      <LikesModal open={likesModalOpen} postId={activeLikesPostId} onClose={() => setLikesModalOpen(false)} />
     </motion.div>
   );
 };

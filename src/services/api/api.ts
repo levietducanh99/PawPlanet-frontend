@@ -9255,6 +9255,40 @@ export class PetFollowControllerApi extends BaseAPI {
 export const PostControllerApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Returns the total count of posts that have type set to \'urgent\'
+         * @summary Count all posts with type urgent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countUrgentPosts: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/posts/urgent/count`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {CreatePostRequest} createPostRequest 
          * @param {*} [options] Override http request option.
@@ -9508,6 +9542,40 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
             };
         },
         /**
+         * Returns all posts that have type set to \'urgent\', ordered by creation date descending
+         * @summary Get all posts with type urgent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUrgentPosts: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/posts/urgent`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {number} id 
          * @param {UpdatePostRequest} updatePostRequest 
@@ -9560,6 +9628,18 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
 export const PostControllerApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = PostControllerApiAxiosParamCreator(configuration)
     return {
+        /**
+         * Returns the total count of posts that have type set to \'urgent\'
+         * @summary Count all posts with type urgent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async countUrgentPosts(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<number>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.countUrgentPosts(options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PostControllerApi.countUrgentPosts']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
         /**
          * 
          * @param {CreatePostRequest} createPostRequest 
@@ -9643,6 +9723,18 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
+         * Returns all posts that have type set to \'urgent\', ordered by creation date descending
+         * @summary Get all posts with type urgent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getUrgentPosts(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PostResponse>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getUrgentPosts(options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PostControllerApi.getUrgentPosts']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
          * 
          * @param {number} id 
          * @param {UpdatePostRequest} updatePostRequest 
@@ -9665,6 +9757,15 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
 export const PostControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = PostControllerApiFp(configuration)
     return {
+        /**
+         * Returns the total count of posts that have type set to \'urgent\'
+         * @summary Count all posts with type urgent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        countUrgentPosts(options?: RawAxiosRequestConfig): AxiosPromise<number> {
+            return localVarFp.countUrgentPosts(options).then((request) => request(axios, basePath));
+        },
         /**
          * 
          * @param {PostControllerApiCreatePostRequest} requestParameters Request parameters.
@@ -9725,6 +9826,15 @@ export const PostControllerApiFactory = function (configuration?: Configuration,
          */
         getPostsByUserId(requestParameters: PostControllerApiGetPostsByUserIdRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<PostResponse>> {
             return localVarFp.getPostsByUserId(requestParameters.userId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Returns all posts that have type set to \'urgent\', ordered by creation date descending
+         * @summary Get all posts with type urgent
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getUrgentPosts(options?: RawAxiosRequestConfig): AxiosPromise<Array<PostResponse>> {
+            return localVarFp.getUrgentPosts(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -9837,6 +9947,17 @@ export interface PostControllerApiUpdatePostRequest {
  */
 export class PostControllerApi extends BaseAPI {
     /**
+     * Returns the total count of posts that have type set to \'urgent\'
+     * @summary Count all posts with type urgent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostControllerApi
+     */
+    public countUrgentPosts(options?: RawAxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).countUrgentPosts(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 
      * @param {PostControllerApiCreatePostRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
@@ -9909,6 +10030,17 @@ export class PostControllerApi extends BaseAPI {
      */
     public getPostsByUserId(requestParameters: PostControllerApiGetPostsByUserIdRequest, options?: RawAxiosRequestConfig) {
         return PostControllerApiFp(this.configuration).getPostsByUserId(requestParameters.userId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Returns all posts that have type set to \'urgent\', ordered by creation date descending
+     * @summary Get all posts with type urgent
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostControllerApi
+     */
+    public getUrgentPosts(options?: RawAxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).getUrgentPosts(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

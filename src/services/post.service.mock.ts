@@ -2,6 +2,8 @@
 // Exports: getPetProfile, getPetTimeline, sharePost
 
 import { PetProfileDTO } from './api';
+import { mapPost, mapPosts } from '@/mappers/post.mapper';
+import { Post } from '@/domain/post';
 
 // Try to use real services if available
 let petService: any = null;

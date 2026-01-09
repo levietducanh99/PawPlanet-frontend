@@ -1,16 +1,14 @@
 import React, { useEffect } from 'react';
-import { Typography, Alert, Button, Empty } from 'antd';
-import { ReloadOutlined } from '@ant-design/icons';
+import { Alert, Empty } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { ExploreGrid } from './components/ExploreGrid';
 import { useExploreFeed } from './hooks/useExploreFeed';
 import styles from './ExplorePage.module.css';
 
-const { Title } = Typography;
 
 export const ExplorePage: React.FC = () => {
   const navigate = useNavigate();
-  const { items, loading, error, hasMore, loadMore, refresh } = useExploreFeed(30);
+  const { items, loading, error, hasMore, loadMore} = useExploreFeed(30);
 
   // Check if user is authenticated
   useEffect(() => {
@@ -23,25 +21,7 @@ export const ExplorePage: React.FC = () => {
 
   return (
     <div className={styles.explorePage}>
-      <div className={styles.header}>
-        <div className={styles.titleSection}>
-          <Title level={2} className={styles.title}>
-            Explore
-          </Title>
-          <p className={styles.subtitle}>
-            Discover amazing pets, posts, and pet lovers from around the world
-          </p>
-        </div>
 
-        <Button
-          icon={<ReloadOutlined />}
-          onClick={refresh}
-          loading={loading && items.length === 0}
-          className={styles.refreshButton}
-        >
-          Refresh
-        </Button>
-      </div>
 
       {error && (
         <Alert

@@ -15,6 +15,7 @@ import type { Post } from '@/domain/post';
 import { PetTag } from '@/components/PetTag';
 import styles from './PostCard.module.css';
 import {useNavigate} from "react-router-dom";
+import LikesPopover from '@/components/LikesPopover/LikesPopover';
 
 const { Text, Paragraph } = Typography;
 
@@ -26,11 +27,12 @@ interface PostCardProps {
   onShare: (postId: number) => void;
   onDelete?: (postId: number) => void;
   onEdit?: (postId: number) => void;
+  onViewLikes?: (postId: number) => void;
 }
 
 
 
-const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, onDelete, onEdit }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, onDelete, onEdit, onViewLikes }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
 
@@ -234,17 +236,19 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
         <div className={styles.postActions}>
           <Space size="large" className={styles.actionButtons}>
             <motion.div whileTap={{ scale: 0.95 }}>
-              <Button
-                type="text"
-                icon={uiPost.isLiked ?
-                  <HeartFilled style={{ color: '#EB5757' }} /> :
-                  <HeartOutlined />
-                }
-                onClick={() => onLike(uiPost.id)}
-                className={styles.actionButton}
-              >
-                <span className={uiPost.isLiked ? styles.likedText : styles.actionText}>{uiPost.likeCount}</span>
-              </Button>
+              <LikesPopover postId={uiPost.id} onViewAll={(id) => onViewLikes && onViewLikes(id)}>
+                <Button
+                  type="text"
+                  icon={uiPost.isLiked ?
+                    <HeartFilled style={{ color: '#EB5757' }} /> :
+                    <HeartOutlined />
+                  }
+                  onClick={() => onLike(uiPost.id)}
+                  className={styles.actionButton}
+                >
+                  <span className={uiPost.isLiked ? styles.likedText : styles.actionText}>{uiPost.likeCount}</span>
+                </Button>
+              </LikesPopover>
             </motion.div>
 
             <motion.div whileTap={{ scale: 0.95 }}>

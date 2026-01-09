@@ -451,7 +451,7 @@ export const ViewPetPage: React.FC = () => {
                       icon={<CameraOutlined />}
                       size="large"
                       className={styles.exploreButton}
-                      onClick={() => navigate('/encyclopedia')}
+                      onClick={() => navigate('/explore')}
                     >
                       Explore Other Pets
                     </Button>
