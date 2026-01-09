@@ -19,6 +19,9 @@ export { PetCreationDebugComponent } from './PetCreationDebugComponent';
 // Post Components
 export { default as PostCard } from './PostCard';
 export { CreatePostModal } from './CreatePostModal';
+export { PetPhotoGroup } from './PetPhotoGroup';
+export type { PetPhoto } from './PetPhotoGroup';
+export { FollowButton } from './FollowButton';
 
 // Other
 export { Loading } from './Loading';

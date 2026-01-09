@@ -1,13 +1,13 @@
 .profilePage {
   min-height: 100vh;
   background: #F3F4F6;
-  padding-top: 72px; /* Header height offset */
+  padding-top: 72px;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 20px 16px;
 }
 
 .loadingContainer,
@@ -20,128 +20,476 @@
   padding: 24px;
 }
 
-/* Header Card */
-.headerCard {
-  border-radius: 16px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-  margin-bottom: 32px;
+/* Profile Layout */
+.profileContent {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
 }
 
-.profileHeader {
+/* Left Sidebar */
+.sidebar {
+  position: sticky;
+  top: 88px;
+  height: fit-content;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+.profileCard {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  padding: 20px !important;
+}
+
+.avatarSection {
   display: flex;
-  gap: 32px;
-  align-items: flex-start;
-  padding: 24px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.avatarWrapper {
+  position: relative;
+  display: inline-block;
 }
 
 .avatar {
-  flex-shrink: 0;
   border: 4px solid #E6F7FF !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.editAvatarButton {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 36px !important;
+  height: 36px !important;
+  background: #1890FF !important;
+  border: 3px solid #fff !important;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.4) !important;
 }
 
 .userInfo {
-  flex: 1;
-  min-width: 0;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.nameWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .username {
-  margin-bottom: 16px !important;
-  color: #1F2937;
-}
-
-.bio {
-  margin-top: 16px;
-  margin-bottom: 0 !important;
-  color: #6B7280;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
-.actions {
-  flex-shrink: 0;
-}
-
-/* Stats Grid */
-.statsGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-.statCard {
-  text-align: center;
-  border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-  padding: 24px 16px !important;
-}
-
-.statNumber {
-  font-size: 32px;
-  font-weight: 700;
-  color: #1890FF;
-  margin-bottom: 8px;
-}
-
-.statLabel {
-  font-size: 14px;
-  color: #6B7280;
-  font-weight: 500;
-}
-
-/* Content Grid */
-.contentGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.contentCard {
-  border-radius: 12px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-}
-
-.contentCard .ant-card-head {
-  border-bottom: 1px solid #E5E7EB;
-}
-
-.contentCard .ant-card-head-title {
+  margin: 0 !important;
+  font-size: 20px !important;
   font-weight: 600;
   color: #1F2937;
 }
 
-.contentCard .ant-card-body {
-  padding: 24px;
+.verifiedBadge {
+  color: #1890FF;
+  font-size: 18px;
+}
+
+.handle {
+  display: block;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.bio {
+  margin: 12px 0 !important;
+  padding: 12px;
+  background: #F9FAFB;
+  border-radius: 12px;
+  color: #4B5563;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.statItem {
+  text-align: center;
+  padding: 10px;
+  background: #F9FAFB;
+  border-radius: 12px;
+}
+
+.statNumber {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1F2937;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+.emailSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.emailIcon {
+  color: #6B7280;
+  font-size: 16px;
+}
+
+.email {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* Main Content */
+.mainContent {
+  min-height: 500px;
+  overflow: hidden;
+}
+
+.contentCard {
+  border-radius: 16px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  padding: 0 !important;
+}
+
+.contentCard :global(.ant-card-body) {
+  padding: 0 !important;
+}
+
+/* Tabs */
+.tabs :global(.ant-tabs-nav) {
+  padding: 0 20px;
+  margin-bottom: 0 !important;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.tabs :global(.ant-tabs-tab) {
+  padding: 14px 16px !important;
+  font-weight: 600;
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.tabs :global(.ant-tabs-tab-active) {
+  color: #1890FF !important;
+}
+
+.tabs :global(.ant-tabs-ink-bar) {
+  height: 3px;
+  background: #1890FF;
+}
+
+.tabs :global(.ant-tabs-content) {
+  padding: 20px;
+}
+
+.tabLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabCount {
+  padding: 2px 8px;
+  background: #E6F7FF;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1890FF;
+}
+
+.tabs :global(.ant-tabs-tab-active) .tabCount {
+  background: #1890FF;
+  color: #fff;
+}
+
+/* Photos Container */
+.photosContainer {
+  padding: 8px 0;
+}
+
+/* Posts Container */
+.postsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Photo Grid (Legacy - for backwards compatibility) */
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.photoCard {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+}
+
+.photoImage {
+  width: 100%;
+  aspect-ratio: 1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.photoPlaceholder {
+  width: 100%;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photoInfo {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.petAvatar {
+  flex-shrink: 0;
+}
+
+.petName {
+  flex: 1;
+  font-weight: 600;
+  color: #1F2937;
+  font-size: 14px;
+}
+
+.photoStats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.emptyState {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingTab {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Posts List */
+.postsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Likes Info */
+.likesInfo {
+  padding: 24px 0;
+}
+
+/* Follow List */
+.followList {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.followListItem {
+  padding: 14px 0 !important;
+  border-bottom: 1px solid #E5E7EB !important;
+}
+
+.followListItem:last-child {
+  border-bottom: none !important;
+}
+
+.followListItem :global(.ant-list-item-meta-avatar) {
+  margin-right: 12px;
+}
+
+.followListItem :global(.ant-list-item-meta-title) {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.followListItem :global(.ant-list-item-meta-description) {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+/* Pet List (Following Pets) */
+.petList {
+  max-height: 500px;
+}
+
+.petListItem {
+  padding: 16px 0 !important;
+  border-bottom: 1px solid #E5E7EB !important;
+  transition: background-color 0.2s ease;
+}
+
+.petListItem:hover {
+  background-color: #F9FAFB;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  margin: 0 -8px;
+  border-radius: 8px;
+}
+
+.petListItem:last-child {
+  border-bottom: none !important;
+}
+
+.petListItem :global(.ant-list-item-meta) {
+  align-items: center !important;
+}
+
+.petListItem :global(.ant-list-item-meta-avatar) {
+  margin-right: 16px;
+}
+
+.petListItem :global(.ant-list-item-meta-title) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+  margin-bottom: 6px !important;
+}
+
+.petListItem :global(.ant-list-item-meta-description) {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.6;
+}
+
+.petListItem :global(.ant-btn-primary) {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Pet Avatar */
+.petAvatar {
+  background-color: #1890FF !important;
+  border: 2px solid #E6F7FF !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+
+.petAvatar img {
+  object-fit: cover;
+}
+
+/* Pet Info Styles */
+.petName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.petDescription {
+  margin-top: 4px;
+}
+
+.petSpecies {
+  font-size: 14px;
+  color: #4B5563;
+  font-weight: 500;
+}
+
+.petOwner {
+  font-size: 13px;
+}
+
+/* Follower/Following Items */
+.followerItem {
+  padding: 16px 24px !important;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.followerItem:hover {
+  background-color: #F9FAFB;
+}
+
+.followerItem :global(.ant-list-item-meta-avatar) {
+  margin-right: 16px;
+}
+
+.followerItem :global(.ant-list-item-meta-title) {
+  margin-bottom: 4px;
+  font-size: 16px;
+}
+
+.followerItem :global(.ant-list-item-meta-description) {
+  font-size: 14px;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
+  .profileContent {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
-  .contentGrid {
-    grid-template-columns: 1fr;
+  .sidebar {
+    position: relative;
+    top: 0;
+    max-height: none;
+  }
+
+  .tabs :global(.ant-tabs-content) {
+    max-height: none;
   }
 }
 
 @media (max-width: 768px) {
+  .profilePage {
+    padding-top: 60px;
+  }
+
   .container {
-    padding: 16px;
+    padding: 12px;
   }
 
-  .profileHeader {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 24px;
-    padding: 24px 16px;
-  }
-
-  .userInfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .profileCard {
+    padding: 16px !important;
   }
 
   .avatar {
@@ -149,16 +497,50 @@
     height: 100px !important;
   }
 
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+  .editAvatarButton {
+    width: 32px !important;
+    height: 32px !important;
   }
 
-  .statCard {
-    padding: 16px 12px !important;
+  .username {
+    font-size: 18px !important;
   }
 
-  .statNumber {
-    font-size: 24px;
+  .photoGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs :global(.ant-tabs-nav) {
+    padding: 0 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .tabs :global(.ant-tabs-tab) {
+    padding: 12px 14px !important;
+    font-size: 13px;
+  }
+
+  .tabs :global(.ant-tabs-content) {
+    padding: 16px 12px;
+    max-height: calc(100vh - 350px);
+  }
+
+  .tabLabel span {
+    font-size: 13px;
+  }
+
+  .tabCount {
+    font-size: 11px;
+    padding: 1px 6px;
+  }
+
+  .followList,
+  .petList {
+    max-height: 400px;
+  }
+
+  .mainContent {
+    min-height: auto;
   }
 }

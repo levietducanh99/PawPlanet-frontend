@@ -25,15 +25,20 @@ import {
   ShareAltOutlined,
   PlusOutlined,
   PlayCircleOutlined,
-  EditOutlined
+  EditOutlined,
+  DeleteOutlined
 } from '@ant-design/icons';
 import { Sidebar, Header, Loading, ErrorMessage } from '../../components';
 import PostCard from '../../components/PostCard';
 import { PhotoGalleryModal } from '../../components/PhotoGalleryModal';
 import { UploadMediaModal } from '../../components/UploadMediaModal';
+import { PetFollowersModal } from '../../components/PetFollowersModal';
+import CommentModal from '../../components/CommentDrawer/CommentDrawer';
 import {
   useViewPet,
-  usePetTimeline
+  usePetPosts,
+  useDeletePet,
+  usePostActions
 } from '../../hooks';
 import styles from './ViewPetPage.module.css';
 import { pageVariants } from '../../animations/variants';
@@ -59,6 +64,13 @@ export const ViewPetPage: React.FC = () => {
   // State for upload media modal
   const [showUploadModal, setShowUploadModal] = useState(false);
 
+  // State for followers modal
+  const [showFollowersModal, setShowFollowersModal] = useState(false);
+
+  // State for comment modal
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [activePostId, setActivePostId] = useState<number | null>(null);
+
   // Use the integrated hook
   const {
     pet,
@@ -71,7 +83,8 @@ export const ViewPetPage: React.FC = () => {
     isOwner,
     isPrivate,
     refetch,
-    isOptimistic // Track if using optimistic state
+    isOptimistic, // Track if using optimistic state
+    followerCount, // Accurate follower count from fetched data
   } = useViewPet(petIdNumber);
 
   useEffect(() => {
@@ -81,8 +94,24 @@ export const ViewPetPage: React.FC = () => {
     };
   }, []);
 
-  // Get pet timeline
-  const { timeline, loading: timelineLoading } = usePetTimeline(petIdNumber);
+  // Get pet posts
+  const { posts, loading: postsLoading } = usePetPosts(petIdNumber);
+
+  // Post actions hook (like, share)
+  const { likePost } = usePostActions();
+
+  // Optimistic posts state for immediate UI feedback
+  const [optimisticPosts, setOptimisticPosts] = useState(posts);
+
+  // Sync optimistic posts with fetched posts
+  useEffect(() => {
+    if (posts) {
+      setOptimisticPosts(posts);
+    }
+  }, [posts]);
+
+  // Delete pet hook
+  const { deletePet, loading: deleteLoading } = useDeletePet();
 
   // Handle follow button click
   const handleFollowClick = async () => {
@@ -98,12 +127,95 @@ export const ViewPetPage: React.FC = () => {
     }
   };
 
+  // Handle delete pet
+  const handleDeletePet = async () => {
+    if (!petIdNumber) return;
+
+    const petName = pet?.name;
+
+    // Show loading message
+    const hideLoading = message.loading(`Deleting ${petName}...`, 0);
+
+    try {
+      const success = await deletePet(petIdNumber);
+      hideLoading();
+
+      if (success) {
+        message.success(`${petName} has been deleted successfully`);
+
+        // Wait a moment for user to see the success message, then navigate
+        setTimeout(() => {
+          navigate('/profile', { replace: true });
+        }, 1000);
+      } else {
+        message.error('Failed to delete pet. Please try again.');
+      }
+    } catch (error) {
+      hideLoading();
+      message.error('Failed to delete pet. Please try again.');
+    }
+  };
+
   // Handle upload success - refetch pet data to show new media
   const handleUploadSuccess = () => {
     console.log('🔄 Media uploaded, refetching pet data...');
     if (refetch) {
       refetch();
     }
+  };
+
+  // Handle post comment
+  const handlePostComment = (postId: number) => {
+    setActivePostId(postId);
+    setShowCommentModal(true);
+  };
+
+  // Handle post like with optimistic update
+  const handlePostLike = async (postId: number) => {
+    try {
+      // Find the post being liked
+      const post = optimisticPosts.find(p => p.id === postId);
+      if (!post) return;
+
+      // Optimistic update - immediately update UI
+      const updatedPosts = optimisticPosts.map(p =>
+        p.id === postId
+          ? {
+              ...p,
+              isLiked: !p.isLiked,
+              likeCount: p.isLiked ? p.likeCount - 1 : p.likeCount + 1,
+            }
+          : p
+      );
+      setOptimisticPosts(updatedPosts);
+
+      // Call API
+      const result = await likePost(postId);
+
+      // Update with actual server response
+      const serverUpdatedPosts = updatedPosts.map(p =>
+        p.id === postId
+          ? {
+              ...p,
+              isLiked: result.liked,
+              likeCount: result.likeCount,
+            }
+          : p
+      );
+      setOptimisticPosts(serverUpdatedPosts);
+
+    } catch (error) {
+      console.error('Failed to toggle like:', error);
+      // Revert optimistic update on error
+      setOptimisticPosts(posts);
+      message.error('Failed to update like. Please try again.');
+    }
+  };
+
+  // Handle post share
+  const handlePostShare = (postId: number) => {
+    console.log('Share post:', postId);
+    message.info('Share feature coming soon!');
   };
 
   // Loading state - ONLY for initial page load
@@ -214,16 +326,6 @@ export const ViewPetPage: React.FC = () => {
                     >
                       Explore Other Pets
                     </Button>
-
-                    <Button
-                      type="default"
-                      icon={<UserOutlined />}
-                      size="large"
-                      className={styles.homeButton}
-                      onClick={() => navigate('/my-pets')}
-                    >
-                      Go to Home
-                    </Button>
                   </div>
                 </div>
               </Card>
@@ -283,12 +385,15 @@ export const ViewPetPage: React.FC = () => {
                     </div>
 
                     <div className={styles.petHeader}>
-                      <Avatar
-                        size={80}
-                        src={pet.avatarUrl}
-                        icon={<UserOutlined />}
-                        className={styles.petAvatar}
-                      />
+                      <div className={styles.petAvatarSection}>
+                        <Avatar
+                          size={80}
+                          src={pet.avatarUrl}
+                          icon={<UserOutlined />}
+                          className={styles.petAvatar}
+                        />
+                      </div>
+
                       <div className={styles.petBasicInfo}>
                         <Title level={3} className={styles.petName}>
                           {pet.name} {pet.speciesName === 'Dog' ? '🐕' : pet.speciesName === 'Cat' ? '🐱' : '🐾'}
@@ -296,79 +401,105 @@ export const ViewPetPage: React.FC = () => {
                         <Text className={styles.petSubtitle}>
                           {pet.breedName || pet.speciesName}
                         </Text>
-                        <div className={styles.petActions}>
-                          {canFollow && (
-                            <>
-                              {isFollowing ? (
-                                <Popconfirm
-                                  title={`Unfollow ${pet.name}?`}
-                                  description={`You will no longer see ${pet.name}'s updates in your feed.`}
-                                  onConfirm={handleFollowClick}
-                                  okText="Unfollow"
-                                  cancelText="Cancel"
-                                  okButtonProps={{ danger: true, loading: followLoading }}
-                                >
-                                  <Button
-                                    type="default"
-                                    icon={<HeartFilled />}
-                                    size="small"
-                                    className={styles.followButton}
-                                    loading={followLoading}
-                                    onMouseEnter={() => setIsUnfollowHovered(true)}
-                                    onMouseLeave={() => setIsUnfollowHovered(false)}
-                                    danger={isUnfollowHovered}
-                                    style={{ 
-                                      opacity: isOptimistic ? 0.7 : 1,
-                                      transition: 'opacity 0.2s ease'
-                                    }}
-                                  >
-                                    {isUnfollowHovered ? 'Unfollow' : 'Following'}
-                                  </Button>
-                                </Popconfirm>
-                              ) : (
-                                <Button
-                                  type="primary"
-                                  icon={<HeartOutlined />}
-                                  size="small"
-                                  className={styles.followButton}
-                                  onClick={handleFollowClick}
-                                  loading={followLoading}
-                                  style={{ 
-                                    opacity: isOptimistic ? 0.7 : 1,
-                                    transition: 'opacity 0.2s ease'
-                                  }}
-                                >
-                                  Follow
-                                </Button>
-                              )}
-                            </>
-                          )}
+                      </div>
+                    </div>
 
-                          {/* Edit button - only for owner */}
-                          {isOwner && (
+                    {/* Action Buttons - Below Avatar */}
+                    <div className={styles.petActions}>
+                      {canFollow && (
+                        <>
+                          {isFollowing ? (
+                            <Popconfirm
+                              title={`Unfollow ${pet.name}?`}
+                              description={`You will no longer see ${pet.name}'s updates in your feed.`}
+                              onConfirm={handleFollowClick}
+                              okText="Unfollow"
+                              cancelText="Cancel"
+                              okButtonProps={{ danger: true, loading: followLoading }}
+                            >
+                              <Button
+                                type="default"
+                                icon={<HeartFilled />}
+                                size="small"
+                                className={styles.followButton}
+                                loading={followLoading}
+                                onMouseEnter={() => setIsUnfollowHovered(true)}
+                                onMouseLeave={() => setIsUnfollowHovered(false)}
+                                danger={isUnfollowHovered}
+                                style={{
+                                  opacity: isOptimistic ? 0.7 : 1,
+                                  transition: 'opacity 0.2s ease'
+                                }}
+                              >
+                                {isUnfollowHovered ? 'Unfollow' : 'Following'}
+                              </Button>
+                            </Popconfirm>
+                          ) : (
                             <Button
-                              icon={<EditOutlined />}
+                              type="primary"
+                              icon={<HeartOutlined />}
                               size="small"
-                              type="default"
-                              onClick={() => navigate(`/edit-pet/${pet.id}`)}
+                              className={styles.followButton}
+                              onClick={handleFollowClick}
+                              loading={followLoading}
+                              style={{
+                                opacity: isOptimistic ? 0.7 : 1,
+                                transition: 'opacity 0.2s ease'
+                              }}
+                            >
+                              Follow
+                            </Button>
+                          )}
+                        </>
+                      )}
+
+                      {/* Edit button - only for owner */}
+                      {isOwner && (
+                        <>
+                          <Button
+                            icon={<EditOutlined />}
+                            size="small"
+                            type="default"
+                            onClick={() => navigate(`/edit-pet/${pet.id}`)}
+                            style={{
+                              borderRadius: '8px',
+                              height: '32px'
+                            }}
+                          >
+                            Edit
+                          </Button>
+
+                          <Popconfirm
+                            title={`Delete ${pet.name}?`}
+                            description="This action cannot be undone. All posts and media will be permanently deleted."
+                            onConfirm={handleDeletePet}
+                            okText="Delete"
+                            cancelText="Cancel"
+                            okButtonProps={{ danger: true, loading: deleteLoading }}
+                          >
+                            <Button
+                              icon={<DeleteOutlined />}
+                              size="small"
+                              danger
+                              loading={deleteLoading}
                               style={{
                                 borderRadius: '8px',
                                 height: '32px'
                               }}
                             >
-                              Edit
+                              Delete
                             </Button>
-                          )}
+                          </Popconfirm>
+                        </>
+                      )}
 
-                          <Button
-                            icon={<ShareAltOutlined />}
-                            size="small"
-                            className={styles.shareButton}
-                          >
-                            Share
-                          </Button>
-                        </div>
-                      </div>
+                      <Button
+                        icon={<ShareAltOutlined />}
+                        size="small"
+                        className={styles.shareButton}
+                      >
+                        Share
+                      </Button>
                     </div>
 
                     {pet.description && (
@@ -376,6 +507,22 @@ export const ViewPetPage: React.FC = () => {
                         {pet.description}
                       </Paragraph>
                     )}
+
+                    {/* Pet Stats - Followers */}
+                    <div className={styles.petStats}>
+                      <Button
+                        type="text"
+                        className={styles.statButton}
+                        onClick={() => setShowFollowersModal(true)}
+                      >
+                        <Text strong className={styles.statNumber}>
+                          {followerCount || 0}
+                        </Text>
+                        <Text className={styles.statLabel}>
+                          {followerCount === 1 ? 'Follower' : 'Followers'}
+                        </Text>
+                      </Button>
+                    </div>
                   </Card>
 
                   {/* Pet Photo Library */}
@@ -532,29 +679,21 @@ export const ViewPetPage: React.FC = () => {
                   </div>
 
                   <div className={styles.timelineContent}>
-                    {timelineLoading ? (
+                    {postsLoading ? (
                       <div className={styles.timelineLoading}>
                         <Spin size="large" />
                       </div>
-                    ) : timeline && timeline.posts.length > 0 ? (
+                    ) : optimisticPosts && optimisticPosts.length > 0 ? (
                       <div className={styles.postsContainer}>
-                        {timeline.posts.map((post) => (
+                        {optimisticPosts.map((post) => (
                           <PostCard
                             key={post.id}
                             post={post}
-                            onLike={(postId: number) => console.log('Liked:', postId)}
-                            onComment={(postId: number) => console.log('Comment:', postId)}
-                            onShare={(postId: number) => console.log('Share:', postId)}
+                            onLike={handlePostLike}
+                            onComment={handlePostComment}
+                            onShare={handlePostShare}
                           />
                         ))}
-
-                        {timeline.hasMore && (
-                          <div className={styles.loadMore}>
-                            <Button type="default" size="large">
-                              Load More Posts
-                            </Button>
-                          </div>
-                        )}
                       </div>
                     ) : (
                       <Card bordered={false} className={styles.emptyTimelineCard}>
@@ -592,6 +731,27 @@ export const ViewPetPage: React.FC = () => {
           onUploadSuccess={handleUploadSuccess}
         />
       )}
+
+      {/* Followers Modal */}
+      {pet && petIdNumber && (
+        <PetFollowersModal
+          visible={showFollowersModal}
+          onClose={() => setShowFollowersModal(false)}
+          petId={petIdNumber}
+          petName={pet.name}
+        />
+      )}
+
+      {/* Comment Modal */}
+      <CommentModal
+        postId={activePostId}
+        open={showCommentModal}
+        onClose={() => {
+          setShowCommentModal(false);
+          setActivePostId(null);
+        }}
+        title={activePostId && optimisticPosts ? `${optimisticPosts.find(p => p.id === activePostId)?.authorName || pet?.name || 'Post'}'s Post` : 'Comments'}
+      />
     </>
   );
 };

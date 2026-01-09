@@ -115,7 +115,7 @@ export const CreatePetPage: React.FC = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      navigate('/my-pets'); // Navigate back to pets page
+      navigate('/feed'); // Navigate back to pets page
     }
   };
 
@@ -151,7 +151,7 @@ export const CreatePetPage: React.FC = () => {
 
       if (success) {
         message.success(`${formData.name} has been created successfully!`);
-        navigate('/my-pets'); // Redirect to pets list
+        navigate('/feed'); // Redirect to pets list
       }
     } catch (error) {
       console.error('Failed to create pet:', error);
