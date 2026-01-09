@@ -343,8 +343,10 @@ export const ViewPetPage: React.FC = () => {
     );
   }
 
-  // State: Private Profile (status = hidden)
-  if (isPrivate && !isOwner) {
+  // State: Private or Hidden Profile (status = HIDDEN or PRIVATE)
+  if ((pet.status === 'HIDDEN' || pet.status === 'PRIVATE' || isPrivate) && !isOwner) {
+    const isHidden = pet.status === 'HIDDEN';
+
     return (
       <>
         <Header />
@@ -371,7 +373,7 @@ export const ViewPetPage: React.FC = () => {
             <div className={styles.privateState}>
               <Card className={styles.privateCard} bordered={false}>
                 <div className={styles.privateContent}>
-                  <div className={styles.userHeader}>
+                  <div className={styles.userHeader} >
                     <Avatar
                       size={64}
                       icon={<UserOutlined />}
@@ -388,32 +390,59 @@ export const ViewPetPage: React.FC = () => {
                     transition={{ delay: 0.2 }}
                     className={styles.lockIcon}
                   >
-                    <div className={styles.lockContainer}>
-                      <LockOutlined />
+                    <div className={isHidden ? styles.hiddenContainer : styles.lockContainer}>
+                      {isHidden ? '🙈' : <LockOutlined />}
                     </div>
                   </motion.div>
 
                   <Title level={2} className={styles.privateTitle}>
-                    This Profile is Private
+                    {isHidden ? 'This Pet is Hidden' : 'This Profile is Private'}
                   </Title>
 
                   <Paragraph className={styles.privateDescription}>
-                    {pet.ownerUsername} has set this pet profile to private. Only they
-                    can view this adorable friend's profile. 😊
+                    {isHidden
+                      ? `${pet.ownerUsername} has hidden this pet profile from public view. This adorable friend prefers to stay out of the spotlight for now. 🐾`
+                      : `${pet.ownerUsername} has set this pet profile to private. Only they can view this adorable friend's profile. 😊`
+                    }
                   </Paragraph>
 
                   <div className={styles.privacyNote}>
                     <div className={styles.privacyIcon}>
-                      🔒
+                      {isHidden ? '🔕' : '🔒'}
                     </div>
                     <div className={styles.privacyContent}>
-                      <Text strong>Privacy Protected</Text>
+                      <Text strong>
+                        {isHidden ? 'Hidden Profile' : 'Privacy Protected'}
+                      </Text>
                       <br />
                       <Text type="secondary" className={styles.privacyText}>
-                        Respecting privacy by keeping this pet profile. We want to
-                        keep {pet.name}'s information private and secure.
+                        {isHidden
+                          ? `This pet profile is temporarily hidden and not visible to other users. ${pet.name}'s owner has chosen to keep this profile away from public discovery.`
+                          : `Respecting privacy by keeping this pet profile secure. We want to keep ${pet.name}'s information private and secure.`
+                        }
                       </Text>
                     </div>
+                  </div>
+
+                  <div className={styles.statusBadge}>
+                    <motion.div
+                      className={isHidden ? styles.hiddenBadge : styles.privateBadge}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      {isHidden ? (
+                        <>
+                          <span className={styles.badgeIcon}>👻</span>
+                          <span className={styles.badgeText}>Hidden from Discovery</span>
+                        </>
+                      ) : (
+                        <>
+                          <span className={styles.badgeIcon}>🛡️</span>
+                          <span className={styles.badgeText}>Private Profile</span>
+                        </>
+                      )}
+                    </motion.div>
                   </div>
 
                   <div className={styles.privateActions}>
@@ -472,7 +501,7 @@ export const ViewPetPage: React.FC = () => {
                 >
                   {/* Pet Header */}
                   <Card bordered={false} className={styles.profileCard}>
-                    <div className={styles.ownerHeader}>
+                    <div className={styles.ownerHeader} onClick={()=> navigate(`/user/${pet.ownerId}`)} style={{cursor: 'pointer'}}>
                       <Avatar
                         size={40}
                         icon={<UserOutlined />}

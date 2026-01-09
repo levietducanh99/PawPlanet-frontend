@@ -16,9 +16,62 @@ export const usePetDetail = (petId: number | null) => {
       const data = await getPetById(id);
       console.log('🐕 usePetDetail: Received pet data:', data);
       setPet(data);
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('🐕 usePetDetail: Error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load pet details');
+
+      // Type guard for custom error with private pet info
+      const isCustomError = (error: unknown): error is Error & { isPrivate?: boolean; petInfo?: any } => {
+        return error instanceof Error;
+      };
+
+      // Check if this is a 403 FORBIDDEN error for private/hidden pet
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      const customErr = isCustomError(err) ? err : null;
+      const isPrivateError = customErr?.isPrivate ||
+                            errorMessage.toLowerCase().includes('private') ||
+                            errorMessage.toLowerCase().includes('hidden') ||
+                            errorMessage.includes('403');
+
+      if (isPrivateError) {
+        console.log('🔒 usePetDetail: Detected private/hidden pet, creating minimal pet object');
+
+        // Extract pet info from error if available
+        const petInfo = customErr?.petInfo || {};
+        const ownerUsername = petInfo.ownerUsername || 'Pet Owner';
+        const petName = petInfo.name || 'Private Pet';
+
+        // Determine status from error message
+        let status: 'HIDDEN' | 'PRIVATE' = 'PRIVATE';
+        if (errorMessage.toLowerCase().includes('hidden')) {
+          status = 'HIDDEN';
+        }
+
+        console.log('🔒 usePetDetail: Creating minimal pet with status:', status);
+
+        // Create a minimal pet object for private/hidden status display
+        const minimalPet: Pet = {
+          id: id,
+          name: petName,
+          speciesId: petInfo.speciesId || 0,
+          speciesName: petInfo.speciesName || 'Unknown',
+          breedName: petInfo.breedName,
+          status: status,
+          ownerId: petInfo.ownerId || 0,
+          ownerUsername: ownerUsername,
+          canFollow: false,
+          isOwner: false,
+          isFollowing: false,
+          media: [],
+          followerCount: 0,
+          followingCount: 0
+        };
+
+        setPet(minimalPet);
+        // Don't set error so the UI can show the nice private/hidden screen
+        setError(null);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setPageLoading(false);
     }
