@@ -14,8 +14,10 @@ import { motion } from 'motion/react';
 import type { Post } from '@/domain/post';
 import { PetTag } from '@/components/PetTag';
 import styles from './PostCard.module.css';
+import {useNavigate} from "react-router-dom";
 
 const { Text, Paragraph } = Typography;
+
 
 interface PostCardProps {
   post: Post;
@@ -26,8 +28,12 @@ interface PostCardProps {
   onEdit?: (postId: number) => void;
 }
 
+
+
 const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, onDelete, onEdit }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+
 
   // uiPost extends Post with optional UI-only fields used by the component
   const uiPost = post as Post & {
@@ -58,6 +64,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
   const renderPetTags = () => {
     if (!post.taggedPets || post.taggedPets.length === 0) return null;
 
+
     return (
       <div className={styles.petTagsContainer}>
         {post.taggedPets.map((pet) => (
@@ -68,10 +75,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
             species={pet.species}
             breed={pet.breed}
             avatarUrl={pet.avatarUrl}
-            onClick={() => {
-              // TODO: Navigate to pet profile
-              console.log('Navigate to pet:', pet.id);
-            }}
+            onClick={() => navigate(`/pet/${pet?.id}`)}
           />
         ))}
       </div>
@@ -167,7 +171,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
         {/* Header */}
         <div className={styles.postHeaderNew}>
           <Space size="middle" align="start">
-            <div className={styles.avatarWrapper}>
+            <div className={styles.avatarWrapper} 
+                 onClick={() => navigate(`/user/${post?.authorId}`)}
+                 style={{cursor: 'pointer'}}>
               <Avatar src={uiPost.authorAvatar} size={56} className={styles.avatarRing} />
               {uiPost.petAvatar && (
                 <Avatar src={uiPost.petAvatar} size={28} className={styles.petAvatar} />

@@ -1,8 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { Modal, Avatar, Button, Input, List, Typography, Space, Spin } from 'antd';
-import { CloseOutlined, HeartOutlined, SendOutlined } from '@ant-design/icons';
+import { Modal, Avatar, Button, Input, List, Typography, Spin } from 'antd';
+import { CloseOutlined, SendOutlined } from '@ant-design/icons';
 import {usePostComments, useUserProfile} from '@/hooks';
 import styles from './CommentDrawer.module.css';
+import {useNavigate} from "react-router-dom";
 
 const { Text } = Typography;
 
@@ -18,6 +19,8 @@ export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClos
   const { comments, loading, creating, addComment, refetch } = usePostComments(postId);
   const { user } = useUserProfile();
   const [value, setValue] = useState('');
+  const navigate = useNavigate();
+
 
   const commentCount = useMemo(() => comments?.length ?? 0, [comments]);
 
@@ -68,19 +71,15 @@ export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClos
             renderItem={(c) => (
               <List.Item className={styles.commentItem}>
                 <List.Item.Meta
-                  avatar={<Avatar src={c.userAvatar} />}
-                  title={<div className={styles.commentTitle}><Text strong>{c.userName}</Text></div>}
+                  avatar={<Avatar src={c.userAvatar}
+                                  onClick={() => navigate(`/user/${c?.userId}`)}
+                                  style={{cursor: 'pointer'}}/>}
+                  title={<div className={styles.commentTitle}
+                              onClick={() => navigate(`/user/${c?.userId}`)}
+                              style={{cursor: 'pointer'}}
+                  ><Text strong>{c.userName}</Text></div>}
                   description={<div className={styles.commentBody}>{c.content}</div>}
                 />
-                <div className={styles.commentMeta}>
-                  <Space size="small">
-                    <Text type="secondary">{ /* time */ }</Text>
-                    <Space size={8}>
-                      <HeartOutlined style={{ color: '#EB5757' }} />
-                      <Text type="secondary">{c.likeCount ?? 0}</Text>
-                    </Space>
-                  </Space>
-                </div>
               </List.Item>
             )}
           />
