@@ -37,6 +37,15 @@ export const PostDetailPage: React.FC = () => {
   // Edit modal state
   const [editModalOpen, setEditModalOpen] = useState(false);
 
+  // Reset state when postId changes (fix 404 not found bug)
+  useEffect(() => {
+    // Clear local state when navigating to a new post
+    setLocalPost(null);
+    setCommentInput('');
+    setEditModalOpen(false);
+    window.scrollTo(0, 0);
+  }, [postId]);
+
   // Update local post when fetched post changes
   useEffect(() => {
     if (post) {
@@ -44,10 +53,6 @@ export const PostDetailPage: React.FC = () => {
     }
   }, [post]);
 
-  // Scroll to top on mount
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const handleBack = () => {
     navigate(-1);

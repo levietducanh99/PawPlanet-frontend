@@ -13,7 +13,7 @@ export const mapUserProfileDTOToUser = (dto: UserProfileDTO): User => {
   return {
     id: dto.id || 0,
     username: dto.username || '',
-    email: dto.email,
+    email: dto.email || '',
     fullName: dto.fullName,
     avatarUrl: dto.avatarUrl,
     coverImageUrl: dto.coverImageUrl,
@@ -24,7 +24,6 @@ export const mapUserProfileDTOToUser = (dto: UserProfileDTO): User => {
     followersCount: dto.followersCount || 0,
     followingCount: dto.followingCount || 0,
     petsCount: dto.petsCount || 0,
-    postsCount: dto.postsCount || 0,
     isMe: dto.isMe || false,
     isFollowing: dto.isFollowing || false,
     isFollowedBy: dto.isFollowedBy || false,

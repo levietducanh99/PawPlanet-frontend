@@ -2,6 +2,7 @@ export { useFetch } from './useFetch';
 export { useMediaUpload } from './useMediaUpload';
 export { useLogin, useRegister, useAuth } from './useAuth';
 export { useLogout } from './useLogout';
+export { useRefreshToken } from './useRefreshToken';
 export { useViewProfile, useProfileData } from './useProfile';
 export { useUpdateProfile } from './useUpdateProfile';
 export { useFollowers, useFollowing, useFollowActions } from './useFollow';

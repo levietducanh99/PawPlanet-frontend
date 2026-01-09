@@ -420,6 +420,7 @@ export const ProfilePage: React.FC = () => {
       );
     }
 
+
     return (
       <div className={styles.petList}>
         <List

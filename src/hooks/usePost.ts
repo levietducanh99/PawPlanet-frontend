@@ -175,10 +175,12 @@ export const usePostDetail = (postId: number | null) => {
     if (!postId) return;
     try {
       setLoading(true);
+      setError(null); // Reset error before loading
       const postData = await getPostById(postId);
       setPost(postData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed');
+      setPost(null); // Clear post data on error
     } finally {
       setLoading(false);
     }
@@ -240,6 +242,7 @@ export const usePostComments = (postId: number | null) => {
       setComments(commentsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load comments');
+      setComments([]); // Clear comments on error
     } finally {
       setLoading(false);
     }
@@ -259,6 +262,12 @@ export const usePostComments = (postId: number | null) => {
     } finally {
       setCreating(false);
     }
+  }, [postId]);
+
+  // Reset state when postId changes
+  useEffect(() => {
+    setComments([]);
+    setError(null);
   }, [postId]);
 
   useEffect(() => { loadComments(); }, [loadComments]);
