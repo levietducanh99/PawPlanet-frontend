@@ -11,9 +11,22 @@ interface ExplorePetCardProps {
   item: ExplorePetItem;
 }
 
+// Gradient backgrounds for variety
+const gradients = [
+  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+  'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+  'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+];
+
 export const ExplorePetCard: React.FC<ExplorePetCardProps> = ({ item }) => {
   const navigate = useNavigate();
   const { data } = item;
+
+  // Pick gradient based on pet ID for consistency
+  const gradientIndex = Number(data.id) % gradients.length;
+  const gradient = gradients[gradientIndex];
 
   const handleClick = () => {
     navigate(`/pets/${data.id}`);
@@ -22,10 +35,9 @@ export const ExplorePetCard: React.FC<ExplorePetCardProps> = ({ item }) => {
   return (
     <Card
       className={styles.petCard}
-      bordered={false}
       onClick={handleClick}
     >
-      <div className={styles.avatarContainer}>
+      <div className={styles.avatarContainer} style={{ background: gradient }}>
         <Avatar
           size={120}
           src={data.avatarUrl}
@@ -35,7 +47,7 @@ export const ExplorePetCard: React.FC<ExplorePetCardProps> = ({ item }) => {
       </div>
 
       <div className={styles.content}>
-        <Title level={4} className={styles.name} ellipsis>
+        <Title level={4} className={styles.name}>
           {data.name}
         </Title>
 

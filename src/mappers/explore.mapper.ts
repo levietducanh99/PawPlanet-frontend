@@ -33,19 +33,24 @@ function mapExplorePost(dto: ExploreItemDTO): ExplorePostItem {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const data = dto.data as any;
 
+  // Backend returns authorId and authorUsername directly in data
+  const authorId = data.authorId?.toString() || '';
+  const authorUsername = data.authorUsername || 'Unknown User';
+  const authorAvatar = data.authorAvatar || data.authorAvatarUrl;
+
   return {
     type: 'post',
     data: {
       id: data.id?.toString() || '',
       content: data.content || '',
-      mediaUrls: data.mediaUrls || data.images || [],
+      mediaUrls: data.media || data.mediaUrls || [],
       author: {
-        id: data.author?.id?.toString() || data.userId?.toString() || '',
-        username: data.author?.username || data.username || 'Unknown',
-        avatarUrl: data.author?.avatarUrl || data.authorAvatar,
+        id: authorId,
+        username: authorUsername,
+        avatarUrl: authorAvatar,
       },
-      likeCount: data.likeCount || data.likes || 0,
-      commentCount: data.commentCount || data.comments || 0,
+      likeCount: data.likeCount || 0,
+      commentCount: data.commentCount || 0,
       createdAt: data.createdAt || new Date().toISOString(),
     },
   };

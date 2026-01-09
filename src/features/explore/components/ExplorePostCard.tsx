@@ -24,7 +24,6 @@ export const ExplorePostCard: React.FC<ExplorePostCardProps> = ({ item }) => {
   return (
     <Card
       className={styles.postCard}
-      bordered={false}
       onClick={handleClick}
       cover={
         hasMedia ? (
@@ -44,8 +43,7 @@ export const ExplorePostCard: React.FC<ExplorePostCardProps> = ({ item }) => {
       <div className={styles.content}>
         {data.content && (
           <Paragraph
-            className={styles.text}
-            ellipsis={{ rows: hasMedia ? 3 : 4 }}
+            className={`${styles.text} ${hasMedia ? styles.hasMedia : styles.noMedia}`}
           >
             {data.content}
           </Paragraph>
@@ -54,7 +52,7 @@ export const ExplorePostCard: React.FC<ExplorePostCardProps> = ({ item }) => {
         <div className={styles.meta}>
           <div className={styles.author}>
             <Avatar
-              size={24}
+              size={32}
               src={data.author.avatarUrl}
               style={{ backgroundColor: '#1890FF' }}
             >

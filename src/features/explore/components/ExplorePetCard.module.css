@@ -1,102 +1,143 @@
 .petCard {
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   background: white;
   break-inside: avoid;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  display: inline-block;
+  width: 100%;
+  border: none !important;
 }
 
 .petCard:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
 .avatarContainer {
   display: flex;
   justify-content: center;
-  padding: 24px 24px 16px;
+  align-items: center;
+  padding: 32px 24px 20px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 180px;
+}
+
+/* Gradient variations - sẽ được apply randomly qua inline style */
+.avatarContainer.gradient1 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.avatarContainer.gradient2 {
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
+.avatarContainer.gradient3 {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.avatarContainer.gradient4 {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.avatarContainer.gradient5 {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
 .avatar {
-  border: 4px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 5px solid white;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .content {
-  padding: 16px;
+  padding: 24px;
   text-align: center;
 }
 
 .name {
-  margin: 0 0 8px 0 !important;
-  font-size: 18px !important;
-  font-weight: 600 !important;
-  color: #2D3748;
+  margin: 0 0 12px 0 !important;
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: #1a202c;
+  line-height: 1.3;
 }
 
 .tags {
   display: flex;
   justify-content: center;
-  gap: 6px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .tag {
-  border-radius: 12px;
-  font-size: 12px;
+  border-radius: 16px;
+  font-size: 13px;
   margin: 0;
+  font-weight: 500;
+  padding: 4px 12px;
+  border: none;
 }
 
 .meta {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 12px;
-  border-top: 1px solid #E2E8F0;
-  font-size: 13px;
+  padding-top: 16px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 14px;
 }
 
 .owner {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   color: #718096;
 }
 
 .ownerName {
-  font-weight: 500;
-  color: #4A5568;
+  font-weight: 600;
+  color: #2d3748;
 }
 
 .followers {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   color: #718096;
+  font-weight: 500;
+}
+
+.followers svg {
+  color: #f56565;
 }
 
 @media (max-width: 768px) {
   .petCard {
-    margin-bottom: 12px;
+    margin-bottom: 16px;
+    border-radius: 16px;
   }
 
   .avatarContainer {
-    padding: 20px 20px 12px;
+    padding: 24px 20px 16px;
+    min-height: 150px;
   }
 
   .avatar {
     width: 100px !important;
     height: 100px !important;
+    border-width: 4px;
   }
 
   .content {
-    padding: 12px;
+    padding: 16px;
+  }
+
+  .name {
+    font-size: 18px !important;
   }
 }
 

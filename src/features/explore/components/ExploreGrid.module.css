@@ -1,16 +1,14 @@
 .gridContainer {
   width: 100%;
-  max-width: 1600px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 24px;
+  padding: 20px;
 }
 
-/* CSS Grid Masonry Layout */
+/* True Masonry Layout using CSS Columns */
 .masonryGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-  grid-auto-flow: dense;
+  column-count: 3;
+  column-gap: 24px;
 }
 
 .loadMoreTrigger {
@@ -19,39 +17,35 @@
 }
 
 /* Responsive breakpoints */
-@media (min-width: 1400px) {
+@media (min-width: 1200px) {
   .masonryGrid {
-    grid-template-columns: repeat(4, 1fr);
+    column-count: 3;
+    column-gap: 24px;
   }
 }
 
-@media (min-width: 1024px) and (max-width: 1399px) {
+@media (min-width: 900px) and (max-width: 1199px) {
   .masonryGrid {
-    grid-template-columns: repeat(3, 1fr);
+    column-count: 2;
+    column-gap: 20px;
   }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (min-width: 600px) and (max-width: 899px) {
   .masonryGrid {
-    grid-template-columns: repeat(3, 1fr);
+    column-count: 2;
+    column-gap: 18px;
   }
 }
 
-@media (min-width: 480px) and (max-width: 767px) {
+@media (max-width: 599px) {
   .masonryGrid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-  }
-}
-
-@media (max-width: 479px) {
-  .masonryGrid {
-    grid-template-columns: 1fr;
-    gap: 12px;
+    column-count: 1;
+    column-gap: 0;
   }
 
   .gridContainer {
-    padding: 16px;
+    padding: 12px;
   }
 }
 
