@@ -18,7 +18,7 @@
 .content {
   padding: 20px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   min-width: 0;
   flex-wrap: wrap;
@@ -30,7 +30,7 @@
 }
 
 .info {
-  flex: 1;
+  flex: 1 1 180px;
   min-width: 0;
   overflow: hidden;
   flex-basis: 0;
@@ -52,6 +52,7 @@
   gap: 12px;
   flex-wrap: wrap;
   min-width: 0;
+  row-gap: 8px;
 }
 
 .stat {
@@ -62,6 +63,11 @@
   /* Avoid break-all/anywhere behavior in narrow cards */
   white-space: nowrap;
   min-width: 0;
+  line-height: 1.2;
+}
+
+.stat svg {
+  line-height: 1;
 }
 
 .followButton {
@@ -69,6 +75,8 @@
   border-radius: 20px;
   font-weight: 600;
   margin-left: auto;
+  align-self: flex-start;
+  white-space: nowrap;
 }
 
 @media (max-width: 768px) {
@@ -100,5 +108,17 @@
   .followButton {
     margin-left: 0;
     align-self: flex-start;
+  }
+}
+
+@media (max-width: 360px) {
+  .content {
+    padding: 14px;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 44px !important;
+    height: 44px !important;
   }
 }
