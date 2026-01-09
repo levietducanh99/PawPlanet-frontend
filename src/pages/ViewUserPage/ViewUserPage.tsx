@@ -63,7 +63,6 @@ export const ViewUserPage = () => {
     return (
       <ErrorMessage
         message={userError || 'User not found'}
-        onRetry={() => parsedUserId && fetchUser(parsedUserId)}
       />
     );
   }

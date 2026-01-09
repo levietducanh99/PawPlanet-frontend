@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authService } from '@/services/auth.service';
 import { useRefreshToken } from '@/hooks/useRefreshToken';
-import { decodeJWT } from '@/utils/jwt';
 import type { User, LoginCredentials } from '@/domain/auth';
 
 interface AuthContextType {
