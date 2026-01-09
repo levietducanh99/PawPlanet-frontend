@@ -16,12 +16,18 @@ export const usePetDetail = (petId: number | null) => {
       const data = await getPetById(id);
       console.log('🐕 usePetDetail: Received pet data:', data);
       setPet(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('🐕 usePetDetail: Error:', err);
+
+      // Type guard for custom error with private pet info
+      const isCustomError = (error: unknown): error is Error & { isPrivate?: boolean; petInfo?: any } => {
+        return error instanceof Error;
+      };
 
       // Check if this is a 403 FORBIDDEN error for private/hidden pet
       const errorMessage = err instanceof Error ? err.message : String(err);
-      const isPrivateError = err.isPrivate ||
+      const customErr = isCustomError(err) ? err : null;
+      const isPrivateError = customErr?.isPrivate ||
                             errorMessage.toLowerCase().includes('private') ||
                             errorMessage.toLowerCase().includes('hidden') ||
                             errorMessage.includes('403');
@@ -30,7 +36,7 @@ export const usePetDetail = (petId: number | null) => {
         console.log('🔒 usePetDetail: Detected private/hidden pet, creating minimal pet object');
 
         // Extract pet info from error if available
-        const petInfo = err.petInfo || {};
+        const petInfo = customErr?.petInfo || {};
         const ownerUsername = petInfo.ownerUsername || 'Pet Owner';
         const petName = petInfo.name || 'Private Pet';
 
