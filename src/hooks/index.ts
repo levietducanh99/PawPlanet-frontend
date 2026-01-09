@@ -53,6 +53,7 @@ export { useViewPet } from './useViewPet';
 export { usePetPosts } from './usePetPosts';
 export { usePetFollowers } from './usePetFollowers';
 export { useFollowingPets } from './useFollowingPets';
+export { usePetAdoption } from './usePetAdoption';
 
 
 // Notifications

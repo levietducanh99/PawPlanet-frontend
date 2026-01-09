@@ -13,7 +13,9 @@ import {
   Spin,
   message,
   Popconfirm,
-  Space
+  Space,
+  Modal,
+  Tag
 } from 'antd';
 import {
   HeartOutlined,
@@ -26,7 +28,8 @@ import {
   PlusOutlined,
   PlayCircleOutlined,
   EditOutlined,
-  DeleteOutlined
+  DeleteOutlined,
+  EyeOutlined
 } from '@ant-design/icons';
 import { Sidebar, Header, Loading, ErrorMessage } from '../../components';
 import PostCard from '../../components/PostCard';
@@ -34,12 +37,18 @@ import { PhotoGalleryModal } from '../../components/PhotoGalleryModal';
 import { UploadMediaModal } from '../../components/UploadMediaModal';
 import { PetFollowersModal } from '../../components/PetFollowersModal';
 import CommentModal from '../../components/CommentDrawer/CommentDrawer';
+import { PetAdoptionToggle } from '../../components/PetAdoptionToggle';
+import { AdoptionProfileForm } from '../../components/AdoptionProfileForm';
+import { AdoptionProfileView } from '../../components/AdoptionProfileView';
 import {
   useViewPet,
   usePetPosts,
   useDeletePet,
-  usePostActions
+  usePostActions,
+  usePetAdoption
 } from '../../hooks';
+import { petService } from '../../services/pet.service';
+import type { CreateAdoptionProfileRequest } from '../../domain/adoption';
 import styles from './ViewPetPage.module.css';
 import { pageVariants } from '../../animations/variants';
 
@@ -70,6 +79,21 @@ export const ViewPetPage: React.FC = () => {
   // State for comment modal
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [activePostId, setActivePostId] = useState<number | null>(null);
+
+  // Adoption-related state
+  const [showAdoptionForm, setShowAdoptionForm] = useState(false);
+  const [showAdoptionProfileModal, setShowAdoptionProfileModal] = useState(false);
+  const [adoptionToggleLoading, setAdoptionToggleLoading] = useState(false);
+  
+  // Use adoption hook
+  const {
+    adoptionProfile,
+    loading: adoptionLoading,
+    error: adoptionError,
+    createProfile,
+    fetchProfile,
+    clearError: clearAdoptionError,
+  } = usePetAdoption();
 
   // Use the integrated hook
   const {
@@ -211,6 +235,86 @@ export const ViewPetPage: React.FC = () => {
     console.log('Share post:', postId);
     message.info('Share feature coming soon!');
   };
+
+  // Handle adoption toggle (owner only)
+  const handleAdoptionToggle = async (enabled: boolean) => {
+    if (!petIdNumber || !pet) return;
+
+    setAdoptionToggleLoading(true);
+
+    try {
+      // Update pet status
+      const newStatus = enabled ? 'FOR_ADOPTION' : 'NORMAL';
+      await petService.updatePet(petIdNumber, { status: newStatus });
+
+      message.success(
+        enabled
+          ? `${pet.name} is now available for adoption`
+          : `${pet.name} is no longer available for adoption`
+      );
+
+      // If enabling adoption and no profile exists, show form
+      if (enabled && !adoptionProfile) {
+        setShowAdoptionForm(true);
+      }
+
+      // Refetch pet data to update status
+      if (refetch) {
+        refetch();
+      }
+    } catch (error: any) {
+      console.error('Failed to toggle adoption status:', error);
+      message.error(error.message || 'Failed to update adoption status');
+    } finally {
+      setAdoptionToggleLoading(false);
+    }
+  };
+
+  // Handle adoption profile creation (owner only)
+  const handleCreateAdoptionProfile = async (values: CreateAdoptionProfileRequest) => {
+    if (!petIdNumber) return;
+
+    const success = await createProfile(petIdNumber, values);
+
+    if (success) {
+      message.success('Adoption profile created successfully! 🎉');
+      setShowAdoptionForm(false);
+      
+      // Refetch pet data
+      if (refetch) {
+        refetch();
+      }
+    } else {
+      message.error(adoptionError || 'Failed to create adoption profile');
+    }
+  };
+
+  // Handle view adoption profile (viewers)
+  const handleViewAdoptionProfile = async () => {
+    if (!petIdNumber) return;
+
+    setShowAdoptionProfileModal(true);
+    
+    // Fetch adoption profile if not already loaded
+    if (!adoptionProfile) {
+      await fetchProfile(petIdNumber);
+    }
+  };
+
+  // Fetch adoption profile when pet is FOR_ADOPTION
+  useEffect(() => {
+    if (pet && pet.status === 'For Adoption' && petIdNumber) {
+      // Only fetch if we don't have it yet
+      if (!adoptionProfile && !adoptionLoading) {
+        fetchProfile(petIdNumber).catch((err) => {
+          // Silently ignore 404 errors (profile doesn't exist yet)
+          if (!err.message?.includes('not found')) {
+            console.error('Failed to fetch adoption profile:', err);
+          }
+        });
+      }
+    }
+  }, [pet, petIdNumber, adoptionProfile, adoptionLoading, fetchProfile]);
 
   // Loading state - ONLY for initial page load
   if (pageLoading) {
@@ -541,6 +645,94 @@ export const ViewPetPage: React.FC = () => {
                     </div>
                   </Card>
 
+                  {/* Adoption Section */}
+                  {isOwner && (
+                    <>
+                      {/* Adoption Toggle (Owner only) */}
+                      <PetAdoptionToggle
+                        isForAdoption={pet.status === 'For Adoption'}
+                        onToggle={handleAdoptionToggle}
+                        loading={adoptionToggleLoading}
+                      />
+
+                      {/* Adoption Form (show when enabled and no profile) */}
+                      {showAdoptionForm && pet.status === 'For Adoption' && (
+                        <Card
+                          bordered={false}
+                          style={{
+                            borderRadius: '16px',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+                            marginBottom: '16px',
+                          }}
+                        >
+                          <AdoptionProfileForm
+                            onSubmit={handleCreateAdoptionProfile}
+                            loading={adoptionLoading}
+                            onCancel={() => setShowAdoptionForm(false)}
+                          />
+                        </Card>
+                      )}
+
+                      {/* Adoption Profile Status (when profile exists) */}
+                      {pet.status === 'For Adoption' && adoptionProfile && !showAdoptionForm && (
+                        <Card
+                          bordered={false}
+                          style={{
+                            borderRadius: '12px',
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                            marginBottom: '16px',
+                            background: '#FFF7E6',
+                          }}
+                        >
+                          <Space direction="vertical" style={{ width: '100%' }} size="small">
+                            <div style={{ textAlign: 'center' }}>
+                              <Tag color="warning" style={{ fontSize: '14px', padding: '4px 12px' }}>
+                                Available for Adoption
+                              </Tag>
+                            </div>
+                            <Text
+                              type="secondary"
+                              style={{ textAlign: 'center', display: 'block', fontSize: '12px' }}
+                            >
+                              Your pet's adoption profile is active
+                            </Text>
+                          </Space>
+                        </Card>
+                      )}
+                    </>
+                  )}
+
+                  {/* View Adoption Profile Button (Non-owner, when pet is FOR_ADOPTION) */}
+                  {!isOwner && pet.status === 'For Adoption' && (
+                    <Card
+                      bordered={false}
+                      style={{
+                        borderRadius: '12px',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                        marginBottom: '16px',
+                        background: '#FFF7E6',
+                      }}
+                    >
+                      <Space direction="vertical" style={{ width: '100%' }} size="middle">
+                        <div style={{ textAlign: 'center' }}>
+                          <Tag color="warning" style={{ fontSize: '14px', padding: '4px 12px' }}>
+                            Available for Adoption
+                          </Tag>
+                        </div>
+                        <Button
+                          type="primary"
+                          icon={<EyeOutlined />}
+                          block
+                          size="large"
+                          onClick={handleViewAdoptionProfile}
+                          style={{ borderRadius: '8px' }}
+                        >
+                          View Adoption Profile
+                        </Button>
+                      </Space>
+                    </Card>
+                  )}
+
                   {/* Pet Photo Library */}
                   {(pet.media && pet.media.length > 0) || isOwner ? (
                     <Card
@@ -768,6 +960,25 @@ export const ViewPetPage: React.FC = () => {
         }}
         title={activePostId && optimisticPosts ? `${optimisticPosts.find(p => p.id === activePostId)?.authorName || pet?.name || 'Post'}'s Post` : 'Comments'}
       />
+
+      {/* Adoption Profile Modal (for viewers) */}
+      <Modal
+        open={showAdoptionProfileModal}
+        onCancel={() => setShowAdoptionProfileModal(false)}
+        footer={null}
+        width={700}
+        style={{ top: 20 }}
+      >
+        {adoptionLoading ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <Spin size="large" />
+          </div>
+        ) : adoptionProfile ? (
+          <AdoptionProfileView profile={adoptionProfile} petName={pet?.name} />
+        ) : (
+          <Empty description="Adoption profile not available" />
+        )}
+      </Modal>
     </>
   );
 };

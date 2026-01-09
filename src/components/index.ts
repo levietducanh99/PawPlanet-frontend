@@ -42,3 +42,8 @@ export { PetBasicForm } from './PetBasicForm';
 export { PetImportantDates } from './PetImportantDates';
 export { PetAppearanceForm } from './PetAppearanceForm';
 export { PetProfileSettings } from './PetProfileSettings';
+
+// Pet Adoption Components
+export { PetAdoptionToggle } from './PetAdoptionToggle';
+export { AdoptionProfileForm } from './AdoptionProfileForm';
+export { AdoptionProfileView } from './AdoptionProfileView';
