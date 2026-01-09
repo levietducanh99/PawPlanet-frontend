@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { PlusOutlined } from '@ant-design/icons';
 import { Badge } from 'antd';
 import styles from './Sidebar.module.css';
-import {useUserProfile} from "@/hooks";
 import { useUserPets } from '@/hooks/useUserPets';
 
 interface SidebarProps {
@@ -37,19 +36,11 @@ const menuItems = [
     path: '/care-support',
     hasBadge: true
   },
-  {
-    id: 'my-pets-menu',
-    label: 'My Pets',
-    icon: '🐾',
-    path: '/my-pets'
-  },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  const { user } = useUserProfile();
   // const { pets, loading: petsLoading, error: petsError } = useUserPets();
 
  const { pets = [], loading: petsLoading, error: petsError } = useUserPets();
@@ -66,9 +57,6 @@ export const Sidebar: React.FC<SidebarProps> = () => {
     return location.pathname === path;
   };
 
-  // Default banner image - this could come from user profile later
-  const bannerImage = user?.avatarUrl || 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600&h=400&fit=crop';
-
   // Notifications count - this would come from a notifications API
   const notificationCount = 3;
 
@@ -77,11 +65,6 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   return (
     <aside className={styles.sidebar}>
       {/* Banner Image */}
-      {bannerImage && (
-        <div className={styles.bannerContainer}>
-          <img src={bannerImage} alt="Banner" className={styles.bannerImage} />
-        </div>
-      )}
 
       {/* Menu Items */}
       <nav className={styles.menu}>
@@ -133,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
         ) : (
           <div className={styles.petsList}>
             {pets.map((pet) => (
-              <div key={pet.id} className={styles.petItem} onClick={() => navigate(`/pets/${pet.id}`)}>
+              <div key={pet.id} className={styles.petItem} onClick={() => navigate(`/pet/${pet.id}`)}>
                 <div className={styles.petAvatar}>
                   {pet.avatar ? (
                     <img src={pet.avatar} alt={pet.name} />

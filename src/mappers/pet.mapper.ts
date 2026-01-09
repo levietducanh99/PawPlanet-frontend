@@ -1,5 +1,5 @@
 import { PetProfileDTO, SpeciesResponse, BreedResponse } from '@/services/api';
-import { Pet, PetMedia, CreatePetRequest } from '@/domain/pet';
+import { Pet, PetMedia, CreatePetRequest, PetSummary } from '@/domain/pet';
 import { CreatePetData } from '@/services/pet.service';
 
 /**
@@ -63,7 +63,54 @@ export const mapPetProfileToPet = (dto: PetProfileDTO): Pet => {
     media,
     avatarUrl,
     followerCount: 0, // Will be fetched separately
-    followingCount: 0  // Will be fetched separately
+    followingCount: 0, // Will be fetched separately
+    likeCount: (dto as any).likeCount ?? 0, // Total likes from backend
+    postCount: (dto as any).postCount ?? 0  // Total posts from backend
+  };
+};
+
+/**
+ * Maps PetProfileDTO to lightweight PetSummary for lists
+ */
+export const mapPetProfileToSummary = (dto: PetProfileDTO): PetSummary => {
+  // Try to get avatar from direct field first (some endpoints return this)
+  let avatarUrl: string | undefined = (dto as any).avatar;
+
+  // If no direct avatar field, try to extract from media array
+  if (!avatarUrl && dto.media && dto.media.length > 0) {
+    const avatarMedia = dto.media.find(m => m.role === 'avatar' || m.role === 'primary');
+    avatarUrl = avatarMedia?.url;
+
+    // If still no avatar, take the first media item
+    if (!avatarUrl && dto.media[0]) {
+      avatarUrl = dto.media[0].url;
+    }
+  }
+
+  // Get owner username with multiple fallbacks
+  const ownerUsername = dto.ownerUsername || (dto as any).owner?.username || 'Unknown';
+
+  console.log('🔵 mapPetProfileToSummary:', {
+    petId: dto.id,
+    petName: dto.name,
+    hasDirectAvatar: !!(dto as any).avatar,
+    hasMediaArray: !!dto.media,
+    mediaLength: dto.media?.length || 0,
+    firstMediaUrl: dto.media?.[0]?.url,
+    firstMediaRole: dto.media?.[0]?.role,
+    finalAvatarUrl: avatarUrl,
+    ownerUsername: dto.ownerUsername,
+    ownerField: (dto as any).owner,
+    finalOwnerUsername: ownerUsername
+  });
+
+  return {
+    id: dto.id || 0,
+    name: dto.name || 'Unknown Pet',
+    avatarUrl,
+    speciesName: dto.speciesName || 'Unknown Species',
+    breedName: dto.breedName,
+    ownerUsername
   };
 };
 

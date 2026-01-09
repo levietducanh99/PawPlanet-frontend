@@ -1,0 +1,102 @@
+/* Pet Photo Group Container */
+.petPhotoGroup {
+  margin-bottom: 32px;
+}
+
+/* Pet Header */
+.petHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.petHeader:hover {
+  background: #F3F4F6;
+  transform: translateX(4px);
+}
+
+.petAvatar {
+  flex-shrink: 0;
+  border: 2px solid #E6F7FF;
+}
+
+.petInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.petName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.photoCount {
+  font-size: 14px;
+  color: #6B7280;
+}
+
+/* Photo Grid */
+.photoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  padding: 0 4px;
+}
+
+@media (max-width: 768px) {
+  .photoGrid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .photoGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+}
+
+/* Photo Card */
+.photoCard {
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%; /* 1:1 Aspect Ratio */
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #F3F4F6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.photoImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.3s ease;
+}
+
+.photoCard:hover .photoImage {
+  transform: scale(1.05);
+}
+
+/* Accessibility */
+.petHeader:focus,
+.photoCard:focus {
+  outline: 2px solid #1890FF;
+  outline-offset: 2px;
+}
+

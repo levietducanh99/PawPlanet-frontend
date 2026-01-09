@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { HomePage } from '@/pages/HomePage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { EditProfilePage } from '@/pages/EditProfilePage';
 import { PostDetailPage } from '@/pages/PostDetailPage';
 import { MainLayout } from '@/components/MainLayout';
 import MainFeedPage from './pages/MainFeedPage';
@@ -14,8 +15,8 @@ import { EncyclopediaPage } from './pages/EncyclopediaPage';
 import { SpeciesDetailPage } from './pages/SpeciesDetailPage';
 import { BreedDetailPage } from './pages/BreedDetailPage';
 import { ViewPetPage } from './pages/ViewPetPage';
-import { MyPetsPage } from './pages/MyPetsPage';
 import { EditPetPage } from './pages/EditPetPage';
+import { ViewUserPage } from './pages/ViewUserPage';
 import { AuthProvider } from '@/context/AuthContext';
 import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
 import { LandingPage } from '@/pages/LandingPage';
@@ -70,10 +71,11 @@ function App() {
                 <Route path="feed" element={<MainFeedPage />} />
                 <Route path="explore" element={<ExplorePage />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route path="profile/edit" element={<EditProfilePage />} />
+                <Route path="user/:userId" element={<ViewUserPage />} />
                 <Route path="post/:postId" element={<PostDetailPage />} />
                 <Route path="create-pet" element={<CreatePetPage />} />
-                <Route path="pets/:petId" element={<ViewPetPage />} />
-                <Route path="my-pets" element={<MyPetsPage />} />
+                <Route path="pet/:petId" element={<ViewPetPage />} />
                 <Route path="edit-pet/:id" element={<EditPetPage />} />
                 <Route path="encyclopedia" element={<EncyclopediaPage />} />
                 <Route path="encyclopedia/species/:speciesId" element={<SpeciesDetailPage />} />

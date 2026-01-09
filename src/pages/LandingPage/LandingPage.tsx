@@ -11,7 +11,7 @@ import {
   SafetyOutlined
 } from '@ant-design/icons';
 import styles from './LandingPage.module.css';
-import logoImage from '/logo/pawplanet-horizontal-logo.svg';
+import logoImage from '/logo/logo_pawplanet.png';
 
 export interface LandingPageProps {
   onGetStarted: () => void;

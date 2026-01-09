@@ -1,0 +1,41 @@
+.followButton {
+  height: 44px;
+  border-radius: 8px;
+  font-weight: 600;
+  min-width: 120px;
+  transition: all 0.3s ease;
+}
+
+.followButton.following {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.followButton.following:hover {
+  border-color: #ff4d4f;
+  color: #ff4d4f;
+  background-color: #fff1f0;
+}
+
+.followButton:not(.following) {
+  box-shadow: 0 2px 5px rgba(24, 144, 255, 0.2);
+}
+
+.followButton:not(.following):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(24, 144, 255, 0.3);
+}
+
+/* Small size variant */
+:global(.ant-btn-sm).followButton {
+  height: 32px;
+  min-width: 90px;
+  font-size: 14px;
+  padding: 0 12px;
+}
+
+/* Text variant */
+:global(.ant-btn-text).followButton {
+  min-width: auto;
+}
+

@@ -1,0 +1,1 @@
+export {ViewUserPage} from './ViewUserPage';

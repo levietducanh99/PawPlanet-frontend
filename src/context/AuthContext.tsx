@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { authService } from '@/services/auth.service';
-import { decodeJWT } from '@/utils/jwt';
+import { useRefreshToken } from '@/hooks/useRefreshToken';
 import type { User, LoginCredentials } from '@/domain/auth';
 
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
   loading: boolean;
+  isRefreshing: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
   logout: () => Promise<void>;
   verify: () => Promise<void>;
+  refreshToken: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -19,33 +21,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Chỉ verify token khi mount (reload)
+  // Use refresh token hook for automatic token refresh
+  const {
+    user: refreshUser,
+    isAuthenticated: refreshIsAuthenticated,
+    isRefreshing,
+    refreshToken: refreshTokenFn,
+    validateToken,
+  } = useRefreshToken();
+
+  // Sync auth state from refresh token hook
+  useEffect(() => {
+    if (refreshUser) {
+      setUser(refreshUser);
+      setIsAuthenticated(refreshIsAuthenticated);
+    }
+  }, [refreshUser, refreshIsAuthenticated]);
+
+  // Verify token using refresh token hook's validation
   const verify = useCallback(async () => {
     setLoading(true);
     try {
-      const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
-      if (!token) {
-        setIsAuthenticated(false);
-        setUser(null);
-        return;
-      }
-      const isValid = await authService.verifyToken(token);
+      const isValid = await validateToken();
       setIsAuthenticated(isValid);
+
       if (!isValid) {
         localStorage.removeItem('authToken');
         sessionStorage.removeItem('authToken');
         setUser(null);
-      } else {
-        // Decode JWT để lấy user info (id, email, role)
-        const payload = decodeJWT(token);
-        if (payload) {
-          setUser({
-            id: payload.userId || 0,
-            email: payload.sub || '',
-            username: payload.sub?.split('@')[0],
-            role: payload.scope,
-          });
-        }
       }
     } catch {
       setIsAuthenticated(false);
@@ -53,7 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [validateToken]);
 
   useEffect(() => {
     verify();
@@ -106,7 +109,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, loading, login, logout, verify }}>
+    <AuthContext.Provider value={{
+      isAuthenticated,
+      user,
+      loading,
+      isRefreshing,
+      login,
+      logout,
+      verify,
+      refreshToken: refreshTokenFn
+    }}>
       {children}
     </AuthContext.Provider>
   );

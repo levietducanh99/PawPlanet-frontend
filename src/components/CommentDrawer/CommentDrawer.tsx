@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Modal, Avatar, Button, Input, List, Typography, Space, Spin } from 'antd';
 import { CloseOutlined, HeartOutlined, SendOutlined } from '@ant-design/icons';
-import { usePostComments } from '@/hooks';
-import { useAuth } from '@/hooks';
+import {usePostComments, useUserProfile} from '@/hooks';
 import styles from './CommentDrawer.module.css';
 
 const { Text } = Typography;
@@ -10,13 +9,13 @@ const { Text } = Typography;
 interface CommentModalProps {
   postId: number | null;
   open: boolean;
-  onClose: () => void;
+  onClose: (updatedCommentCount?: number) => void;
   title?: string;
 }
 
 export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClose, title }) => {
   const { comments, loading, creating, addComment, refetch } = usePostComments(postId);
-  const { user } = useAuth();
+  const { user } = useUserProfile();
   const [value, setValue] = useState('');
 
   const commentCount = useMemo(() => comments?.length ?? 0, [comments]);
@@ -30,10 +29,15 @@ export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClos
     } catch (err) {}
   };
 
+  const handleClose = () => {
+    // Pass the current comment count back to parent
+    onClose(commentCount);
+  };
+
   return (
     <Modal
       open={open}
-      onCancel={onClose}
+      onCancel={handleClose}
       footer={null}
       centered
       width={700}
