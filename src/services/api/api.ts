@@ -7816,6 +7816,43 @@ export const PetControllerApiAxiosParamCreator = function (configuration?: Confi
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        getAllUserPets: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getAllUserPets', 'id', id)
+            const localVarPath = `/api/v1/pets/my-pets/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         getPetById: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
             assertParamExists('getPetById', 'id', id)
@@ -7954,6 +7991,18 @@ export const PetControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async getAllUserPets(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AllPetsResponseDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllUserPets(id, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetControllerApi.getAllUserPets']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async getPetById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PetProfileDTO>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getPetById(id, options);
             const index = configuration?.serverIndex ?? 0;
@@ -8017,6 +8066,15 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
          */
         getAllMyPets(options?: RawAxiosRequestConfig): AxiosPromise<Array<AllPetsResponseDTO>> {
             return localVarFp.getAllMyPets(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PetControllerApiGetAllUserPetsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllUserPets(requestParameters: PetControllerApiGetAllUserPetsRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<AllPetsResponseDTO>> {
+            return localVarFp.getAllUserPets(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8084,6 +8142,20 @@ export interface PetControllerApiDeletePetRequest {
      * 
      * @type {number}
      * @memberof PetControllerApiDeletePet
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for getAllUserPets operation in PetControllerApi.
+ * @export
+ * @interface PetControllerApiGetAllUserPetsRequest
+ */
+export interface PetControllerApiGetAllUserPetsRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetControllerApiGetAllUserPets
      */
     readonly id: number
 }
@@ -8171,6 +8243,17 @@ export class PetControllerApi extends BaseAPI {
      */
     public getAllMyPets(options?: RawAxiosRequestConfig) {
         return PetControllerApiFp(this.configuration).getAllMyPets(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PetControllerApiGetAllUserPetsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetControllerApi
+     */
+    public getAllUserPets(requestParameters: PetControllerApiGetAllUserPetsRequest, options?: RawAxiosRequestConfig) {
+        return PetControllerApiFp(this.configuration).getAllUserPets(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

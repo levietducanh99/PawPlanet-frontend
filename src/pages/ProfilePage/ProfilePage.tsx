@@ -5,14 +5,18 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Card, Typography, Avatar, Spin, Button, Tabs, Empty, List } from 'antd';
-import { UserOutlined, EditOutlined, MailOutlined, CheckCircleFilled } from '@ant-design/icons';
+import { Card, Typography, Avatar, Spin, Button, Tabs, Empty, List, Modal, message } from 'antd';
+import { UserOutlined, EditOutlined, MailOutlined, CheckCircleFilled, ExclamationCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { useProfileData, useMyPosts, useFollowers, useFollowing, useUserPets, useFollowingPets } from '@/hooks';
+import { useProfileData, useMyPosts, useFollowers, useFollowing, useUserPets, useFollowingPets, usePostActions } from '@/hooks';
 import PostCard from '@/components/PostCard/PostCard';
+import { CommentModal } from '@/components/CommentDrawer';
+import { EditPostModal } from '@/components/EditPostModal';
 import { PetPhotoGroup } from '@/components/PetPhotoGroup';
 import type { PetPhoto } from '@/components/PetPhotoGroup';
+import type { Post } from '@/domain/post';
+import type { UpdatePostRequest } from '@/services/api';
 import styles from './ProfilePage.module.css';
 
 const { Title, Text, Paragraph } = Typography;
@@ -20,29 +24,117 @@ const { Title, Text, Paragraph } = Typography;
 export const ProfilePage: React.FC = () => {
   const navigate = useNavigate();
   const { user, loading, error, refreshProfile } = useProfileData();
-  const { posts, loading: postsLoading } = useMyPosts();
+  const { posts, loading: postsLoading, refetch: refetchPosts } = useMyPosts();
   const { followers, loading: followersLoading } = useFollowers(user?.id || null);
   const { following, loading: followingLoading } = useFollowing(user?.id || null);
   const { loading: petsLoading } = useUserPets();
   const { pets: followingPets, loading: followingPetsLoading } = useFollowingPets(user?.id || null);
+  const { likePost, deletePost, updatePost } = usePostActions();
   const [activeTab, setActiveTab] = useState('posts');
+  const [localPosts, setLocalPosts] = useState<Post[]>([]);
+  const [commentDrawerOpen, setCommentDrawerOpen] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     refreshProfile();
   }, []);
 
+  // Sync localPosts with posts from API
+  useEffect(() => {
+    setLocalPosts(posts);
+  }, [posts]);
+
   // Handlers for post actions
-  const handleLike = (postId: number) => {
-    console.log('Like post:', postId);
+  const handleLike = async (postId: number) => {
+    try {
+      const result = await likePost(postId);
+
+      // Update local state immediately for optimistic UI
+      setLocalPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === postId
+            ? { ...post, isLiked: result.liked, likeCount: result.likeCount }
+            : post
+        )
+      );
+    } catch (err) {
+      message.error('Failed to like post');
+      console.error('Like error:', err);
+    }
   };
 
   const handleComment = (postId: number) => {
-    console.log('Comment on post:', postId);
+    setSelectedPostId(postId);
+    setCommentDrawerOpen(true);
+  };
+
+  const handleCommentClose = (updatedCommentCount?: number) => {
+    // Update comment count optimistically without refetching
+    if (selectedPostId && updatedCommentCount !== undefined) {
+      setLocalPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === selectedPostId
+            ? { ...post, commentCount: updatedCommentCount }
+            : post
+        )
+      );
+    }
+
+    setCommentDrawerOpen(false);
+    setSelectedPostId(null);
+  };
+
+  const handleEdit = (postId: number) => {
+    const post = localPosts.find(p => p.id === postId);
+    if (post) {
+      setSelectedPost(post);
+      setEditModalOpen(true);
+    }
+  };
+
+  const handleEditSave = async (postId: number, data: UpdatePostRequest) => {
+    try {
+      const updatedPost = await updatePost(postId, data);
+      // Update local posts with edited post
+      setLocalPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === postId ? updatedPost : post
+        )
+      );
+      message.success('Post updated successfully');
+    } catch (error) {
+      message.error('Failed to update post');
+      throw error; // Let EditPostModal handle error display
+    }
   };
 
   const handleShare = (postId: number) => {
     console.log('Share post:', postId);
+  };
+
+  const handleDelete = async (postId: number) => {
+    Modal.confirm({
+      title: 'Delete Post',
+      icon: <ExclamationCircleOutlined />,
+      content: 'Are you sure you want to delete this post? This action cannot be undone.',
+      okText: 'Delete',
+      okType: 'danger',
+      cancelText: 'Cancel',
+      onOk: async () => {
+        try {
+          await deletePost(postId);
+          message.success('Post deleted successfully');
+          // Refresh posts to reflect deletion
+          refetchPosts();
+        } catch (err) {
+          message.error('Failed to delete post');
+          console.error('Delete error:', err);
+        }
+      },
+    });
   };
 
   console.log(followers)
@@ -99,7 +191,7 @@ export const ProfilePage: React.FC = () => {
       );
     }
 
-    if (posts.length === 0) {
+    if (localPosts.length === 0) {
       return (
         <div className={styles.emptyState}>
           <Empty description="No posts yet" />
@@ -109,13 +201,15 @@ export const ProfilePage: React.FC = () => {
 
     return (
       <div className={styles.postsContainer}>
-        {posts.map((post) => (
+        {localPosts.map((post) => (
           <PostCard
             key={post.id}
             post={post}
             onLike={handleLike}
             onComment={handleComment}
             onShare={handleShare}
+            onDelete={handleDelete}
+            onEdit={handleEdit}
           />
         ))}
       </div>
@@ -140,7 +234,7 @@ export const ProfilePage: React.FC = () => {
     }>();
 
     // Process all posts with media
-    posts.forEach(post => {
+    localPosts.forEach(post => {
       const images = (post.media || []).filter(m => m.type === 'image');
 
       if (images.length > 0) {
@@ -336,7 +430,7 @@ export const ProfilePage: React.FC = () => {
               actions={[
                 <Button
                   key="view"
-                  type="primary"
+                  type="link"
                   onClick={() => navigate(`/pet/${pet.id}`)}
                 >
                   View Profile
@@ -363,11 +457,11 @@ export const ProfilePage: React.FC = () => {
   };
 
   // Calculate counts
-  const postsCount = posts.length;
-  const photosCount = posts.reduce((acc, post) =>
+  const postsCount = localPosts.length;
+  const photosCount = localPosts.reduce((acc, post) =>
     acc + (post.media?.filter(m => m.type === 'image').length || 0), 0
   );
-  const likesCount = posts.reduce((acc, post) => acc + (post.likeCount || 0), 0);
+  const likesCount = localPosts.reduce((acc, post) => acc + (post.likeCount || 0), 0);
   const followersCount = user.followersCount || followers.length;
   const followingCount = user.followingCount || following.length;
   const followingPetsCount = followingPets.length;
@@ -523,6 +617,27 @@ export const ProfilePage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Comment Modal */}
+      <CommentModal
+        postId={selectedPostId}
+        open={commentDrawerOpen}
+        onClose={handleCommentClose}
+        title="Comments"
+      />
+
+      {/* Edit Post Modal */}
+      {selectedPost && (
+        <EditPostModal
+          open={editModalOpen}
+          post={selectedPost}
+          onClose={() => {
+            setEditModalOpen(false);
+            setSelectedPost(null);
+          }}
+          onSave={handleEditSave}
+        />
+      )}
     </motion.div>
   );
 };
