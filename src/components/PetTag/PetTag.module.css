@@ -1,0 +1,317 @@
+/* PetTag.module.css - Glass Bio-Link Design (Glassmorphism) */
+
+.petTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 20px 12px 46px; /* Extra left padding for 3D avatar */
+
+  /* Glassmorphism effect */
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px; /* Full pill shape */
+
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  /* Subtle shadow for depth */
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.petTag::before {
+  /* Inner glow effect */
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  /* Mask composite for border effect */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.petTag:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.petTag:active {
+  transform: translateY(0);
+}
+
+/* 3D Floating Avatar - Key Feature */
+.avatar {
+  position: absolute;
+  left: -12px; /* Float out to the left - increased from -8px */
+  flex-shrink: 0;
+
+  /* 3D elevation effect */
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    0 0 0 4px rgba(255, 255, 255, 0.8), /* White ring */
+    0 0 0 5px rgba(255, 255, 255, 0.3); /* Outer glow */
+
+  border: none !important; /* Override Ant Design default */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+
+.petTag:hover .avatar {
+  transform: scale(1.1) translateY(-2px);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.25),
+    0 6px 12px rgba(0, 0, 0, 0.2),
+    0 0 0 4px rgba(255, 255, 255, 0.9),
+    0 0 0 6px rgba(255, 255, 255, 0.4);
+}
+
+/* Pet Information */
+.petInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1.3;
+  min-width: 0;
+  z-index: 1;
+}
+
+.petName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1F2937;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+  letter-spacing: -0.02em;
+}
+
+.petDetails {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.85;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+}
+
+/* Species-specific colorful glassmorphism backgrounds */
+
+/* Dogs - Blue/Cyan gradient */
+.petTag[data-species="dog"] {
+  background: linear-gradient(
+    135deg,
+    rgba(129, 230, 255, 0.35) 0%,
+    rgba(99, 179, 237, 0.3) 100%
+  );
+  border-color: rgba(129, 230, 255, 0.5);
+}
+
+.petTag[data-species="dog"]:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(129, 230, 255, 0.45) 0%,
+    rgba(99, 179, 237, 0.4) 100%
+  );
+  border-color: rgba(99, 179, 237, 0.6);
+  box-shadow:
+    0 12px 48px rgba(99, 179, 237, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Cats - Pink/Rose gradient */
+.petTag[data-species="cat"] {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 158, 217, 0.35) 0%,
+    rgba(255, 119, 187, 0.3) 100%
+  );
+  border-color: rgba(255, 158, 217, 0.5);
+}
+
+.petTag[data-species="cat"]:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 158, 217, 0.45) 0%,
+    rgba(255, 119, 187, 0.4) 100%
+  );
+  border-color: rgba(255, 119, 187, 0.6);
+  box-shadow:
+    0 12px 48px rgba(255, 119, 187, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Birds - Purple/Lavender gradient */
+.petTag[data-species="bird"] {
+  background: linear-gradient(
+    135deg,
+    rgba(198, 167, 254, 0.35) 0%,
+    rgba(167, 139, 250, 0.3) 100%
+  );
+  border-color: rgba(198, 167, 254, 0.5);
+}
+
+.petTag[data-species="bird"]:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(198, 167, 254, 0.45) 0%,
+    rgba(167, 139, 250, 0.4) 100%
+  );
+  border-color: rgba(167, 139, 250, 0.6);
+  box-shadow:
+    0 12px 48px rgba(167, 139, 250, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Fish - Aqua/Turquoise gradient */
+.petTag[data-species="fish"] {
+  background: linear-gradient(
+    135deg,
+    rgba(94, 234, 212, 0.35) 0%,
+    rgba(59, 206, 197, 0.3) 100%
+  );
+  border-color: rgba(94, 234, 212, 0.5);
+}
+
+.petTag[data-species="fish"]:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(94, 234, 212, 0.45) 0%,
+    rgba(59, 206, 197, 0.4) 100%
+  );
+  border-color: rgba(59, 206, 197, 0.6);
+  box-shadow:
+    0 12px 48px rgba(59, 206, 197, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Rabbits - Peach/Coral gradient */
+.petTag[data-species="rabbit"] {
+  background: linear-gradient(
+    135deg,
+    rgba(254, 202, 202, 0.35) 0%,
+    rgba(252, 165, 165, 0.3) 100%
+  );
+  border-color: rgba(254, 202, 202, 0.5);
+}
+
+.petTag[data-species="rabbit"]:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(254, 202, 202, 0.45) 0%,
+    rgba(252, 165, 165, 0.4) 100%
+  );
+  border-color: rgba(252, 165, 165, 0.6);
+  box-shadow:
+    0 12px 48px rgba(252, 165, 165, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Others - Soft Gray/Silver gradient */
+.petTag[data-species="other"] {
+  background: linear-gradient(
+    135deg,
+    rgba(226, 232, 240, 0.35) 0%,
+    rgba(203, 213, 225, 0.3) 100%
+  );
+  border-color: rgba(226, 232, 240, 0.5);
+}
+
+.petTag[data-species="other"]:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(226, 232, 240, 0.45) 0%,
+    rgba(203, 213, 225, 0.4) 100%
+  );
+  border-color: rgba(203, 213, 225, 0.6);
+  box-shadow:
+    0 12px 48px rgba(203, 213, 225, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .petTag {
+    padding: 10px 16px 10px 42px;
+    gap: 12px;
+  }
+
+  .avatar {
+    left: -10px;
+  }
+
+  .petName {
+    font-size: 15px;
+  }
+
+  .petDetails {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .petTag {
+    padding: 8px 14px 8px 36px;
+    gap: 10px;
+  }
+
+  .avatar {
+    left: -8px;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .petName {
+    font-size: 14px;
+  }
+
+  .petDetails {
+    font-size: 12px;
+  }
+}
+
+/* Dark background optimization (if post has dark image) */
+.petTag.onDarkBg {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.petTag.onDarkBg:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.petTag.onDarkBg .petName {
+  color: #FFFFFF;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.petTag.onDarkBg .petDetails {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+

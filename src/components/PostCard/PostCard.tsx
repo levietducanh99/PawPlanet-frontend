@@ -13,6 +13,7 @@ import {
 } from '@ant-design/icons';
 import { motion } from 'motion/react';
 import type { Post } from '@/domain/post';
+import { PetTag } from '@/components/PetTag';
 import styles from './PostCard.module.css';
 
 const { Text, Paragraph } = Typography;
@@ -50,6 +51,30 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
   };
   const next = () => {
     setCurrentIndex((i) => (i + 1) % (post.media?.length || 1));
+  };
+
+  // Render tagged pets using PetTag component
+  const renderPetTags = () => {
+    if (!post.taggedPets || post.taggedPets.length === 0) return null;
+
+    return (
+      <div className={styles.petTagsContainer}>
+        {post.taggedPets.map((pet) => (
+          <PetTag
+            key={pet.id}
+            id={pet.id}
+            name={pet.name}
+            species={pet.species}
+            breed={pet.breed}
+            avatarUrl={pet.avatarUrl}
+            onClick={() => {
+              // TODO: Navigate to pet profile
+              console.log('Navigate to pet:', pet.id);
+            }}
+          />
+        ))}
+      </div>
+    );
   };
 
   const renderMedia = () => {
@@ -119,7 +144,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
       transition={{ type: "spring", stiffness: 300 }}
       className={styles.cardWrapper}
     >
-      <Card bordered={false} className={styles.postCard}>
+      <Card variant="borderless" className={styles.postCard}>
         {/* Header */}
         <div className={styles.postHeaderNew}>
           <Space size="middle" align="start">
@@ -139,11 +164,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
               </div>
 
               <div className={styles.subline}>
-                <Text type="secondary">{uiPost.petOwnerName || uiPost.authorName} • {uiPost.petDisplay || ''}</Text>
-                <span className={styles.dot}>•</span>
                 <Text type="secondary">{formatTimeAgo(post.createdAt)}</Text>
-                <span className={styles.dot}>•</span>
-                <GlobalOutlined style={{ color: '#6B7280' }} />
+
               </div>
             </div>
           </Space>
@@ -164,6 +186,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
           <Paragraph className={styles.contentText}>
             {post.content}
           </Paragraph>
+
+          {/* Pet Tags Pills */}
+          {renderPetTags()}
 
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (

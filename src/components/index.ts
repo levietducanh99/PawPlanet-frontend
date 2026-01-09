@@ -19,6 +19,11 @@ export { PetCreationDebugComponent } from './PetCreationDebugComponent';
 // Post Components
 export { default as PostCard } from './PostCard';
 export { CreatePostModal } from './CreatePostModal';
+export { CommentDrawer } from './CommentDrawer';
+
+// Notification Components
+export { NotificationPopover } from './NotificationPopover';
+export { NotificationItem } from './NotificationItem';
 
 // Other
 export { Loading } from './Loading';

@@ -5,6 +5,14 @@
  * independent of backend API structure.
  */
 
+export interface TaggedPet {
+  id: number;
+  name: string;
+  species: string;
+  breed?: string;
+  avatarUrl?: string;
+}
+
 export interface Post {
   id: number;
   content: string;
@@ -18,6 +26,7 @@ export interface Post {
   badge?: string; // optional badge text for author/pet
   petOwnerName?: string; // optional owner display name
   petDisplay?: string; // optional pet display (e.g., "Dog · Golden Retriever")
+  taggedPets?: TaggedPet[]; // Multiple pets can be tagged in a post
   createdAt: string;
   likeCount: number;
   commentCount: number;
