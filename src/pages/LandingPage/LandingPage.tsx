@@ -152,13 +152,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
         className={styles.navbar}
       >
         <div className={styles.navContainer}>
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className={styles.logoWrapper}
-          >
-            <img src={logoImage} alt="PawPlanet Logo" className={styles.logo} />
-          </motion.div>
-
           <div className={styles.navLinks}>
             <a href="#features" className={styles.navLink}>
               Tính Năng
@@ -166,14 +159,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
             <a href="#about" className={styles.navLink}>
               Về Chúng Tôi
             </a>
-            <Button
-              type="primary"
-              onClick={onGetStarted}
-              className={styles.navButton}
-              icon={<ArrowRightOutlined />}
-            >
-              Bắt Đầu
-            </Button>
           </div>
         </div>
       </motion.nav>
@@ -246,12 +231,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onGetStarted }) => {
                   icon={<ArrowRightOutlined />}
                 >
                   Bắt Đầu Miễn Phí
-                </Button>
-                <Button
-                  size="large"
-                  className={styles.secondaryButton}
-                >
-                  Xem Demo
                 </Button>
               </div>
 
