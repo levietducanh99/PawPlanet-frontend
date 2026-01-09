@@ -38,7 +38,8 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ open, on
           navigate(`/post/${notification.target.id}`);
           break;
         case 'USER':
-          navigate(`/profile/${notification.target.id}`);
+          // Navigate to public user page
+          navigate(`/user/${notification.target.id}`);
           break;
         case 'PET':
           navigate(`/pet/${notification.target.id}`);
@@ -163,4 +164,3 @@ export const NotificationDrawer: React.FC<NotificationDrawerProps> = ({ open, on
     </Drawer>
   );
 };
-
