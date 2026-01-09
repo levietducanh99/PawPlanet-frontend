@@ -5,37 +5,135 @@
   width: 100%;
   background: var(--bg-body);
   min-height: 100vh;
+  position: relative;
 }
 
-/* Demo Tags Section */
-.demoTags {
+/* Hero Section - Full Background with Overlay */
+.heroSection {
+  position: relative;
+  border-radius: 32px;
+  margin-bottom: 40px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  min-height: 600px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 16px;
-  margin-bottom: 24px;
+}
+
+/* Background Image - Full Size */
+.heroImageBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.heroBackgroundImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dark overlay for better text contrast */
+.heroOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.3) 100%);
+  z-index: 2;
+}
+
+/* Content Overlay - Text on top of image */
+.heroContentOverlay {
+  position: relative;
+  z-index: 3;
+  max-width: 800px;
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.heroText {
+  width: 100%;
+}
+
+.heroTitle {
+  font-size: 56px !important;
+  font-weight: 700 !important;
+  margin-bottom: 24px !important;
+  color: #FFFFFF !important;
+  line-height: 1.2 !important;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.highlightText {
+  color: #40A9FF;
+  position: relative;
+}
+
+.heroSubtitle {
+  font-size: 20px !important;
+  color: #F3F4F6 !important;
+  line-height: 1.7 !important;
+  margin-bottom: 40px !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.heroSearchBar {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Search Results - Inside Hero Section */
+.searchResults {
+  display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 0;
 }
 
-.demoTag {
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 500;
+.resultTag {
+  font-size: 14px !important;
+  padding: 6px 18px !important;
+  border-radius: 999px !important; /* Perfect pill shape */
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #1890FF !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
   cursor: pointer;
-  background: var(--bg-white);
-  border-width: 2px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
-.demoTag:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.resultTag:hover {
+  background: #1890FF !important;
+  color: #FFFFFF !important;
+  border-color: #1890FF !important;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(24, 144, 255, 0.4);
 }
 
-/* Search Section */
-.searchContainer {
-  max-width: 700px;
-  margin: 0 auto 32px;
+/* Decorative Elements */
+.decorativeDots {
+  position: absolute;
+  bottom: 30px;
+  left: 30px;
+  z-index: 3;
+}
+
+.dotPattern {
+  width: 120px;
+  height: 120px;
+  background-image: radial-gradient(circle, #FFFFFF 2px, transparent 2px);
+  background-size: 20px 20px;
+  opacity: 0.3;
 }
 
 /* Grid Container */
@@ -60,6 +158,7 @@
   gap: 16px;
 }
 
+
 /* Placeholder Content */
 .placeholderContent {
   display: flex;
@@ -79,6 +178,22 @@
 
 /* Responsive Styles */
 @media (max-width: 1024px) {
+  .heroSection {
+    min-height: 550px;
+  }
+
+  .heroContentOverlay {
+    padding: 50px 30px;
+  }
+
+  .heroTitle {
+    font-size: 48px !important;
+  }
+
+  .heroSubtitle {
+    font-size: 18px !important;
+  }
+
   .smallCardsRow {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -89,13 +204,27 @@
     padding: 16px;
   }
 
-  .demoTags {
-    gap: 8px;
+  .heroSection {
+    border-radius: 24px;
+    min-height: 500px;
   }
 
-  .demoTag {
-    padding: 6px 12px;
-    font-size: 12px;
+  .heroContentOverlay {
+    padding: 40px 24px;
+  }
+
+  .heroTitle {
+    font-size: 36px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .heroSubtitle {
+    font-size: 16px !important;
+    margin-bottom: 32px !important;
+  }
+
+  .decorativeDots {
+    display: none;
   }
 
   .largeCardsRow {
@@ -104,6 +233,16 @@
 
   .smallCardsRow {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .searchResults {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .resultTag {
+    font-size: 13px !important;
+    padding: 5px 14px !important;
   }
 }
 

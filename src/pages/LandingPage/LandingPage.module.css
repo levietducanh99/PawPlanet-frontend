@@ -204,24 +204,23 @@
   color: #718096;
 }
 
-/* ========== Hero Logo 3D ========== */
+/* ========== Hero Logo ========== */
 .heroImageWrapper {
   position: relative;
-  perspective: 1000px;
 }
 
 .logo3D {
   position: relative;
   z-index: 10;
-  transform-style: preserve-3d;
 }
 
 .heroLogo {
   width: 100%;
-  max-width: 512px;
+  max-width: 512px; /* max-w-lg = 32rem = 512px */
   margin: 0 auto;
   display: block;
-  filter: drop-shadow(0 20px 40px rgba(24, 144, 255, 0.2));
+  /* Simple drop shadow like reference code */
+  filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.15));
 }
 
 .floatingPaw {
@@ -344,9 +343,9 @@
   right: 8px;
   top: -10%;
   transform: translateY(-50%);
-  height: 64px;
+  height: 80px; /* match input height */
   padding: 0 32px;
-  border-radius: 32px;
+  border-radius: 40px; /* match input radius */
   background: #1890FF;
   color: #FFFFFF;
   font-size: 16px;
@@ -355,9 +354,11 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
   transition: all 0.2s;
+  line-height: 1;
 }
 
 .searchButton:hover {
@@ -690,6 +691,10 @@
     grid-template-columns: 1fr;
   }
 
+  .heroLogo {
+    max-width: 384px; /* Smaller on mobile */
+  }
+
   .featuresTitle {
     font-size: 32px;
   }
@@ -712,9 +717,13 @@
   }
 
   .searchButton {
-    height: 52px;
+    height: 64px; /* make equal to mobile input height */
     padding: 0 20px;
     font-size: 14px;
+    gap: 6px;
+    line-height: 1;
+    justify-content: center;
+    border-radius: 32px;
   }
 
   .modalTitle {
@@ -725,4 +734,3 @@
     grid-template-columns: 1fr;
   }
 }
-
