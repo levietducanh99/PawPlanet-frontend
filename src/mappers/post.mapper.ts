@@ -1,9 +1,18 @@
 // src/mappers/post.mapper.ts
 import { PostMediaDTO, PostResponse } from '@/services/api';
-import { Post, PostMedia } from '@/domain/post';
+import { Post, PostMedia, TaggedPet } from '@/domain/post';
 
 export const mapPost = (dto: PostResponse): Post => {
   const firstPet = dto.pets && dto.pets[0] ? dto.pets[0] : undefined;
+
+  // Map all tagged pets
+  const taggedPets: TaggedPet[] = (dto.pets || []).map(pet => ({
+    id: pet.id!,
+    name: pet.name || '',
+    species: pet.speciesName || '',
+    breed: pet.breedName,
+    avatarUrl: pet.avatarUrl,
+  }));
 
   return {
     id: dto.id!,
@@ -13,10 +22,13 @@ export const mapPost = (dto: PostResponse): Post => {
     authorUsername: dto.authorUsername || '',
     authorAvatar: dto.authorAvatarUrl,
 
-    // Pet info
+    // Pet info (backward compatibility - keep first pet)
     petId: firstPet?.id,
     petName: firstPet?.name,
     petAvatar: firstPet?.avatarUrl,
+
+    // Tagged pets (new feature)
+    taggedPets: taggedPets.length > 0 ? taggedPets : undefined,
 
     // UI display fields
     badge: undefined, // TODO: Map from backend if available

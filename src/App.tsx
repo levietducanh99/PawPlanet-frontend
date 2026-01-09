@@ -7,6 +7,7 @@ import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { HomePage } from '@/pages/HomePage';
 import { ProfilePage } from '@/pages/ProfilePage';
 import { EditProfilePage } from '@/pages/EditProfilePage';
+import { PostDetailPage } from '@/pages/PostDetailPage';
 import { MainLayout } from '@/components/MainLayout';
 import MainFeedPage from './pages/MainFeedPage';
 import { CreatePetPage } from './pages/CreatePetPage';
@@ -57,6 +58,7 @@ function App() {
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="profile/edit" element={<EditProfilePage />} />
                 <Route path="user/:userId" element={<ViewUserPage />} />
+                <Route path="post/:postId" element={<PostDetailPage />} />
                 <Route path="create-pet" element={<CreatePetPage />} />
                 <Route path="pet/:petId" element={<ViewPetPage />} />
                 <Route path="edit-pet/:id" element={<EditPetPage />} />

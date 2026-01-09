@@ -52,6 +52,13 @@
   letter-spacing: -0.5px;
 }
 
+/* New logo image */
+.logoImage {
+  height: 64px;
+  width: auto;
+  display: block;
+}
+
 /* Right Section - Create Button + Actions */
 .rightSection {
   display: flex;
@@ -257,4 +264,3 @@
     font-size: 18px;
   }
 }
-

@@ -22,6 +22,11 @@ export { CreatePostModal } from './CreatePostModal';
 export { PetPhotoGroup } from './PetPhotoGroup';
 export type { PetPhoto } from './PetPhotoGroup';
 export { FollowButton } from './FollowButton';
+export { CommentDrawer } from './CommentDrawer';
+
+// Notification Components
+export { NotificationPopover } from './NotificationPopover';
+export { NotificationItem } from './NotificationItem';
 
 // Other
 export { Loading } from './Loading';

@@ -52,3 +52,6 @@ export { usePetPosts } from './usePetPosts';
 export { usePetFollowers } from './usePetFollowers';
 export { useFollowingPets } from './useFollowingPets';
 
+
+// Notifications
+export { useNotifications, useUnreadCount } from './useNotifications';
