@@ -36,8 +36,9 @@ export const usePetAdoption = (): UsePetAdoptionReturn => {
         setAdoptionProfile(profile);
 
         return true;
-      } catch (err: any) {
-        const errorMessage = err.message || 'Failed to create adoption profile';
+      } catch (err: unknown) {
+        const error = err as { message?: string };
+        const errorMessage = error.message || 'Failed to create adoption profile';
         setError(errorMessage);
         console.error('usePetAdoption.createProfile error:', err);
         return false;
@@ -58,8 +59,9 @@ export const usePetAdoption = (): UsePetAdoptionReturn => {
 
       const profile = await adoptionService.getAdoptionProfile(petId);
       setAdoptionProfile(profile);
-    } catch (err: any) {
-      const errorMessage = err.message || 'Failed to fetch adoption profile';
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      const errorMessage = error.message || 'Failed to fetch adoption profile';
       setError(errorMessage);
       console.error('usePetAdoption.fetchProfile error:', err);
     } finally {

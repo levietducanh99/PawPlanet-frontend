@@ -92,7 +92,6 @@ export const ViewPetPage: React.FC = () => {
     error: adoptionError,
     createProfile,
     fetchProfile,
-    clearError: clearAdoptionError,
   } = usePetAdoption();
 
   // Use the integrated hook

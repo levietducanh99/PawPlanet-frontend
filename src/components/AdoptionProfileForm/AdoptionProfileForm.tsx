@@ -64,7 +64,7 @@ export const AdoptionProfileForm: React.FC<AdoptionProfileFormProps> = ({
           sterilized: false,
         }}
       >
-        <Divider orientation="left">Health Information</Divider>
+        <Divider titlePlacement="left">Health Information</Divider>
 
         <Form.Item
           name="healthStatus"
@@ -90,7 +90,7 @@ export const AdoptionProfileForm: React.FC<AdoptionProfileFormProps> = ({
           </Col>
         </Row>
 
-        <Divider orientation="left">Personality & Behavior</Divider>
+        <Divider titlePlacement="left">Personality & Behavior</Divider>
 
         <Form.Item
           name="personality"
@@ -128,7 +128,7 @@ export const AdoptionProfileForm: React.FC<AdoptionProfileFormProps> = ({
           />
         </Form.Item>
 
-        <Divider orientation="left">Care Requirements</Divider>
+        <Divider titlePlacement="left">Care Requirements</Divider>
 
         <Form.Item
           name="careInstructions"
@@ -154,7 +154,7 @@ export const AdoptionProfileForm: React.FC<AdoptionProfileFormProps> = ({
           />
         </Form.Item>
 
-        <Divider orientation="left">Adoption Details</Divider>
+        <Divider titlePlacement="left">Adoption Details</Divider>
 
         <Form.Item
           name="adoptionRequirements"

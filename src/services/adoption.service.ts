@@ -45,19 +45,20 @@ export const adoptionService = {
       
       console.log('🔵 adoptionService.createAdoptionProfile: Success');
       return mapAdoptionProfileDtoToModel(response.data);
-    } catch (error: any) {
-      console.error('🔴 adoptionService.createAdoptionProfile - ERROR:', error.response?.status, error.response?.data);
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { status?: number; data?: { message?: string } }; message?: string };
+      console.error('🔴 adoptionService.createAdoptionProfile - ERROR:', axiosError.response?.status, axiosError.response?.data);
       
-      if (error.response?.status === 404) {
+      if (axiosError.response?.status === 404) {
         throw new Error('Pet not found');
-      } else if (error.response?.status === 401) {
+      } else if (axiosError.response?.status === 401) {
         throw new Error('Authentication required');
-      } else if (error.response?.status === 403) {
+      } else if (axiosError.response?.status === 403) {
         throw new Error('You do not have permission to create adoption profile for this pet');
-      } else if (error.response?.status === 409) {
+      } else if (axiosError.response?.status === 409) {
         throw new Error('Adoption profile already exists for this pet');
       } else {
-        throw new Error(error.response?.data?.message || error.message || 'Failed to create adoption profile');
+        throw new Error(axiosError.response?.data?.message || axiosError.message || 'Failed to create adoption profile');
       }
     }
   },
@@ -73,15 +74,16 @@ export const adoptionService = {
       
       console.log('🔵 adoptionService.getAdoptionProfile: Success');
       return mapAdoptionProfileDtoToModel(response.data);
-    } catch (error: any) {
-      console.error('🔴 adoptionService.getAdoptionProfile - ERROR:', error.response?.status, error.response?.data);
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { status?: number; data?: { message?: string } }; message?: string };
+      console.error('🔴 adoptionService.getAdoptionProfile - ERROR:', axiosError.response?.status, axiosError.response?.data);
       
-      if (error.response?.status === 404) {
+      if (axiosError.response?.status === 404) {
         throw new Error('Adoption profile not found');
-      } else if (error.response?.status === 401) {
+      } else if (axiosError.response?.status === 401) {
         throw new Error('Authentication required');
       } else {
-        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch adoption profile');
+        throw new Error(axiosError.response?.data?.message || axiosError.message || 'Failed to fetch adoption profile');
       }
     }
   }
