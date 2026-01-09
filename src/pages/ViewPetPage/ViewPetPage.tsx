@@ -239,31 +239,32 @@ export const ViewPetPage: React.FC = () => {
   const handleAdoptionToggle = async (enabled: boolean) => {
     if (!petIdNumber || !pet) return;
 
+    // If enabling adoption: show form first, don't update status yet
+    if (enabled) {
+      // Show form modal immediately
+      setShowAdoptionForm(true);
+      return; // Don't update status yet, wait for form submission
+    }
+
+    // If disabling adoption: update status to NORMAL
     setAdoptionToggleLoading(true);
 
     try {
-      // Update pet status
-      const newStatus = enabled ? 'FOR_ADOPTION' : 'NORMAL';
-      await petService.updatePet(petIdNumber, { status: newStatus });
+      await petService.updatePet(petIdNumber, { status: 'NORMAL' });
 
-      message.success(
-        enabled
-          ? `${pet.name} is now available for adoption`
-          : `${pet.name} is no longer available for adoption`
-      );
+      message.success(`${pet.name} is no longer available for adoption`);
 
-      // If enabling adoption and no profile exists, show form
-      if (enabled && !adoptionProfile) {
-        setShowAdoptionForm(true);
-      }
+      // Close form if it was open
+      setShowAdoptionForm(false);
 
       // Refetch pet data to update status
       if (refetch) {
         refetch();
       }
-    } catch (error: any) {
-      console.error('Failed to toggle adoption status:', error);
-      message.error(error.message || 'Failed to update adoption status');
+    } catch (error: unknown) {
+      console.error('Failed to disable adoption status:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update adoption status';
+      message.error(errorMessage);
     } finally {
       setAdoptionToggleLoading(false);
     }
@@ -273,18 +274,29 @@ export const ViewPetPage: React.FC = () => {
   const handleCreateAdoptionProfile = async (values: CreateAdoptionProfileRequest) => {
     if (!petIdNumber) return;
 
-    const success = await createProfile(petIdNumber, values);
+    try {
+      // Step 1: Create adoption profile
+      const success = await createProfile(petIdNumber, values);
 
-    if (success) {
+      if (!success) {
+        message.error(adoptionError || 'Failed to create adoption profile');
+        return;
+      }
+
+      // Step 2: Update pet status to FOR_ADOPTION (only after profile created)
+      await petService.updatePet(petIdNumber, { status: 'FOR_ADOPTION' });
+
       message.success('Adoption profile created successfully! 🎉');
       setShowAdoptionForm(false);
       
-      // Refetch pet data
+      // Refetch pet data to show updated status
       if (refetch) {
         refetch();
       }
-    } else {
-      message.error(adoptionError || 'Failed to create adoption profile');
+    } catch (error: unknown) {
+      console.error('Failed to create adoption profile:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create adoption profile';
+      message.error(errorMessage);
     }
   };
 
@@ -300,20 +312,11 @@ export const ViewPetPage: React.FC = () => {
     }
   };
 
-  // Fetch adoption profile when pet is FOR_ADOPTION
-  useEffect(() => {
-    if (pet && pet.status === 'For Adoption' && petIdNumber) {
-      // Only fetch if we don't have it yet
-      if (!adoptionProfile && !adoptionLoading) {
-        fetchProfile(petIdNumber).catch((err) => {
-          // Silently ignore 404 errors (profile doesn't exist yet)
-          if (!err.message?.includes('not found')) {
-            console.error('Failed to fetch adoption profile:', err);
-          }
-        });
-      }
-    }
-  }, [pet, petIdNumber, adoptionProfile, adoptionLoading, fetchProfile]);
+  // Note: Removed auto-fetch to prevent 404 spam
+  // Adoption profile will only be fetched when:
+  // 1. User explicitly views it (handleViewAdoptionProfile)
+  // 2. After successful profile creation (handleCreateAdoptionProfile)
+  // This prevents API spam when toggling adoption status without a profile
 
   // Loading state - ONLY for initial page load
   if (pageLoading) {
@@ -654,26 +657,8 @@ export const ViewPetPage: React.FC = () => {
                         loading={adoptionToggleLoading}
                       />
 
-                      {/* Adoption Form (show when enabled and no profile) */}
-                      {showAdoptionForm && pet.status === 'For Adoption' && (
-                        <Card
-                          bordered={false}
-                          style={{
-                            borderRadius: '16px',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
-                            marginBottom: '16px',
-                          }}
-                        >
-                          <AdoptionProfileForm
-                            onSubmit={handleCreateAdoptionProfile}
-                            loading={adoptionLoading}
-                            onCancel={() => setShowAdoptionForm(false)}
-                          />
-                        </Card>
-                      )}
-
                       {/* Adoption Profile Status (when profile exists) */}
-                      {pet.status === 'For Adoption' && adoptionProfile && !showAdoptionForm && (
+                      {pet.status === 'For Adoption' && adoptionProfile && (
                         <Card
                           bordered={false}
                           style={{
@@ -959,6 +944,22 @@ export const ViewPetPage: React.FC = () => {
         }}
         title={activePostId && optimisticPosts ? `${optimisticPosts.find(p => p.id === activePostId)?.authorName || pet?.name || 'Post'}'s Post` : 'Comments'}
       />
+
+      {/* Adoption Profile Form Modal (for creating adoption profile) */}
+      <Modal
+        open={showAdoptionForm}
+        onCancel={() => setShowAdoptionForm(false)}
+        footer={null}
+        width={700}
+        style={{ top: 20 }}
+        title="Create Adoption Profile"
+      >
+        <AdoptionProfileForm
+          onSubmit={handleCreateAdoptionProfile}
+          loading={adoptionLoading}
+          onCancel={() => setShowAdoptionForm(false)}
+        />
+      </Modal>
 
       {/* Adoption Profile Modal (for viewers) */}
       <Modal
