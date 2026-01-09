@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { usePetDetail } from './usePetDetail';
 import { usePetFollow } from './usePetFollow';
 import { useUserProfile } from './useUser';
+import { usePetFollowers } from './usePetFollowers';
 
 export const useViewPet = (petId: number | null) => {
   const { pet, pageLoading, error: petError, refetch } = usePetDetail(petId);
@@ -12,6 +13,17 @@ export const useViewPet = (petId: number | null) => {
     getOptimisticState
   } = usePetFollow();
   const { user } = useUserProfile();
+
+  // Fetch followers to get accurate count
+  const { followers, fetchFollowers } = usePetFollowers();
+
+  // Auto-fetch followers when pet is loaded to get accurate count
+  useEffect(() => {
+    if (petId && pet && !pageLoading) {
+      console.log('🔵 useViewPet: Auto-fetching followers for count');
+      fetchFollowers(petId);
+    }
+  }, [petId, pet, pageLoading, fetchFollowers]);
 
   // Get optimistic state if exists
   const optimisticState = petId ? getOptimisticState(petId) : null;
@@ -58,8 +70,11 @@ export const useViewPet = (petId: number | null) => {
 
     const success = await toggleFollow(petId, isFollowing);
     
-    // No refetch needed! Optimistic state IS the source of truth
-    // API has confirmed the state, optimistic state is now real state
+    // Refetch followers to update the count
+    if (success && petId) {
+      console.log('🔵 useViewPet: Refetching followers after follow toggle');
+      fetchFollowers(petId);
+    }
 
     return success;
   };
@@ -75,7 +90,8 @@ export const useViewPet = (petId: number | null) => {
     isPrivate,
     petStatus,
     pageLoading,
-    followLoading
+    followLoading,
+    actualFollowerCount: followers.length
   });
 
   return {
@@ -91,6 +107,10 @@ export const useViewPet = (petId: number | null) => {
     handleFollowToggle,
     followLoading,    // Only for follow/unfollow actions
     followError,
+
+    // Followers data
+    followers,
+    followerCount: followers.length, // Accurate count from fetched data
 
     // User context
     user,

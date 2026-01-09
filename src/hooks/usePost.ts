@@ -15,7 +15,6 @@ import { getCommentsByPostId, createComment } from '@/services/comment.service';
 import {
   getPetProfile,
   getPetTimeline,
-  getUserPets,
   sharePost
 } from '@/services/post.service.mock';
 import type { Post, PetTimeline, CreatePostRequest, PetProfile } from '@/domain/post';
@@ -64,24 +63,7 @@ export const usePetTimeline = (petId: number | null) => {
   const refresh = useCallback(() => loadTimeline(true), [loadTimeline]);
   return { timeline, loading, error, refreshing, refresh, refetch: loadTimeline };
 };
-export const useUserPets = () => {
-  const [pets, setPets] = useState<PetProfile[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const loadUserPets = useCallback(async () => {
-    try {
-      setLoading(true);
-      const userPets = await getUserPets();
-      setPets(userPets);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-  useEffect(() => { loadUserPets(); }, [loadUserPets]);
-  return { pets, loading, error, refetch: loadUserPets };
-};
+
 export const usePostActions = () => {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const likePost = useCallback(async (postId: number) => {

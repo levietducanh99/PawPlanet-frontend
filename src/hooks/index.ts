@@ -3,20 +3,21 @@ export { useMediaUpload } from './useMediaUpload';
 export { useLogin, useRegister, useAuth } from './useAuth';
 export { useLogout } from './useLogout';
 export { useViewProfile, useProfileData } from './useProfile';
+export { useUpdateProfile } from './useUpdateProfile';
+export { useFollowers, useFollowing, useFollowActions } from './useFollow';
 export { useCreatePetWithImages } from './useCreatePetWithImages';
 export { useOptimistic } from './useOptimistic';
 export {
   usePetTimeline,
-  useUserPets,
   usePostActions,
   useCreatePost,
   usePostComments,
   useNewsFeed,
   useMyPosts,
   usePostDetail,
-  usePetPosts,
   useUserPosts,
 } from './usePost';
+export { useUserPets } from './useUserPets';
 export { usePetProfile } from './usePetProfile';
 export {
   useCreatePet,
@@ -45,7 +46,12 @@ export { useEncyclopediaMedia } from './useEncyclopediaMedia';
 export { usePetDetail } from './usePetDetail';
 export { usePetFollow } from './usePetFollow';
 export { useUpdatePet } from './useUpdatePet';
+export { useDeletePet } from './useDeletePet';
 export { useViewPet } from './useViewPet';
+export { usePetPosts } from './usePetPosts';
+export { usePetFollowers } from './usePetFollowers';
+export { useFollowingPets } from './useFollowingPets';
+
 
 // Notifications
 export { useNotifications, useUnreadCount } from './useNotifications';

@@ -1,0 +1,91 @@
+/* PetFollowersModal.module.css */
+
+.followersModal :global(.ant-modal-content) {
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.followersModal :global(.ant-modal-header) {
+  border-radius: 20px 20px 0 0;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 20px 24px;
+}
+
+.followersModal :global(.ant-modal-title) {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 0;
+}
+
+.followerItem {
+  cursor: pointer;
+  padding: 16px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #F3F4F6 !important;
+}
+
+.followerItem:hover {
+  background: #F9FAFB;
+  transform: translateX(4px);
+}
+
+.followerItem:last-child {
+  border-bottom: none !important;
+}
+
+.avatar {
+  border: 2px solid #E6F7FF;
+}
+
+.username {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.bio {
+  font-size: 14px;
+  color: #6B7280;
+  display: block;
+  max-width: 100%;
+}
+
+/* Empty state */
+.followersModal :global(.ant-empty) {
+  padding: 40px 0;
+}
+
+.followersModal :global(.ant-empty-description) {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+/* Scrollbar styling */
+.followersModal :global(.ant-modal-body)::-webkit-scrollbar {
+  width: 8px;
+}
+
+.followersModal :global(.ant-modal-body)::-webkit-scrollbar-track {
+  background: #F3F4F6;
+  border-radius: 4px;
+}
+
+.followersModal :global(.ant-modal-body)::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 4px;
+}
+
+.followersModal :global(.ant-modal-body)::-webkit-scrollbar-thumb:hover {
+  background: #9CA3AF;
+}
+
