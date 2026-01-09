@@ -71,6 +71,12 @@ const MainFeedPage: React.FC = () => {
     setCommentDrawerOpen(true);
   };
 
+  // Called when a new comment is added in the comment modal
+  const handleCommentAdded = (newCount: number) => {
+    if (!activePostId) return;
+    setOptimisticPosts(prev => prev.map(p => p.id === activePostId ? { ...p, commentCount: newCount } : p));
+  };
+
   const handlePostShare = (postId: number) => {
     // TODO: Implement share functionality
     console.log('Sharing post:', postId);
@@ -132,7 +138,8 @@ const MainFeedPage: React.FC = () => {
         <>
           <div className={styles.feedContent}>
             <Row justify="center">
-              <Col xs={24} md={20} lg={16} xl={14} xxl={12}>
+              {/* Make the feed column wider for more horizontal space */}
+              <Col xs={24} md={22} lg={20} xl={18} xxl={16}>
                 {optimisticPosts.length === 0 ? (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
@@ -185,6 +192,7 @@ const MainFeedPage: React.FC = () => {
         open={commentDrawerOpen}
         onClose={() => setCommentDrawerOpen(false)}
         title={activePostId ? `${(optimisticPosts.find(p => p.id === activePostId)?.authorName) || 'Post'}'s Post` : 'Comments'}
+        onCommentAdded={handleCommentAdded}
       />
 
       {/* Create Post Modal */}

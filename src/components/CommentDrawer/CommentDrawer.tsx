@@ -10,10 +10,11 @@ interface CommentModalProps {
   postId: number | null;
   open: boolean;
   onClose: (updatedCommentCount?: number) => void;
+  onCommentAdded?: (newCount: number) => void;
   title?: string;
 }
 
-export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClose, title }) => {
+export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClose, title, onCommentAdded }) => {
   const { comments, loading, creating, addComment, refetch } = usePostComments(postId);
   const { user } = useUserProfile();
   const [value, setValue] = useState('');
@@ -23,10 +24,16 @@ export const CommentModal: React.FC<CommentModalProps> = ({ postId, open, onClos
   const handleSend = async () => {
     if (!value.trim() || !postId) return;
     try {
-      await addComment(value.trim());
+      const newComment = await addComment(value.trim());
       setValue('');
+      // Notify parent immediately so UI (feed) can update comment count optimistically
+      const newCount = (comments?.length ?? 0) + (newComment ? 1 : 0);
+      if (onCommentAdded) onCommentAdded(newCount);
+      // Refresh internal list to include server-sent data
       refetch();
-    } catch (err) {}
+    } catch (err) {
+      console.error('Failed to add comment:', err);
+    }
   };
 
   const handleClose = () => {
