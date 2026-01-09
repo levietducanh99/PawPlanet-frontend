@@ -84,6 +84,56 @@
   color: #1F2937;
 }
 
+/* Comment Input Form */
+.commentInputContainer {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #F9FAFB;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.commentInputContainer:focus-within {
+  background: white;
+  border-color: #1890FF;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.15);
+}
+
+.commentInputAvatar {
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.commentInput {
+  flex: 1;
+  border: none;
+  background: transparent;
+  resize: none;
+  font-size: 15px;
+  padding: 8px 12px;
+}
+
+.commentInput:focus {
+  box-shadow: none;
+  border: none;
+}
+
+.commentSubmitButton {
+  flex-shrink: 0;
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 5px rgba(24, 144, 255, 0.2);
+}
+
+.commentSubmitButton:disabled {
+  box-shadow: none;
+}
+
 .commentsLoading {
   display: flex;
   justify-content: center;
@@ -180,6 +230,19 @@
     font-size: 18px;
   }
 
+  .commentInputContainer {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .commentInputAvatar {
+    display: none; /* Hide avatar on mobile to save space */
+  }
+
+  .commentSubmitButton {
+    height: 36px;
+  }
+
   .commentItem {
     padding: 12px;
   }
@@ -198,50 +261,50 @@
   }
 }
 
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .container {
-    background: #111827;
-  }
+/*!* Dark mode support *!*/
+/*@media (prefers-color-scheme: dark) {*/
+/*  .container {*/
+/*    background: #111827;*/
+/*  }*/
 
-  .header {
-    border-bottom-color: #374151;
-  }
+/*  .header {*/
+/*    border-bottom-color: #374151;*/
+/*  }*/
 
-  .title {
-    color: #F9FAFB;
-  }
+/*  .title {*/
+/*    color: #F9FAFB;*/
+/*  }*/
 
-  .commentsSection {
-    background: #1F2937;
-  }
+/*  .commentsSection {*/
+/*    background: #1F2937;*/
+/*  }*/
 
-  .commentsHeader {
-    border-bottom-color: #374151;
-  }
+/*  .commentsHeader {*/
+/*    border-bottom-color: #374151;*/
+/*  }*/
 
-  .commentsTitle {
-    color: #F9FAFB;
-  }
+/*  .commentsTitle {*/
+/*    color: #F9FAFB;*/
+/*  }*/
 
-  .commentItem {
-    background: #111827;
-  }
+/*  .commentItem {*/
+/*    background: #111827;*/
+/*  }*/
 
-  .commentItem:hover {
-    background: #1F2937;
-  }
+/*  .commentItem:hover {*/
+/*    background: #1F2937;*/
+/*  }*/
 
-  .commentAuthor {
-    color: #F9FAFB;
-  }
+/*  .commentAuthor {*/
+/*    color: #F9FAFB;*/
+/*  }*/
 
-  .commentText {
-    color: #D1D5DB;
-  }
+/*  .commentText {*/
+/*    color: #D1D5DB;*/
+/*  }*/
 
-  .noComments {
-    color: #6B7280;
-  }
-}
+/*  .noComments {*/
+/*    color: #6B7280;*/
+/*  }*/
+/*}*/
 

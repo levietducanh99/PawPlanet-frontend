@@ -7,7 +7,6 @@ import {
   CommentOutlined,
   ShareAltOutlined,
   MoreOutlined,
-  GlobalOutlined,
   LeftOutlined,
   RightOutlined,
 } from '@ant-design/icons';
@@ -23,9 +22,11 @@ interface PostCardProps {
   onLike: (postId: number) => void;
   onComment: (postId: number) => void;
   onShare: (postId: number) => void;
+  onDelete?: (postId: number) => void;
+  onEdit?: (postId: number) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, onDelete, onEdit }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // uiPost extends Post with optional UI-only fields used by the component
@@ -138,6 +139,24 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
     { key: '3', label: 'Report' },
   ];
 
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    switch (key) {
+      case '1': // Edit
+        if (onEdit) {
+          onEdit(post.id);
+        }
+        break;
+      case '2': // Delete
+        if (onDelete) {
+          onDelete(post.id);
+        }
+        break;
+      case '3': // Report
+        console.log('Report post:', post.id);
+        break;
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -172,7 +191,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
 
           <div className={styles.headerActions}>
             <Dropdown
-              menu={{ items: menuItems }}
+              menu={{ items: menuItems, onClick: handleMenuClick }}
               placement="bottomRight"
               trigger={['click']}
             >

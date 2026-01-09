@@ -9,6 +9,8 @@ import {
   getPostsByPetId,
   getPostsByUserId,
   createPost as createPostService,
+  deletePost as deletePostService,
+  updatePost as updatePostService,
 } from '@/services/post.service';
 import { togglePostLike } from '@/services/like.service';
 import { getCommentsByPostId, createComment } from '@/services/comment.service';
@@ -18,6 +20,7 @@ import {
   sharePost
 } from '@/services/post.service.mock';
 import type { Post, PetTimeline, CreatePostRequest, PetProfile } from '@/domain/post';
+import type { UpdatePostRequest } from '@/services/api';
 import type { Comment } from '@/services/comment.service';
 export const usePetProfile = (petId: number | null) => {
   const [profile, setProfile] = useState<PetProfile | null>(null);
@@ -86,7 +89,27 @@ export const usePostActions = () => {
     }
   }, []);
 
-  return { likePost, sharePost: sharePostAction, loading };
+  const deletePostAction = useCallback(async (postId: number) => {
+    const key = `delete-${postId}`;
+    try {
+      setLoading(prev => ({ ...prev, [key]: true }));
+      await deletePostService(postId);
+    } finally {
+      setLoading(prev => ({ ...prev, [key]: false }));
+    }
+  }, []);
+
+  const updatePostAction = useCallback(async (postId: number, data: UpdatePostRequest) => {
+    const key = `update-${postId}`;
+    try {
+      setLoading(prev => ({ ...prev, [key]: true }));
+      return await updatePostService(postId, data);
+    } finally {
+      setLoading(prev => ({ ...prev, [key]: false }));
+    }
+  }, []);
+
+  return { likePost, sharePost: sharePostAction, deletePost: deletePostAction, updatePost: updatePostAction, loading };
 };
 export const useCreatePost = () => {
   const [loading, setLoading] = useState(false);
