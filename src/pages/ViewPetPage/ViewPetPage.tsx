@@ -87,12 +87,6 @@ export const ViewPetPage: React.FC = () => {
     followerCount, // Accurate follower count from fetched data
   } = useViewPet(petIdNumber);
 
-  useEffect(() => {
-    console.log('🔥 ViewPetPage MOUNT');
-    return () => {
-      console.log('💀 ViewPetPage UNMOUNT');
-    };
-  }, []);
 
   // Get pet posts
   const { posts, loading: postsLoading } = usePetPosts(petIdNumber);
@@ -509,9 +503,8 @@ export const ViewPetPage: React.FC = () => {
                     )}
 
                     {/* Pet Stats - Followers */}
-                    <div className={styles.petStats}>
-                      <Button
-                        type="text"
+                    <div className={styles.petStats} style={{cursor: 'pointer'}}>
+                      <div
                         className={styles.statButton}
                         onClick={() => setShowFollowersModal(true)}
                       >
@@ -521,7 +514,30 @@ export const ViewPetPage: React.FC = () => {
                         <Text className={styles.statLabel}>
                           {followerCount === 1 ? 'Follower' : 'Followers'}
                         </Text>
-                      </Button>
+                      </div>
+                    {/*  likes */}
+                      <div
+                          className={styles.statButton}
+                      >
+                        <Text strong className={styles.statNumber}>
+                          {pet.likeCount || 0}
+                        </Text>
+                        <Text className={styles.statLabel}>
+                          {(pet.likeCount || 0) === 1 ? 'Like' : 'Likes'}
+                        </Text>
+                      </div>
+
+                    {/*  Post */}
+                      <div
+                          className={styles.statButton}
+                      >
+                        <Text strong className={styles.statNumber}>
+                          {pet.postCount || 0}
+                        </Text>
+                        <Text className={styles.statLabel}>
+                          {(pet.postCount || 0) === 1 ? 'Post' : 'Posts'}
+                        </Text>
+                      </div>
                     </div>
                   </Card>
 

@@ -63,7 +63,9 @@ export const mapPetProfileToPet = (dto: PetProfileDTO): Pet => {
     media,
     avatarUrl,
     followerCount: 0, // Will be fetched separately
-    followingCount: 0  // Will be fetched separately
+    followingCount: 0, // Will be fetched separately
+    likeCount: (dto as any).likeCount ?? 0, // Total likes from backend
+    postCount: (dto as any).postCount ?? 0  // Total posts from backend
   };
 };
 

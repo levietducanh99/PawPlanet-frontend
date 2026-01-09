@@ -28,6 +28,8 @@ export interface Pet {
   avatarUrl?: string; // derived from media array
   followerCount: number; // will be fetched separately
   followingCount: number; // will be fetched separately
+  likeCount?: number; // total likes across all posts
+  postCount?: number; // total number of posts
 }
 
 export interface PetMedia {

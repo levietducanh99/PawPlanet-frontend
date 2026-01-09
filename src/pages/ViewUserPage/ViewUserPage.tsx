@@ -6,13 +6,14 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Row, Col, Typography, Tabs, Flex, Button, Card, Spin, Alert } from 'antd';
-import { UserOutlined, HeartOutlined, PictureOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { UserOutlined, HeartOutlined, PictureOutlined, ArrowLeftOutlined, TeamOutlined } from '@ant-design/icons';
 import { motion } from 'motion/react';
-import { useUserById, useUserPosts, useUserPets } from '@/hooks';
+import { useUserById, useUserPosts, useUserPets, useUserFollowersList, useUserFollowingList } from '@/hooks';
 import PostCard from '@/components/PostCard';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { Loading } from '@/components/Loading';
 import { FollowButton } from '@/components/FollowButton';
+import { UserListCard } from '@/components/UserListCard';
 import { pageVariants } from '@/animations/variants';
 import styles from './ViewUserPage.module.css';
 
@@ -28,6 +29,8 @@ export const ViewUserPage = () => {
   const { user, loading: userLoading, error: userError, fetchUser } = useUserById();
   const { posts, loading: postsLoading } = useUserPosts(parsedUserId);
   const { pets, loading: petsLoading } = useUserPets(parsedUserId);
+  const { followers, loading: followersLoading } = useUserFollowersList(parsedUserId);
+  const { following, loading: followingLoading } = useUserFollowingList(parsedUserId);
 
   // Fetch user when userId changes
   React.useEffect(() => {
@@ -60,7 +63,6 @@ export const ViewUserPage = () => {
     return (
       <ErrorMessage
         message={userError || 'User not found'}
-        onRetry={() => parsedUserId && fetchUser(parsedUserId)}
       />
     );
   }
@@ -150,7 +152,7 @@ export const ViewUserPage = () => {
           </Col>
           <Col>
             <div className={styles.statItem}>
-              <Title level={4}>{user.postsCount || 0}</Title>
+              <Title level={4}>{posts.length || 0}</Title>
               <Text type="secondary">Posts</Text>
             </div>
           </Col>
@@ -237,6 +239,62 @@ export const ViewUserPage = () => {
                 </Col>
               ))}
             </Row>
+          )}
+        </TabPane>
+
+        <TabPane
+          tab={
+            <span>
+              <TeamOutlined />
+              Followers ({user.followersCount || 0})
+            </span>
+          }
+          key="followers"
+        >
+          {followersLoading ? (
+            <div style={{ textAlign: 'center', padding: '48px 0' }}>
+              <Spin size="large" />
+            </div>
+          ) : followers.length === 0 ? (
+            <Alert
+              type="info"
+              description={`${user.username} doesn't have any followers yet.`}
+              showIcon
+            />
+          ) : (
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+              {followers.map((follower) => (
+                <UserListCard key={follower.id} user={follower} />
+              ))}
+            </div>
+          )}
+        </TabPane>
+
+        <TabPane
+          tab={
+            <span>
+              <TeamOutlined />
+              Following ({user.followingCount || 0})
+            </span>
+          }
+          key="following"
+        >
+          {followingLoading ? (
+            <div style={{ textAlign: 'center', padding: '48px 0' }}>
+              <Spin size="large" />
+            </div>
+          ) : following.length === 0 ? (
+            <Alert
+              type="info"
+              description={`${user.username} isn't following anyone yet.`}
+              showIcon
+            />
+          ) : (
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+              {following.map((user) => (
+                <UserListCard key={user.id} user={user} />
+              ))}
+            </div>
           )}
         </TabPane>
       </Tabs>

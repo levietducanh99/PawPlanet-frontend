@@ -1,7 +1,7 @@
 /* Landing Page Styles */
 .landingPage {
   min-height: 100vh;
-  background: var(--color-bg-body, #F3F4F6);
+  background:  #F3F4F6;
   font-family: var(--font-sans, 'Inter', sans-serif);
 }
 
@@ -330,7 +330,7 @@
 .searchPlaceholder {
   position: absolute;
   left: 80px;
-  top: 50%;
+  top: 35%;
   transform: translateY(-50%);
   font-size: 18px;
   color: #94A3B8;
@@ -341,7 +341,7 @@
 .searchButton {
   position: absolute;
   right: 8px;
-  top: 50%;
+  top: -10%;
   transform: translateY(-50%);
   height: 80px; /* match input height */
   padding: 0 32px;

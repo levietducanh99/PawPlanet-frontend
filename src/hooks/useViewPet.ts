@@ -64,6 +64,7 @@ export const useViewPet = (petId: number | null) => {
     return pet.status.toLowerCase() === 'hidden' ? 'private' : 'public';
   }, [pet?.status]);
 
+
   // Helper function để handle follow/unfollow với optimistic update
   const handleFollowToggle = async (): Promise<boolean> => {
     if (!petId || !canFollow) return false;
@@ -125,6 +126,6 @@ export const useViewPet = (petId: number | null) => {
     error: petError || followError,
 
     // Optimistic state info
-    isOptimistic: optimisticState?.isPending || false
+    isOptimistic: optimisticState?.isPending || false,
   };
 };
