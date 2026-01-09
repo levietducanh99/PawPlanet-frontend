@@ -1,0 +1,1 @@
+export { AdoptionProfileView } from './AdoptionProfileView';
