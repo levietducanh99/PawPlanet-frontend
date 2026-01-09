@@ -7,12 +7,12 @@ import {
   CommentOutlined,
   ShareAltOutlined,
   MoreOutlined,
-  GlobalOutlined,
   LeftOutlined,
   RightOutlined,
 } from '@ant-design/icons';
 import { motion } from 'motion/react';
 import type { Post } from '@/domain/post';
+import { PetTag } from '@/components/PetTag';
 import styles from './PostCard.module.css';
 
 const { Text, Paragraph } = Typography;
@@ -22,9 +22,11 @@ interface PostCardProps {
   onLike: (postId: number) => void;
   onComment: (postId: number) => void;
   onShare: (postId: number) => void;
+  onDelete?: (postId: number) => void;
+  onEdit?: (postId: number) => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare }) => {
+const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, onDelete, onEdit }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // uiPost extends Post with optional UI-only fields used by the component
@@ -50,6 +52,30 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
   };
   const next = () => {
     setCurrentIndex((i) => (i + 1) % (post.media?.length || 1));
+  };
+
+  // Render tagged pets using PetTag component
+  const renderPetTags = () => {
+    if (!post.taggedPets || post.taggedPets.length === 0) return null;
+
+    return (
+      <div className={styles.petTagsContainer}>
+        {post.taggedPets.map((pet) => (
+          <PetTag
+            key={pet.id}
+            id={pet.id}
+            name={pet.name}
+            species={pet.species}
+            breed={pet.breed}
+            avatarUrl={pet.avatarUrl}
+            onClick={() => {
+              // TODO: Navigate to pet profile
+              console.log('Navigate to pet:', pet.id);
+            }}
+          />
+        ))}
+      </div>
+    );
   };
 
   const renderMedia = () => {
@@ -113,13 +139,31 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
     { key: '3', label: 'Report' },
   ];
 
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    switch (key) {
+      case '1': // Edit
+        if (onEdit) {
+          onEdit(post.id);
+        }
+        break;
+      case '2': // Delete
+        if (onDelete) {
+          onDelete(post.id);
+        }
+        break;
+      case '3': // Report
+        console.log('Report post:', post.id);
+        break;
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
       transition={{ type: "spring", stiffness: 300 }}
       className={styles.cardWrapper}
     >
-      <Card bordered={false} className={styles.postCard}>
+      <Card variant="borderless" className={styles.postCard}>
         {/* Header */}
         <div className={styles.postHeaderNew}>
           <Space size="middle" align="start">
@@ -139,18 +183,15 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
               </div>
 
               <div className={styles.subline}>
-                <Text type="secondary">{uiPost.petOwnerName || uiPost.authorName} • {uiPost.petDisplay || ''}</Text>
-                <span className={styles.dot}>•</span>
                 <Text type="secondary">{formatTimeAgo(post.createdAt)}</Text>
-                <span className={styles.dot}>•</span>
-                <GlobalOutlined style={{ color: '#6B7280' }} />
+
               </div>
             </div>
           </Space>
 
           <div className={styles.headerActions}>
             <Dropdown
-              menu={{ items: menuItems }}
+              menu={{ items: menuItems, onClick: handleMenuClick }}
               placement="bottomRight"
               trigger={['click']}
             >
@@ -164,6 +205,9 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare })
           <Paragraph className={styles.contentText}>
             {post.content}
           </Paragraph>
+
+          {/* Pet Tags Pills */}
+          {renderPetTags()}
 
           {/* Tags */}
           {post.tags && post.tags.length > 0 && (

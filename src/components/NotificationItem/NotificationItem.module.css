@@ -1,0 +1,168 @@
+/* NotificationItem.module.css */
+
+.notificationItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.notificationItem:hover {
+  background: #F9FAFB;
+}
+
+.notificationItem:hover .deleteBtn {
+  opacity: 1;
+}
+
+/* Unread state */
+.unread {
+  background: #F0F9FF;
+}
+
+.unread:hover {
+  background: #E0F2FE;
+}
+
+/* Unread indicator dot */
+.unreadDot {
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #1890FF;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.2);
+}
+
+/* Avatar Section */
+.avatarWrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatar {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.iconBadge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.iconBadge :global(.ant-badge-count) {
+  background: transparent;
+  color: inherit;
+  box-shadow: none;
+  font-size: 16px;
+  line-height: 1;
+  height: auto;
+  min-width: auto;
+  padding: 0;
+}
+
+/* Content Section */
+.content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.message {
+  font-size: 15px;
+  line-height: 1.4;
+  color: #1F2937;
+}
+
+.actorName {
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.messageText {
+  font-weight: 400;
+  color: #4B5563;
+}
+
+.postPreview {
+  font-weight: 400;
+  color: #6B7280;
+  font-style: italic;
+  max-width: 200px;
+  display: inline;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.time {
+  font-size: 13px;
+  color: #9CA3AF;
+}
+
+/* Delete Button */
+.deleteBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  background: #EF4444;
+  color: white;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.deleteBtn:hover {
+  background: #DC2626;
+  transform: scale(1.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .notificationItem {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .message {
+    font-size: 14px;
+  }
+
+  .time {
+    font-size: 12px;
+  }
+
+  .deleteBtn {
+    opacity: 1;
+    background: rgba(239, 68, 68, 0.9);
+  }
+}
+

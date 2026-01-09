@@ -5,15 +5,10 @@ interface ErrorMessageProps {
   onRetry?: () => void;
 }
 
-export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message, onRetry }) => {
+export const ErrorMessage: React.FC<ErrorMessageProps> = ({ message }) => {
   return (
     <div className="error-container">
       <p className="error-message">{message}</p>
-      {onRetry && (
-        <button onClick={onRetry} className="retry-button">
-          Retry
-        </button>
-      )}
     </div>
   );
 };

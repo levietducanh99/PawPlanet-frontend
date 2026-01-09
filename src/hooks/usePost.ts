@@ -9,16 +9,18 @@ import {
   getPostsByPetId,
   getPostsByUserId,
   createPost as createPostService,
+  deletePost as deletePostService,
+  updatePost as updatePostService,
 } from '@/services/post.service';
 import { togglePostLike } from '@/services/like.service';
 import { getCommentsByPostId, createComment } from '@/services/comment.service';
 import {
   getPetProfile,
   getPetTimeline,
-  getUserPets,
   sharePost
 } from '@/services/post.service.mock';
 import type { Post, PetTimeline, CreatePostRequest, PetProfile } from '@/domain/post';
+import type { UpdatePostRequest } from '@/services/api';
 import type { Comment } from '@/services/comment.service';
 export const usePetProfile = (petId: number | null) => {
   const [profile, setProfile] = useState<PetProfile | null>(null);
@@ -64,24 +66,7 @@ export const usePetTimeline = (petId: number | null) => {
   const refresh = useCallback(() => loadTimeline(true), [loadTimeline]);
   return { timeline, loading, error, refreshing, refresh, refetch: loadTimeline };
 };
-export const useUserPets = () => {
-  const [pets, setPets] = useState<PetProfile[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const loadUserPets = useCallback(async () => {
-    try {
-      setLoading(true);
-      const userPets = await getUserPets();
-      setPets(userPets);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-  useEffect(() => { loadUserPets(); }, [loadUserPets]);
-  return { pets, loading, error, refetch: loadUserPets };
-};
+
 export const usePostActions = () => {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const likePost = useCallback(async (postId: number) => {
@@ -104,7 +89,27 @@ export const usePostActions = () => {
     }
   }, []);
 
-  return { likePost, sharePost: sharePostAction, loading };
+  const deletePostAction = useCallback(async (postId: number) => {
+    const key = `delete-${postId}`;
+    try {
+      setLoading(prev => ({ ...prev, [key]: true }));
+      await deletePostService(postId);
+    } finally {
+      setLoading(prev => ({ ...prev, [key]: false }));
+    }
+  }, []);
+
+  const updatePostAction = useCallback(async (postId: number, data: UpdatePostRequest) => {
+    const key = `update-${postId}`;
+    try {
+      setLoading(prev => ({ ...prev, [key]: true }));
+      return await updatePostService(postId, data);
+    } finally {
+      setLoading(prev => ({ ...prev, [key]: false }));
+    }
+  }, []);
+
+  return { likePost, sharePost: sharePostAction, deletePost: deletePostAction, updatePost: updatePostAction, loading };
 };
 export const useCreatePost = () => {
   const [loading, setLoading] = useState(false);
@@ -170,10 +175,12 @@ export const usePostDetail = (postId: number | null) => {
     if (!postId) return;
     try {
       setLoading(true);
+      setError(null); // Reset error before loading
       const postData = await getPostById(postId);
       setPost(postData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed');
+      setPost(null); // Clear post data on error
     } finally {
       setLoading(false);
     }
@@ -235,6 +242,7 @@ export const usePostComments = (postId: number | null) => {
       setComments(commentsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load comments');
+      setComments([]); // Clear comments on error
     } finally {
       setLoading(false);
     }
@@ -254,6 +262,12 @@ export const usePostComments = (postId: number | null) => {
     } finally {
       setCreating(false);
     }
+  }, [postId]);
+
+  // Reset state when postId changes
+  useEffect(() => {
+    setComments([]);
+    setError(null);
   }, [postId]);
 
   useEffect(() => { loadComments(); }, [loadComments]);

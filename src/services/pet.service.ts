@@ -1,13 +1,17 @@
 import {
   PetControllerApi,
+  PetFollowControllerApi,
   EncyclopediaSpeciesApi,
   EncyclopediaBreedsApi,
+  PostControllerApi,
   CreatePetRequestDTO,
   UpdatePetRequestDTO,
   PetProfileDTO,
   AllPetsResponseDTO,
   SpeciesResponse,
   BreedResponse,
+  PostResponse,
+  UserResponse,
   Configuration
 } from './api';
 import apiClient from './apiConfig';
@@ -21,8 +25,10 @@ const apiConfiguration = new Configuration({
 
 // Initialize API clients
 const petApi = new PetControllerApi(apiConfiguration, undefined, apiClient);
+const petFollowApi = new PetFollowControllerApi(apiConfiguration, undefined, apiClient);
 const speciesApi = new EncyclopediaSpeciesApi(apiConfiguration, undefined, apiClient);
 const breedsApi = new EncyclopediaBreedsApi(apiConfiguration, undefined, apiClient);
+const postApi = new PostControllerApi(apiConfiguration, undefined, apiClient);
 
 export interface CreatePetData {
   name: string;
@@ -252,18 +258,50 @@ export const petService = {
     }
   },
 
-  // Get user's pets - since there's no direct API, we'll use getUserProfile and extract pet info
-  // or create a method that assumes we can get pets by user ID somehow
-  async getUserPets(_userId?: number): Promise<PetProfileDTO[]> {
+  // Delete pet
+  async deletePet(id: number): Promise<void> {
     try {
-      // For now, return empty array as we don't have a direct API
-      // In a real implementation, this would be a specific endpoint like /api/v1/users/{userId}/pets
-      console.warn('getUserPets API endpoint not available, returning empty array');
-      return [];
+      console.log('🔵 petService.deletePet: Deleting pet ID:', id);
+
+      // Use generated API method
+      await petApi.deletePet({ id });
+
+      console.log('🔵 petService.deletePet: Success');
     } catch (error: any) {
-      console.error('STATUS:', error.response?.status);
-      console.error('BACKEND MESSAGE:', error.response?.data);
-      throw error;
+      console.error('🔴 petService.deletePet - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else if (error.response?.status === 403) {
+        throw new Error('You do not have permission to delete this pet');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to delete pet');
+      }
+    }
+  },
+
+  // Get user's pets by user ID
+  async getUserPets(userId: number): Promise<AllPetsResponseDTO[]> {
+    try {
+      console.log('🔵 petService.getUserPets: Fetching pets for user ID:', userId);
+
+      // Use generated API method: GET /api/v1/pets/my-pets/{id}
+      const response = await petApi.getAllUserPets({ id: userId });
+
+      console.log('🔵 petService.getUserPets: Success, pets count:', response.data?.length || 0);
+      return response.data || [];
+    } catch (error: any) {
+      console.error('🔴 petService.getUserPets - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('User not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch user pets');
+      }
     }
   },
 
@@ -312,6 +350,92 @@ export const petService = {
         throw new Error(error.response?.data?.message || error.message || 'Failed to fetch pets');
       }
     }
+  },
+
+  // Get all posts of a pet
+  async getPetPosts(petId: number): Promise<PostResponse[]> {
+    try {
+      console.log('🔵 petService.getPetPosts: Fetching posts for pet ID:', petId);
+
+      const response = await postApi.getPostsByPetId({ petId });
+      console.log('🔵 petService.getPetPosts: API Response:', response.data);
+
+      return response.data || [];
+    } catch (error: any) {
+      console.error('🔴 petService.getPetPosts - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch pet posts');
+      }
+    }
+  },
+
+  // Get followers of a pet
+  async getPetFollowers(petId: number): Promise<UserResponse[]> {
+    try {
+      console.log('🔵 petService.getPetFollowers: Fetching followers for pet ID:', petId);
+
+      const response = await petFollowApi.getFollowers1({ id: petId });
+      console.log('🔵 petService.getPetFollowers: API Response:', response.data);
+
+      // API returns ApiResponseListUserResponse, extract the result list
+      const followers = response.data?.result || [];
+      return followers;
+    } catch (error: any) {
+      console.error('🔴 petService.getPetFollowers - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch pet followers');
+      }
+    }
+  },
+
+  // Get pets followed by a user
+  async getFollowingPets(userId: number): Promise<PetProfileDTO[]> {
+    try {
+      console.log('🔵 petService.getFollowingPets: Fetching following pets for user ID:', userId);
+
+      const response = await petFollowApi.getFollowingPets({ userId });
+      console.log('🔵 petService.getFollowingPets: API Response:', response.data);
+
+      // API returns ApiResponseListPetProfileDTO, extract the result list
+      const pets = response.data?.result || [];
+
+      // Log first pet structure for debugging
+      if (pets.length > 0) {
+        console.log('🔵 petService.getFollowingPets: First pet structure:', {
+          id: pets[0].id,
+          name: pets[0].name,
+          avatar: (pets[0] as any).avatar,
+          media: pets[0].media,
+          speciesName: pets[0].speciesName,
+          breedName: pets[0].breedName,
+          ownerUsername: pets[0].ownerUsername,
+          allKeys: Object.keys(pets[0])
+        });
+      }
+
+      return pets;
+    } catch (error: any) {
+      console.error('🔴 petService.getFollowingPets - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        // User not found or no following pets - return empty array
+        return [];
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch following pets');
+      }
+    }
   }
 };
 
@@ -342,6 +466,10 @@ export const createPet = async (request: CreatePetRequest): Promise<Pet> => {
 
 export const updatePet = async (id: number, request: Partial<CreatePetRequest>): Promise<Pet> => {
   return await petService.updatePet(id, request);
+};
+
+export const deletePet = async (id: number): Promise<void> => {
+  return await petService.deletePet(id);
 };
 
 export const followPet = async (petId: number): Promise<void> => {

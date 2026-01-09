@@ -76,9 +76,16 @@
 
 .petHeader {
   display: flex;
-  align-items: flex-start;
-  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 16px;
+}
+
+.petAvatarSection {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
 }
 
 .petAvatar {
@@ -87,7 +94,8 @@
 }
 
 .petBasicInfo {
-  flex: 1;
+  text-align: center;
+  width: 100%;
 }
 
 .petName {
@@ -106,6 +114,45 @@
   font-size: 14px;
   line-height: 1.5;
   margin-bottom: 0 !important;
+}
+
+/* Pet Stats */
+.petStats {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  padding-top: 16px;
+  border-top: 1px solid #F3F4F6;
+  margin-top: 16px;
+}
+
+.statButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  height: auto !important;
+}
+
+.statButton:hover {
+  background: #F3F4F6;
+  transform: translateY(-2px);
+}
+
+.statNumber {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1F2937;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1;
 }
 
 /* Photo Library */
@@ -390,8 +437,13 @@
 /* Pet Actions (Follow/Share) */
 .petActions {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
+  justify-content: center;
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #F3F4F6;
 }
 
 .followButton {

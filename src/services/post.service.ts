@@ -63,3 +63,11 @@ export const updatePost = async (id: number, data: UpdatePostRequest): Promise<P
   const res = await api.updatePost({ id, updatePostRequest: data });
   return mapPost(res.data);
 };
+
+/**
+ * Xoá post
+ */
+export const deletePost = async (id: number): Promise<void> => {
+  await api.deletePost({ id });
+};
+

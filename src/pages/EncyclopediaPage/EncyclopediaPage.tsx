@@ -14,14 +14,7 @@ import {
 import { useEncyclopediaClasses, useEncyclopediaSearch } from '@/hooks';
 import styles from './EncyclopediaPage.module.css';
 
-const { Paragraph } = Typography;
-
-// Demo species for quick access (kept as UI-only shortcuts)
-const demoSpecies = [
-  { id: 'lion', name: 'Demo: Lion (Standard)', emoji: '🦁', color: '#F2994A' },
-  { id: 'snake', name: 'Demo: Snake (Venomous)', emoji: '🐍', color: '#EB5757' },
-  { id: 'jellyfish', name: 'Demo: Jellyfish (Marine)', emoji: '🎐', color: '#1890FF' },
-];
+const { Paragraph, Title } = Typography;
 
 const tabs: TabItem[] = [
   { key: 'animal-classes', label: 'Animal Classes' },
@@ -50,9 +43,27 @@ export const EncyclopediaPage: React.FC = () => {
   const [searchValue, setSearchValue] = useState('');
   const [selectedClass, setSelectedClass] = useState<AnimalClassData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
 
   const { data: classes, loading: classesLoading, error: classesError } = useEncyclopediaClasses();
   const { data: searchResult, loading: searchLoading, error: searchError, search } = useEncyclopediaSearch();
+
+  // Hero images from public/hero folder (for main slider)
+  const heroImages = [
+    '/hero/pexels-simonakidric-2607544.jpg',
+    '/hero/istockphoto-1184184060-612x612.jpg',
+    '/hero/photo-1560114928-40f1f1eb26a0.jfif',
+    '/hero/Gemini_Generated_Image_3qafw23qafw23qaf.png',
+    '/hero/Gemini_Generated_Image_v3y3bev3y3bev3y3.png',
+  ];
+
+  // Auto-slide hero images
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000); // Change every 5 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   const animalClasses: AnimalClassData[] = useMemo(() => {
     // First 2 big, rest small (to mimic the existing grid layout)
@@ -72,10 +83,6 @@ export const EncyclopediaPage: React.FC = () => {
     setIsModalOpen(false);
   };
 
-  const handleDemoClick = (speciesId: string) => {
-    navigate(`/encyclopedia/species/${speciesId}`);
-  };
-
   return (
     <motion.div
       className={styles.encyclopediaPage}
@@ -83,55 +90,109 @@ export const EncyclopediaPage: React.FC = () => {
       initial="initial"
       animate="animate"
     >
-      {/* Demo Tags */}
-      <div className={styles.demoTags}>
-        {demoSpecies.map((species) => (
-          <Tag
-            key={species.id}
-            className={styles.demoTag}
-            style={{ borderColor: species.color, color: species.color }}
-            onClick={() => handleDemoClick(species.id)}
+      {/* Hero Section with Full Background Slider */}
+      <div className={styles.heroSection}>
+        {/* Background Image Slider */}
+        <div className={styles.heroImageBackground}>
+          {heroImages.length > 0 && (
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={currentHeroIndex}
+                src={heroImages[currentHeroIndex]}
+                alt="Featured animal"
+                className={styles.heroBackgroundImage}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                transition={{ duration: 1 }}
+              />
+            </AnimatePresence>
+          )}
+          {/* Dark overlay for better text readability */}
+          <div className={styles.heroOverlay} />
+        </div>
+
+        {/* Content Overlay */}
+        <div className={styles.heroContentOverlay}>
+          <motion.div
+            className={styles.heroText}
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
           >
-            {species.emoji} {species.name}
-          </Tag>
-        ))}
+            <Title level={1} className={styles.heroTitle}>
+              <motion.span
+                animate={{ rotate: [0, 10, 0, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                style={{ display: 'inline-block' }}
+              >
+                🐾
+              </motion.span>{' '}
+              Discover the{' '}
+              <span className={styles.highlightText}>Animal Kingdom</span>
+            </Title>
+            <Paragraph className={styles.heroSubtitle}>
+              Explore fascinating creatures from every corner of the world. From majestic mammals to mysterious marine life.
+            </Paragraph>
+
+            {/* Search Bar Overlay */}
+            <motion.div
+              className={styles.heroSearchBar}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              <SearchBar
+                value={searchValue}
+                onChange={setSearchValue}
+                placeholder="Search for animals, species, or breeds..."
+                loading={searchLoading}
+                onSearch={(value) => {
+                  void search(value);
+                }}
+              />
+
+              {/* Search Results - Display right below search bar */}
+              {searchValue.trim() && searchResult.items.length > 0 && (
+                <motion.div
+                  className={styles.searchResults}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {searchResult.items.slice(0, 8).map((item) => (
+                    <Tag
+                      key={item.key}
+                      className={styles.resultTag}
+                      onClick={() => {
+                        if (item.type === 'SPECIES') navigate(`/encyclopedia/species/${item.id}`);
+                        if (item.type === 'BREED') navigate(`/encyclopedia/breed/${item.id}`);
+                        if (item.type === 'CLASS') navigate(`/encyclopedia/class/${item.id}`);
+                      }}
+                    >
+                      {item.title}
+                    </Tag>
+                  ))}
+                </motion.div>
+              )}
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Decorative dots */}
+        <div className={styles.decorativeDots}>
+          <motion.div
+            className={styles.dotPattern}
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 4, repeat: Infinity }}
+          />
+        </div>
       </div>
 
-      {/* Search Bar */}
-      <div className={styles.searchContainer}>
-        <SearchBar
-          value={searchValue}
-          onChange={setSearchValue}
-          placeholder="Search for animals, species, or breeds..."
-          loading={searchLoading}
-          onSearch={(value) => {
-            void search(value);
-          }}
-        />
-      </div>
-
+      {/* Search Error */}
       {searchError && (
         <div style={{ marginBottom: 16 }}>
           <Alert type="error" message={searchError.message} showIcon />
-        </div>
-      )}
-
-      {/* If we have search results, show them above tabs (minimal integration) */}
-      {searchValue.trim() && searchResult.items.length > 0 && (
-        <div className={styles.demoTags}>
-          {searchResult.items.slice(0, 8).map((item) => (
-            <Tag
-              key={item.key}
-              className={styles.demoTag}
-              onClick={() => {
-                if (item.type === 'SPECIES') navigate(`/encyclopedia/species/${item.id}`);
-                if (item.type === 'BREED') navigate(`/encyclopedia/breed/${item.id}`);
-                if (item.type === 'CLASS') navigate(`/encyclopedia/class/${item.id}`);
-              }}
-            >
-              {item.title}
-            </Tag>
-          ))}
         </div>
       )}
 

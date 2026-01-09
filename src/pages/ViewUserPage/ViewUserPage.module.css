@@ -1,0 +1,402 @@
+.viewUserPage {
+  min-height: 100vh;
+  background: #F3F4F6;
+  padding-top: 72px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px 16px;
+}
+
+.backButton {
+  margin-bottom: 16px;
+  font-size: 16px;
+  height: 40px;
+  padding: 0 16px;
+  color: #6B7280;
+}
+
+.backButton:hover {
+  color: #1890FF;
+}
+
+/* Cover Image */
+.coverImage {
+  width: 100%;
+  height: 280px;
+  background: linear-gradient(135deg, #E6F7FF 0%, #F3F4F6 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.coverImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Profile Header */
+.profileHeader {
+  background: white;
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.headerTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.avatarSection {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #E6F7FF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarIcon {
+  font-size: 48px;
+  color: #1890FF;
+}
+
+.userInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.nameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.username {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.verifiedBadge {
+  color: #1890FF;
+  font-size: 20px;
+}
+
+.handle {
+  display: block;
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 12px;
+}
+
+.bio {
+  margin: 0;
+  padding: 12px;
+  background: #F9FAFB;
+  border-radius: 12px;
+  color: #4B5563;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+.actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding-top: 24px;
+  border-top: 1px solid #E5E7EB;
+}
+
+.statItem {
+  text-align: center;
+  padding: 12px;
+  background: #F9FAFB;
+  border-radius: 12px;
+}
+
+.statNumber {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1890FF;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  display: block;
+  font-size: 14px;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+/* Content Tabs */
+.contentCard {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.tabs :global(.ant-tabs-nav) {
+  padding: 0 20px;
+  margin-bottom: 0;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.tabs :global(.ant-tabs-tab) {
+  padding: 14px 16px;
+  font-weight: 600;
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.tabs :global(.ant-tabs-tab-active) {
+  color: #1890FF;
+}
+
+.tabs :global(.ant-tabs-ink-bar) {
+  height: 3px;
+  background: #1890FF;
+}
+
+.tabs :global(.ant-tabs-content) {
+  padding: 20px;
+}
+
+.tabLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabIcon {
+  font-size: 16px;
+}
+
+.tabCount {
+  padding: 2px 8px;
+  background: #E6F7FF;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1890FF;
+}
+
+.tabs :global(.ant-tabs-tab-active) .tabCount {
+  background: #1890FF;
+  color: #fff;
+}
+
+/* Posts Container */
+.postsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.loadingContainer {
+  text-align: center;
+  padding: 48px 0;
+}
+
+.emptyState {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pets Grid */
+.petsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.petCard {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.petCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.petCover {
+  height: 200px;
+  background: linear-gradient(135deg, #E6F7FF 0%, #F3F4F6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.petCover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.petPlaceholder {
+  font-size: 48px;
+  color: #1890FF;
+}
+
+.petCard :global(.ant-card-meta-title) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.petCard :global(.ant-card-meta-description) {
+  font-size: 14px;
+  color: #6B7280;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .petsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .viewUserPage {
+    padding-top: 60px;
+  }
+
+  .container {
+    padding: 12px;
+  }
+
+  .coverImage {
+    height: 180px;
+    border-radius: 12px;
+  }
+
+  .profileHeader {
+    padding: 24px 16px;
+  }
+
+  .headerTop {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatarIcon {
+    font-size: 32px;
+  }
+
+  .userInfo {
+    text-align: center;
+  }
+
+  .username {
+    font-size: 20px;
+  }
+
+  .bio {
+    max-width: 100%;
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .statNumber {
+    font-size: 20px;
+  }
+
+  .statLabel {
+    font-size: 13px;
+  }
+
+  .petsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .petCover {
+    height: 150px;
+  }
+
+  .petPlaceholder {
+    font-size: 36px;
+  }
+
+  .tabs :global(.ant-tabs-nav) {
+    padding: 0 12px;
+  }
+
+  .tabs :global(.ant-tabs-tab) {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .tabs :global(.ant-tabs-content) {
+    padding: 16px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .petsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
