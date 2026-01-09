@@ -36,22 +36,9 @@ export const useUserProfile = (): UseUserProfileReturn => {
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
 
     if (!token) {
-      // In development mode, provide mock user data for testing UI
-      if (import.meta.env.DEV) {
-        console.log('Development mode: Using mock user data since no auth token found');
-        setUser({
-          id: 1,
-          email: 'dev@pawplanet.com',
-          username: 'DevUser',
-          avatarUrl: undefined,
-          bio: 'Development user for testing UI'
-        });
-        setLoading(false);
-        return;
-      }
-
       setUser(null);
       setLoading(false);
+      setError(null);
       return;
     }
 
@@ -63,23 +50,9 @@ export const useUserProfile = (): UseUserProfileReturn => {
       setUser(userProfile);
     } catch (err: unknown) {
       console.error('Failed to fetch user profile:', err);
-
-      // In development mode, fall back to mock data instead of showing error
-      if (import.meta.env.DEV && err instanceof Error && err.message?.includes('No authentication token')) {
-        console.log('Development mode: Using mock user data due to auth error');
-        setUser({
-          id: 1,
-          email: 'dev@pawplanet.com',
-          username: 'DevUser',
-          avatarUrl: undefined,
-          bio: 'Development user for testing UI'
-        });
-        setError(null);
-      } else {
-        const errorMessage = err instanceof Error ? err.message : 'Failed to load user profile';
-        setError(errorMessage);
-        setUser(null);
-      }
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load user profile';
+      setError(errorMessage);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -165,7 +138,7 @@ export interface SidebarPet {
 
 /**
  * Hook to get simplified pets data for Sidebar
- * Uses mock data until real API is available
+ * Returns empty list until a real API endpoint is available.
  */
 export const useUserSidebarPets = () => {
   const [pets, setPets] = useState<SidebarPet[]>([]);
@@ -177,26 +150,8 @@ export const useUserSidebarPets = () => {
     setError(null);
 
     try {
-      // For now, we'll use mock data since API endpoint doesn't exist
-      // This simulates what would come from the user's pets
-      const mockPets: SidebarPet[] = [
-        {
-          id: 1,
-          name: 'Buddy',
-          type: 'dog',
-          avatarUrl: undefined
-        },
-        {
-          id: 2,
-          name: 'Whiskers',
-          type: 'cat',
-          avatarUrl: undefined
-        }
-      ];
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setPets(mockPets);
+      // No mock data. If there's no endpoint yet, we keep this empty.
+      setPets([]);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load user pets';
       setError(errorMessage);
@@ -207,7 +162,6 @@ export const useUserSidebarPets = () => {
   }, []);
 
   useEffect(() => {
-    // Check if user is authenticated before loading pets
     const token = sessionStorage.getItem('authToken') || localStorage.getItem('authToken');
 
     if (token) {
@@ -215,17 +169,18 @@ export const useUserSidebarPets = () => {
     } else {
       setLoading(false);
       setPets([]);
+      setError(null);
     }
-  }, []); // Empty dependency array for mount only
+  }, [fetchUserPets]);
 
   const refetch = useCallback(() => {
     fetchUserPets();
-  }, []); // Empty dependency to prevent circular updates
+  }, [fetchUserPets]);
 
   return {
     pets,
     loading,
     error,
-    refetch
+    refetch,
   };
 };

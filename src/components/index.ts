@@ -34,7 +34,6 @@ export { Loading } from './Loading';
 export { ErrorMessage } from './ErrorMessage';
 export { EditProfilePage } from './EditProfileExample';
 export { MediaUploadDemo } from './MediaUploadExamples';
-export { MockDataBanner } from './MockDataBanner';
 
 // Pet Edit Components
 export { PetPhotoUpload } from './PetPhotoUpload';

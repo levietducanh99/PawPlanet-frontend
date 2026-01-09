@@ -1,0 +1,135 @@
+.postCard {
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: white;
+  break-inside: avoid;
+  margin-bottom: 24px;
+  display: inline-block;
+  width: 100%;
+  border: none !important;
+}
+
+.postCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.mediaContainer {
+  width: 100%;
+  overflow: hidden;
+  background: #f7fafc;
+  position: relative;
+  line-height: 0;
+}
+
+.media {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  /* Chiều cao tự động theo tỷ lệ ảnh gốc - không crop */
+}
+
+.content {
+  padding: 24px;
+}
+
+.text {
+  color: #2d3748;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 16px !important;
+  word-break: break-word;
+  /* Hiển thị full text cho posts không có ảnh, giới hạn cho posts có ảnh */
+}
+
+.text.hasMedia {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text.noMedia {
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.username {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2d3748;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #718096;
+  font-weight: 500;
+}
+
+.stat svg {
+  font-size: 16px;
+}
+
+.stat:first-child svg {
+  color: #f56565;
+}
+
+.stat:last-child svg {
+  color: #4299e1;
+}
+
+@media (max-width: 768px) {
+  .postCard {
+    margin-bottom: 16px;
+    border-radius: 16px;
+  }
+
+  .content {
+    padding: 16px;
+  }
+
+  .text {
+    font-size: 14px;
+  }
+
+  .stats {
+    gap: 12px;
+  }
+}
+
