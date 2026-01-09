@@ -9,7 +9,7 @@ import { useUserPets } from '@/hooks/useUserPets';
 import { useNavigate } from 'react-router-dom';
 import { uploadMedia } from '@/services/media.service';
 import type { CloudinaryUploadResponse } from '@/domain/media';
-import type { PetProfileDTO, MediaUrlRequest } from '@/services/api';
+import type { AllPetsResponseDTO, MediaUrlRequest } from '@/services/api';
 import styles from './CreatePostModal.module.css';
 
 
@@ -227,10 +227,10 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
             <span>Loading pets...</span>
           ) : pets.length === 0 ? (
             <span>No pets found</span>
-          ) : pets.map((pet: PetProfileDTO) => {
+          ) : pets.map((pet: AllPetsResponseDTO) => {
             const petId = pet.id ?? 0;
             const petName = pet.name ?? 'Unknown Pet';
-            const avatarUrl = pet.media?.find(m => m.role === 'avatar')?.url;
+            const avatarUrl = pet.avatar; // AllPetsResponseDTO has direct avatar field
 
             return (
               <div
@@ -238,7 +238,16 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
                 className={`${styles.petTag} ${selectedPets.includes(petId) ? styles.selected : ''}`}
                 onClick={() => handlePetTag(petId)}
               >
-                <Avatar src={avatarUrl} size={44} className={styles.petAvatar} />
+                <Avatar
+                  src={avatarUrl}
+                  size={44}
+                  className={styles.petAvatar}
+                  style={{
+                    backgroundColor: avatarUrl ? undefined : '#1890FF',
+                  }}
+                >
+                  {!avatarUrl && petName.charAt(0).toUpperCase()}
+                </Avatar>
                 <span className={styles.petName}>{petName}</span>
               </div>
             );

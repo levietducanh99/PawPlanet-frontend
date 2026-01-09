@@ -46,3 +46,6 @@ export { usePetDetail } from './usePetDetail';
 export { usePetFollow } from './usePetFollow';
 export { useUpdatePet } from './useUpdatePet';
 export { useViewPet } from './useViewPet';
+
+// Notifications
+export { useNotifications, useUnreadCount } from './useNotifications';

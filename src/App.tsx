@@ -6,6 +6,7 @@ import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
 import { RegisterPage } from './pages/RegisterPage/RegisterPage.tsx';
 import { HomePage } from '@/pages/HomePage';
 import { ProfilePage } from '@/pages/ProfilePage';
+import { PostDetailPage } from '@/pages/PostDetailPage';
 import { MainLayout } from '@/components/MainLayout';
 import MainFeedPage from './pages/MainFeedPage';
 import { CreatePetPage } from './pages/CreatePetPage';
@@ -54,6 +55,7 @@ function App() {
                 <Route index element={<HomePage />} />
                 <Route path="feed" element={<MainFeedPage />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route path="post/:postId" element={<PostDetailPage />} />
                 <Route path="create-pet" element={<CreatePetPage />} />
                 <Route path="pets/:petId" element={<ViewPetPage />} />
                 <Route path="my-pets" element={<MyPetsPage />} />

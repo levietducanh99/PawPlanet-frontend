@@ -4,8 +4,10 @@ import { PlusOutlined, BellOutlined } from '@ant-design/icons';
 import { Badge, Input, Button } from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useUserProfile } from '../../hooks';
+import { useUnreadCount } from '../../hooks/useNotifications';
 import { UserDropdown } from '../UserDropdown';
 import { CreatePostModal } from '../CreatePostModal';
+import { NotificationPopover } from '../NotificationPopover';
 import styles from './Header.module.css';
 
 interface HeaderProps {
@@ -18,6 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { user, loading } = useUserProfile();
+  const { unreadCount } = useUnreadCount(30000); // Poll every 30 seconds
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   const handleLogoClick = () => {
@@ -28,9 +31,6 @@ export const Header: React.FC<HeaderProps> = ({
     setShowCreatePost(true);
   };
 
-  const handleNotificationClick = () => {
-    navigate('/notifications');
-  };
 
   const handleLoginClick = () => {
     navigate('/login');
@@ -38,15 +38,31 @@ export const Header: React.FC<HeaderProps> = ({
 
   // Default values while loading or when no user
   const displayName = user?.username || user?.email?.split('@')[0] || 'User';
-  const notificationCount = 1; // This could come from a separate notifications API
+
+  const onLogoKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleLogoClick();
+    }
+  };
 
   return (
     <header className={styles.header}>
       <div className={styles.headerContainer}>
         {/* Left: Logo & Brand */}
-        <div className={styles.logo} onClick={handleLogoClick}>
-          <div className={styles.logoIcon}>🌍</div>
-          <span className={styles.brandName}>PawPlanet</span>
+        <div
+          className={styles.logo}
+          onClick={handleLogoClick}
+          role="button"
+          tabIndex={0}
+          aria-label="PawPlanet home"
+          onKeyDown={onLogoKeyDown}
+        >
+          <img
+            src="/logo/pawplanet-horizontal-logo.svg"
+            alt="PawPlanet"
+            className={styles.logoImage}
+          />
         </div>
 
         {/* Center: Search Bar - only show when authenticated */}
@@ -74,11 +90,13 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Actions */}
               <div className={styles.actions}>
                 {/* Notifications */}
-                <div className={styles.notificationButton} onClick={handleNotificationClick}>
-                  <Badge count={notificationCount} offset={[-5, 5]}>
-                    <BellOutlined className={styles.bellIcon} />
-                  </Badge>
-                </div>
+                <NotificationPopover>
+                  <div className={styles.notificationButton}>
+                    <Badge count={unreadCount} offset={[-5, 5]}>
+                      <BellOutlined className={styles.bellIcon} />
+                    </Badge>
+                  </div>
+                </NotificationPopover>
 
                 {/* User Dropdown */}
                 {user && !loading ? (
@@ -113,4 +131,3 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
-

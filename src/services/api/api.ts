@@ -3789,6 +3789,43 @@ export const CommentControllerApiAxiosParamCreator = function (configuration?: C
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteComment: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deleteComment', 'id', id)
+            const localVarPath = `/api/v1/comments/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {number} postId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3848,6 +3885,18 @@ export const CommentControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteComment(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteComment(id, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['CommentControllerApi.deleteComment']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @param {number} postId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3879,6 +3928,15 @@ export const CommentControllerApiFactory = function (configuration?: Configurati
         },
         /**
          * 
+         * @param {CommentControllerApiDeleteCommentRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteComment(requestParameters: CommentControllerApiDeleteCommentRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteComment(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {CommentControllerApiGetAllCommentsRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
@@ -3901,6 +3959,20 @@ export interface CommentControllerApiCreateCommentRequest {
      * @memberof CommentControllerApiCreateComment
      */
     readonly commentRequest: CommentRequest
+}
+
+/**
+ * Request parameters for deleteComment operation in CommentControllerApi.
+ * @export
+ * @interface CommentControllerApiDeleteCommentRequest
+ */
+export interface CommentControllerApiDeleteCommentRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof CommentControllerApiDeleteComment
+     */
+    readonly id: number
 }
 
 /**
@@ -3933,6 +4005,17 @@ export class CommentControllerApi extends BaseAPI {
      */
     public createComment(requestParameters: CommentControllerApiCreateCommentRequest, options?: RawAxiosRequestConfig) {
         return CommentControllerApiFp(this.configuration).createComment(requestParameters.commentRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {CommentControllerApiDeleteCommentRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof CommentControllerApi
+     */
+    public deleteComment(requestParameters: CommentControllerApiDeleteCommentRequest, options?: RawAxiosRequestConfig) {
+        return CommentControllerApiFp(this.configuration).deleteComment(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -7659,6 +7742,43 @@ export const PetControllerApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePet: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deletePet', 'id', id)
+            const localVarPath = `/api/v1/pets/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7807,6 +7927,18 @@ export const PetControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deletePet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deletePet(id, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetControllerApi.deletePet']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -7868,6 +8000,15 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
          */
         createPet(requestParameters: PetControllerApiCreatePetRequest, options?: RawAxiosRequestConfig): AxiosPromise<PetProfileDTO> {
             return localVarFp.createPet(requestParameters.createPetRequestDTO, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PetControllerApiDeletePetRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePet(requestParameters: PetControllerApiDeletePetRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deletePet(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -7934,6 +8075,20 @@ export interface PetControllerApiCreatePetRequest {
 }
 
 /**
+ * Request parameters for deletePet operation in PetControllerApi.
+ * @export
+ * @interface PetControllerApiDeletePetRequest
+ */
+export interface PetControllerApiDeletePetRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetControllerApiDeletePet
+     */
+    readonly id: number
+}
+
+/**
  * Request parameters for getPetById operation in PetControllerApi.
  * @export
  * @interface PetControllerApiGetPetByIdRequest
@@ -7995,6 +8150,17 @@ export class PetControllerApi extends BaseAPI {
      */
     public createPet(requestParameters: PetControllerApiCreatePetRequest, options?: RawAxiosRequestConfig) {
         return PetControllerApiFp(this.configuration).createPet(requestParameters.createPetRequestDTO, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PetControllerApiDeletePetRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetControllerApi
+     */
+    public deletePet(requestParameters: PetControllerApiDeletePetRequest, options?: RawAxiosRequestConfig) {
+        return PetControllerApiFp(this.configuration).deletePet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -8533,6 +8699,43 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePost: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('deletePost', 'id', id)
+            const localVarPath = `/api/v1/posts/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -8775,6 +8978,18 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deletePost(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deletePost(id, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PostControllerApi.deletePost']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -8865,6 +9080,15 @@ export const PostControllerApiFactory = function (configuration?: Configuration,
         },
         /**
          * 
+         * @param {PostControllerApiDeletePostRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePost(requestParameters: PostControllerApiDeletePostRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deletePost(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -8930,6 +9154,20 @@ export interface PostControllerApiCreatePostRequest {
      * @memberof PostControllerApiCreatePost
      */
     readonly createPostRequest: CreatePostRequest
+}
+
+/**
+ * Request parameters for deletePost operation in PostControllerApi.
+ * @export
+ * @interface PostControllerApiDeletePostRequest
+ */
+export interface PostControllerApiDeletePostRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PostControllerApiDeletePost
+     */
+    readonly id: number
 }
 
 /**
@@ -9011,6 +9249,17 @@ export class PostControllerApi extends BaseAPI {
      */
     public createPost(requestParameters: PostControllerApiCreatePostRequest, options?: RawAxiosRequestConfig) {
         return PostControllerApiFp(this.configuration).createPost(requestParameters.createPostRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PostControllerApiDeletePostRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PostControllerApi
+     */
+    public deletePost(requestParameters: PostControllerApiDeletePostRequest, options?: RawAxiosRequestConfig) {
+        return PostControllerApiFp(this.configuration).deletePost(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
