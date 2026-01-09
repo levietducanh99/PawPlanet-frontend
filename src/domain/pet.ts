@@ -15,7 +15,7 @@ export interface Pet {
   birthDate?: string;
   gender?: 'male' | 'female';
   description?: string;
-  status: 'Public' | 'For Adoption' | 'Venomous';
+  status: 'Public' | 'For Adoption' | 'Venomous' | 'HIDDEN' | 'PRIVATE';
   ownerId: number;
   ownerUsername: string;
   weight?: number;

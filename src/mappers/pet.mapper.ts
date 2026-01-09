@@ -20,7 +20,7 @@ export const mapPetProfileToPet = (dto: PetProfileDTO): Pet => {
   const avatarUrl = avatarMedia?.url;
 
   // Map status
-  let status: 'Public' | 'For Adoption' | 'Venomous' = 'Public';
+  let status: 'Public' | 'For Adoption' | 'Venomous' | 'HIDDEN' | 'PRIVATE' = 'Public';
   if (dto.status) {
     switch (dto.status.toLowerCase()) {
       case 'for_adoption':
@@ -30,6 +30,12 @@ export const mapPetProfileToPet = (dto: PetProfileDTO): Pet => {
       case 'venomous':
       case 'dangerous':
         status = 'Venomous';
+        break;
+      case 'hidden':
+        status = 'HIDDEN';
+        break;
+      case 'private':
+        status = 'PRIVATE';
         break;
       default:
         status = 'Public';

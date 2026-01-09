@@ -165,7 +165,7 @@ export const EditPetPage: React.FC = () => {
           ? 'Pet profile and avatar updated successfully! 🎉'
           : 'Pet profile updated successfully! 🎉';
         message.success(successMessage);
-        navigate(`/pets/${petId}`);
+        navigate(`/pet/${petId}`);
       } else {
         message.error(updateError || 'Failed to update pet profile');
       }
