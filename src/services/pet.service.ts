@@ -282,18 +282,26 @@ export const petService = {
     }
   },
 
-  // Get user's pets - since there's no direct API, we'll use getUserProfile and extract pet info
-  // or create a method that assumes we can get pets by user ID somehow
-  async getUserPets(_userId?: number): Promise<PetProfileDTO[]> {
+  // Get user's pets by user ID
+  async getUserPets(userId: number): Promise<AllPetsResponseDTO[]> {
     try {
-      // For now, return empty array as we don't have a direct API
-      // In a real implementation, this would be a specific endpoint like /api/v1/users/{userId}/pets
-      console.warn('getUserPets API endpoint not available, returning empty array');
-      return [];
+      console.log('🔵 petService.getUserPets: Fetching pets for user ID:', userId);
+
+      // Use generated API method: GET /api/v1/pets/my-pets/{id}
+      const response = await petApi.getAllUserPets({ id: userId });
+
+      console.log('🔵 petService.getUserPets: Success, pets count:', response.data?.length || 0);
+      return response.data || [];
     } catch (error: any) {
-      console.error('STATUS:', error.response?.status);
-      console.error('BACKEND MESSAGE:', error.response?.data);
-      throw error;
+      console.error('🔴 petService.getUserPets - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('User not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to fetch user pets');
+      }
     }
   },
 

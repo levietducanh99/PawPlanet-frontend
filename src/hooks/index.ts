@@ -5,6 +5,7 @@ export { useLogout } from './useLogout';
 export { useViewProfile, useProfileData } from './useProfile';
 export { useUpdateProfile } from './useUpdateProfile';
 export { useFollowers, useFollowing, useFollowActions } from './useFollow';
+export { useFollowers as useUserFollowersList, useFollowing as useUserFollowingList } from './useFollowers';
 export { useCreatePetWithImages } from './useCreatePetWithImages';
 export { useOptimistic } from './useOptimistic';
 export {

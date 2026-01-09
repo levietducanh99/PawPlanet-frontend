@@ -4,11 +4,8 @@ import type { AllPetsResponseDTO } from '@/services/api';
 
 /**
  * Hook to fetch user's pets
- * @param userId - Optional user ID. If not provided, fetches current user's pets
+ * @param userId - User ID. If not provided, fetches current user's pets
  * @returns pets, loading state, and error
- *
- * TODO: Backend needs to implement GET /api/v1/users/{id}/pets endpoint
- * Currently only supports fetching current user's pets
  */
 export const useUserPets = (userId?: number | null) => {
   const [pets, setPets] = useState<AllPetsResponseDTO[]>([]);
@@ -18,36 +15,39 @@ export const useUserPets = (userId?: number | null) => {
   useEffect(() => {
     let mounted = true;
 
-    console.log('🐾 useUserPets: Starting to fetch pets with generated API...', { userId });
+    const fetchPets = async () => {
+      console.log('🐾 useUserPets: Starting to fetch pets...', { userId });
 
-    // If userId is provided and it's not current user, we need a different API
-    // TODO: Implement backend endpoint GET /api/v1/users/{id}/pets
-    if (userId !== undefined && userId !== null) {
-      // For now, return empty array for other users
-      console.warn('🐾 useUserPets: Fetching pets for other users is not yet implemented in backend');
-      setPets([]);
-      setLoading(false);
-      return;
-    }
+      try {
+        let data: AllPetsResponseDTO[];
 
-    petService.getAllMyPets()
-      .then((data: AllPetsResponseDTO[]) => {
+        if (userId !== undefined && userId !== null) {
+          // Fetch other user's pets using getAllUserPets API
+          console.log('🐾 useUserPets: Fetching pets for user ID:', userId);
+          data = await petService.getUserPets(userId);
+        } else {
+          // Fetch current user's pets
+          console.log('🐾 useUserPets: Fetching current user pets');
+          data = await petService.getAllMyPets();
+        }
+
         console.log('🐾 useUserPets: Received pets data:', data);
         if (mounted) {
           setPets(data || []);
-          console.log('🐾 useUserPets: Set pets to state, count:', data.length);
+          console.log('🐾 useUserPets: Set pets to state, count:', data?.length || 0);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error('🐾 useUserPets: Error:', err);
         if (mounted) setError(err instanceof Error ? err.message : 'Failed to load pets');
-      })
-      .finally(() => {
+      } finally {
         if (mounted) {
           console.log('🐾 useUserPets: Loading finished');
           setLoading(false);
         }
-      });
+      }
+    };
+
+    fetchPets();
 
     return () => {
       mounted = false;
