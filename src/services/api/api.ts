@@ -1322,6 +1322,44 @@ export interface EncyclopediaMediaResponse {
 /**
  * 
  * @export
+ * @interface ExploreItemDTO
+ */
+export interface ExploreItemDTO {
+    /**
+     * 
+     * @type {string}
+     * @memberof ExploreItemDTO
+     */
+    'type'?: string;
+    /**
+     * 
+     * @type {object}
+     * @memberof ExploreItemDTO
+     */
+    'data'?: object;
+}
+/**
+ * 
+ * @export
+ * @interface ExploreResponse
+ */
+export interface ExploreResponse {
+    /**
+     * 
+     * @type {string}
+     * @memberof ExploreResponse
+     */
+    'seed'?: string;
+    /**
+     * 
+     * @type {Array<ExploreItemDTO>}
+     * @memberof ExploreResponse
+     */
+    'items'?: Array<ExploreItemDTO>;
+}
+/**
+ * 
+ * @export
  * @interface ForgotPasswordRequest
  */
 export interface ForgotPasswordRequest {
@@ -1761,6 +1799,91 @@ export interface PagedResultSpeciesResponse {
 /**
  * 
  * @export
+ * @interface PetAdoptionProfileDto
+ */
+export interface PetAdoptionProfileDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetAdoptionProfileDto
+     */
+    'petId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'healthStatus'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PetAdoptionProfileDto
+     */
+    'vaccinated'?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof PetAdoptionProfileDto
+     */
+    'sterilized'?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'personality'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'habits'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'favoriteActivities'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'careInstructions'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'diet'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'adoptionRequirements'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'reasonForAdoption'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof PetAdoptionProfileDto
+     */
+    'updatedAt'?: string;
+}
+/**
+ * 
+ * @export
  * @interface PetMediaDTO
  */
 export interface PetMediaDTO {
@@ -1891,6 +2014,18 @@ export interface PetProfileDTO {
      * @memberof PetProfileDTO
      */
     'canFollow'?: boolean;
+    /**
+     * 
+     * @type {number}
+     * @memberof PetProfileDTO
+     */
+    'likeCount'?: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PetProfileDTO
+     */
+    'postCount'?: number;
     /**
      * 
      * @type {Array<PetMediaDTO>}
@@ -2791,6 +2926,12 @@ export interface UserProfileDTO {
  * @interface UserResponse
  */
 export interface UserResponse {
+    /**
+     * 
+     * @type {number}
+     * @memberof UserResponse
+     */
+    'id'?: number;
     /**
      * 
      * @type {string}
@@ -6150,6 +6291,159 @@ export class EncyclopediaSpeciesAttributesApi extends BaseAPI {
 
 
 /**
+ * ExploreApi - axios parameter creator
+ * @export
+ */
+export const ExploreApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Returns a randomized mix of public posts, pets, and users for discovery. Authentication is optional - logged-in users won\'t see their own content. Use the returned seed for consistent pagination.
+         * @summary Get explore feed
+         * @param {number} [limit] Total number of items to return (default: 30, max: 50)
+         * @param {string} [seed] Seed for consistent random ordering (for pagination)
+         * @param {string} [include] Comma-separated list of entity types to include: post,pet,user (default: all)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getExploreFeed: async (limit?: number, seed?: string, include?: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/v1/explore`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+            if (seed !== undefined) {
+                localVarQueryParameter['seed'] = seed;
+            }
+
+            if (include !== undefined) {
+                localVarQueryParameter['include'] = include;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * ExploreApi - functional programming interface
+ * @export
+ */
+export const ExploreApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = ExploreApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Returns a randomized mix of public posts, pets, and users for discovery. Authentication is optional - logged-in users won\'t see their own content. Use the returned seed for consistent pagination.
+         * @summary Get explore feed
+         * @param {number} [limit] Total number of items to return (default: 30, max: 50)
+         * @param {string} [seed] Seed for consistent random ordering (for pagination)
+         * @param {string} [include] Comma-separated list of entity types to include: post,pet,user (default: all)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getExploreFeed(limit?: number, seed?: string, include?: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ExploreResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getExploreFeed(limit, seed, include, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['ExploreApi.getExploreFeed']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * ExploreApi - factory interface
+ * @export
+ */
+export const ExploreApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = ExploreApiFp(configuration)
+    return {
+        /**
+         * Returns a randomized mix of public posts, pets, and users for discovery. Authentication is optional - logged-in users won\'t see their own content. Use the returned seed for consistent pagination.
+         * @summary Get explore feed
+         * @param {ExploreApiGetExploreFeedRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getExploreFeed(requestParameters: ExploreApiGetExploreFeedRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<ExploreResponse> {
+            return localVarFp.getExploreFeed(requestParameters.limit, requestParameters.seed, requestParameters.include, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for getExploreFeed operation in ExploreApi.
+ * @export
+ * @interface ExploreApiGetExploreFeedRequest
+ */
+export interface ExploreApiGetExploreFeedRequest {
+    /**
+     * Total number of items to return (default: 30, max: 50)
+     * @type {number}
+     * @memberof ExploreApiGetExploreFeed
+     */
+    readonly limit?: number
+
+    /**
+     * Seed for consistent random ordering (for pagination)
+     * @type {string}
+     * @memberof ExploreApiGetExploreFeed
+     */
+    readonly seed?: string
+
+    /**
+     * Comma-separated list of entity types to include: post,pet,user (default: all)
+     * @type {string}
+     * @memberof ExploreApiGetExploreFeed
+     */
+    readonly include?: string
+}
+
+/**
+ * ExploreApi - object-oriented interface
+ * @export
+ * @class ExploreApi
+ * @extends {BaseAPI}
+ */
+export class ExploreApi extends BaseAPI {
+    /**
+     * Returns a randomized mix of public posts, pets, and users for discovery. Authentication is optional - logged-in users won\'t see their own content. Use the returned seed for consistent pagination.
+     * @summary Get explore feed
+     * @param {ExploreApiGetExploreFeedRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof ExploreApi
+     */
+    public getExploreFeed(requestParameters: ExploreApiGetExploreFeedRequest = {}, options?: RawAxiosRequestConfig) {
+        return ExploreApiFp(this.configuration).getExploreFeed(requestParameters.limit, requestParameters.seed, requestParameters.include, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * FollowControllerApi - axios parameter creator
  * @export
  */
@@ -7653,6 +7947,225 @@ export class NotificationsApi extends BaseAPI {
 
 
 /**
+ * PetAdoptionProfileControllerApi - axios parameter creator
+ * @export
+ */
+export const PetAdoptionProfileControllerApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {number} petId 
+         * @param {PetAdoptionProfileDto} petAdoptionProfileDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createProfile: async (petId: number, petAdoptionProfileDto: PetAdoptionProfileDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'petId' is not null or undefined
+            assertParamExists('createProfile', 'petId', petId)
+            // verify required parameter 'petAdoptionProfileDto' is not null or undefined
+            assertParamExists('createProfile', 'petAdoptionProfileDto', petAdoptionProfileDto)
+            const localVarPath = `/api/v1/pets/{petId}/adoption-profile`
+                .replace(`{${"petId"}}`, encodeURIComponent(String(petId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(petAdoptionProfileDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} petId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProfile: async (petId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'petId' is not null or undefined
+            assertParamExists('getProfile', 'petId', petId)
+            const localVarPath = `/api/v1/pets/{petId}/adoption-profile`
+                .replace(`{${"petId"}}`, encodeURIComponent(String(petId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * PetAdoptionProfileControllerApi - functional programming interface
+ * @export
+ */
+export const PetAdoptionProfileControllerApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = PetAdoptionProfileControllerApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {number} petId 
+         * @param {PetAdoptionProfileDto} petAdoptionProfileDto 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async createProfile(petId: number, petAdoptionProfileDto: PetAdoptionProfileDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PetAdoptionProfileDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.createProfile(petId, petAdoptionProfileDto, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetAdoptionProfileControllerApi.createProfile']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} petId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getProfile(petId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PetAdoptionProfileDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getProfile(petId, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetAdoptionProfileControllerApi.getProfile']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * PetAdoptionProfileControllerApi - factory interface
+ * @export
+ */
+export const PetAdoptionProfileControllerApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = PetAdoptionProfileControllerApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {PetAdoptionProfileControllerApiCreateProfileRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        createProfile(requestParameters: PetAdoptionProfileControllerApiCreateProfileRequest, options?: RawAxiosRequestConfig): AxiosPromise<PetAdoptionProfileDto> {
+            return localVarFp.createProfile(requestParameters.petId, requestParameters.petAdoptionProfileDto, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PetAdoptionProfileControllerApiGetProfileRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getProfile(requestParameters: PetAdoptionProfileControllerApiGetProfileRequest, options?: RawAxiosRequestConfig): AxiosPromise<PetAdoptionProfileDto> {
+            return localVarFp.getProfile(requestParameters.petId, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for createProfile operation in PetAdoptionProfileControllerApi.
+ * @export
+ * @interface PetAdoptionProfileControllerApiCreateProfileRequest
+ */
+export interface PetAdoptionProfileControllerApiCreateProfileRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetAdoptionProfileControllerApiCreateProfile
+     */
+    readonly petId: number
+
+    /**
+     * 
+     * @type {PetAdoptionProfileDto}
+     * @memberof PetAdoptionProfileControllerApiCreateProfile
+     */
+    readonly petAdoptionProfileDto: PetAdoptionProfileDto
+}
+
+/**
+ * Request parameters for getProfile operation in PetAdoptionProfileControllerApi.
+ * @export
+ * @interface PetAdoptionProfileControllerApiGetProfileRequest
+ */
+export interface PetAdoptionProfileControllerApiGetProfileRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetAdoptionProfileControllerApiGetProfile
+     */
+    readonly petId: number
+}
+
+/**
+ * PetAdoptionProfileControllerApi - object-oriented interface
+ * @export
+ * @class PetAdoptionProfileControllerApi
+ * @extends {BaseAPI}
+ */
+export class PetAdoptionProfileControllerApi extends BaseAPI {
+    /**
+     * 
+     * @param {PetAdoptionProfileControllerApiCreateProfileRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetAdoptionProfileControllerApi
+     */
+    public createProfile(requestParameters: PetAdoptionProfileControllerApiCreateProfileRequest, options?: RawAxiosRequestConfig) {
+        return PetAdoptionProfileControllerApiFp(this.configuration).createProfile(requestParameters.petId, requestParameters.petAdoptionProfileDto, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PetAdoptionProfileControllerApiGetProfileRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetAdoptionProfileControllerApi
+     */
+    public getProfile(requestParameters: PetAdoptionProfileControllerApiGetProfileRequest, options?: RawAxiosRequestConfig) {
+        return PetAdoptionProfileControllerApiFp(this.configuration).getProfile(requestParameters.petId, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
  * PetControllerApi - axios parameter creator
  * @export
  */
@@ -7784,6 +8297,43 @@ export const PetControllerApiAxiosParamCreator = function (configuration?: Confi
          */
         getAllMyPets: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/pets/my-pets`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllUserPets: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('getAllUserPets', 'id', id)
+            const localVarPath = `/api/v1/pets/my-pets/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -7954,6 +8504,18 @@ export const PetControllerApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async getAllUserPets(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<AllPetsResponseDTO>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAllUserPets(id, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetControllerApi.getAllUserPets']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async getPetById(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<PetProfileDTO>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.getPetById(id, options);
             const index = configuration?.serverIndex ?? 0;
@@ -8017,6 +8579,15 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
          */
         getAllMyPets(options?: RawAxiosRequestConfig): AxiosPromise<Array<AllPetsResponseDTO>> {
             return localVarFp.getAllMyPets(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PetControllerApiGetAllUserPetsRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getAllUserPets(requestParameters: PetControllerApiGetAllUserPetsRequest, options?: RawAxiosRequestConfig): AxiosPromise<Array<AllPetsResponseDTO>> {
+            return localVarFp.getAllUserPets(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8084,6 +8655,20 @@ export interface PetControllerApiDeletePetRequest {
      * 
      * @type {number}
      * @memberof PetControllerApiDeletePet
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for getAllUserPets operation in PetControllerApi.
+ * @export
+ * @interface PetControllerApiGetAllUserPetsRequest
+ */
+export interface PetControllerApiGetAllUserPetsRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetControllerApiGetAllUserPets
      */
     readonly id: number
 }
@@ -8171,6 +8756,17 @@ export class PetControllerApi extends BaseAPI {
      */
     public getAllMyPets(options?: RawAxiosRequestConfig) {
         return PetControllerApiFp(this.configuration).getAllMyPets(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PetControllerApiGetAllUserPetsRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetControllerApi
+     */
+    public getAllUserPets(requestParameters: PetControllerApiGetAllUserPetsRequest, options?: RawAxiosRequestConfig) {
+        return PetControllerApiFp(this.configuration).getAllUserPets(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

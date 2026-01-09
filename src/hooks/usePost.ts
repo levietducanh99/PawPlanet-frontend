@@ -12,24 +12,41 @@ import {
 } from '@/services/post.service';
 import { togglePostLike } from '@/services/like.service';
 import { getCommentsByPostId, createComment } from '@/services/comment.service';
-import {
-  getPetProfile,
-  getPetTimeline,
-  getUserPets,
-  sharePost
-} from '@/services/post.service.mock';
 import type { Post, PetTimeline, CreatePostRequest, PetProfile } from '@/domain/post';
 import type { Comment } from '@/services/comment.service';
 export const usePetProfile = (petId: number | null) => {
   const [profile, setProfile] = useState<PetProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const loadProfile = useCallback(async () => {
     if (!petId) return;
+
     try {
       setLoading(true);
       setError(null);
-      const profileData = await getPetProfile(petId);
+
+      // Pet profile API isn't fully mapped to this domain model yet.
+      // Return an empty-safe structure (no mock data) until service + mapper are implemented.
+      const profileData: PetProfile = {
+        id: petId,
+        name: '',
+        breed: '',
+        age: '',
+        gender: 'Male',
+        size: 'Medium',
+        weight: '',
+        color: '',
+        about: '',
+        avatarUrl: undefined,
+        photoLibrary: [],
+        isVisible: true,
+        lookingForAdoption: false,
+        specialTraits: [],
+        importantDates: {},
+        caretakers: [],
+      };
+
       setProfile(profileData);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to load pet profile';
@@ -38,69 +55,102 @@ export const usePetProfile = (petId: number | null) => {
       setLoading(false);
     }
   }, [petId]);
-  useEffect(() => { loadProfile(); }, [loadProfile]);
+
+  useEffect(() => {
+    loadProfile();
+  }, [loadProfile]);
+
   return { profile, loading, error, refetch: loadProfile };
 };
+
 export const usePetTimeline = (petId: number | null) => {
   const [timeline, setTimeline] = useState<PetTimeline | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const loadTimeline = useCallback(async (refresh = false) => {
-    if (!petId) return;
-    try {
-      if (refresh) setRefreshing(true); else setLoading(true);
-      setError(null);
-      const timelineData = await getPetTimeline(petId, 1, 20);
-      setTimeline(timelineData);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load timeline');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [petId]);
-  useEffect(() => { if (petId) loadTimeline(); }, [loadTimeline, petId]);
+
+  const loadTimeline = useCallback(
+    async (refresh = false) => {
+      if (!petId) return;
+
+      try {
+        if (refresh) setRefreshing(true);
+        else setLoading(true);
+
+        setError(null);
+
+        // Timeline API isn't wired yet; return empty (no mock data).
+        const timelineData: PetTimeline = {
+          petId,
+          posts: [],
+          totalCount: 0,
+          hasMore: false,
+        };
+
+        setTimeline(timelineData);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load timeline');
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    },
+    [petId]
+  );
+
+  useEffect(() => {
+    if (petId) loadTimeline();
+  }, [loadTimeline, petId]);
+
   const refresh = useCallback(() => loadTimeline(true), [loadTimeline]);
+
   return { timeline, loading, error, refreshing, refresh, refetch: loadTimeline };
 };
+
 export const useUserPets = () => {
   const [pets, setPets] = useState<PetProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
   const loadUserPets = useCallback(async () => {
     try {
       setLoading(true);
-      const userPets = await getUserPets();
-      setPets(userPets);
+      setPets([]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed');
     } finally {
       setLoading(false);
     }
   }, []);
-  useEffect(() => { loadUserPets(); }, [loadUserPets]);
+
+  useEffect(() => {
+    loadUserPets();
+  }, [loadUserPets]);
+
   return { pets, loading, error, refetch: loadUserPets };
 };
+
 export const usePostActions = () => {
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
+
   const likePost = useCallback(async (postId: number) => {
     const key = `like-${postId}`;
     try {
-      setLoading(prev => ({ ...prev, [key]: true }));
+      setLoading((prev) => ({ ...prev, [key]: true }));
       return await togglePostLike(postId);
     } finally {
-      setLoading(prev => ({ ...prev, [key]: false }));
+      setLoading((prev) => ({ ...prev, [key]: false }));
     }
   }, []);
 
   const sharePostAction = useCallback(async (postId: number) => {
     const key = `share-${postId}`;
     try {
-      setLoading(prev => ({ ...prev, [key]: true }));
-      await sharePost(postId);
+      setLoading((prev) => ({ ...prev, [key]: true }));
+      // Share endpoint isn't wired; no-op (no mock data)
+      void postId;
     } finally {
-      setLoading(prev => ({ ...prev, [key]: false }));
+      setLoading((prev) => ({ ...prev, [key]: false }));
     }
   }, []);
 
@@ -267,4 +317,3 @@ export const usePostComments = (postId: number | null) => {
     addComment,
   };
 };
-

@@ -19,6 +19,7 @@ import { EditPetPage } from './pages/EditPetPage';
 import { AuthProvider } from '@/context/AuthContext';
 import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
 import { LandingPage } from '@/pages/LandingPage';
+import { ExplorePage } from '@/features/explore';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -67,6 +68,7 @@ function App() {
               <Route path="/" element={<MainLayout />}>
                 <Route index element={<HomePage />} />
                 <Route path="feed" element={<MainFeedPage />} />
+                <Route path="explore" element={<ExplorePage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="post/:postId" element={<PostDetailPage />} />
                 <Route path="create-pet" element={<CreatePetPage />} />

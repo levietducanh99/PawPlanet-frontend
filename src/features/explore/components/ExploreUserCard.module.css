@@ -1,0 +1,104 @@
+.userCard {
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: white;
+  break-inside: avoid;
+  margin-bottom: 16px;
+  height: auto !important;
+}
+
+.userCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+.content {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  flex-basis: 0;
+}
+
+.username {
+  margin: 0 0 8px 0 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  /* Prevent per-character wrapping that can look like vertical text */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  /* Avoid break-all/anywhere behavior in narrow cards */
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.followButton {
+  flex-shrink: 0;
+  border-radius: 20px;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .userCard {
+    margin-bottom: 12px;
+  }
+
+  .content {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 48px !important;
+    height: 48px !important;
+  }
+
+  .stats {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 420px) {
+  .content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .followButton {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+}

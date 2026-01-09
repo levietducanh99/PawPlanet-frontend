@@ -1,0 +1,57 @@
+.gridContainer {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* CSS Grid Masonry Layout */
+.masonryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  grid-auto-flow: dense;
+}
+
+.loadMoreTrigger {
+  height: 1px;
+  margin-top: 40px;
+}
+
+/* Responsive breakpoints */
+@media (min-width: 1400px) {
+  .masonryGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .masonryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .masonryGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 480px) and (max-width: 767px) {
+  .masonryGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 479px) {
+  .masonryGrid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .gridContainer {
+    padding: 16px;
+  }
+}
+
