@@ -3,18 +3,20 @@
  * Displays another user's public profile with their pets and posts
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Row, Col, Typography, Tabs, Flex, Button, Card, Spin, Alert } from 'antd';
+import { Row, Col, Typography, Tabs, Flex, Button, Card, Spin, Alert, message } from 'antd';
 import { UserOutlined, HeartOutlined, PictureOutlined, ArrowLeftOutlined, TeamOutlined } from '@ant-design/icons';
 import { motion } from 'motion/react';
-import { useUserById, useUserPosts, useUserPets, useUserFollowersList, useUserFollowingList } from '@/hooks';
+import { useUserById, useUserPosts, useUserPets, useUserFollowersList, useUserFollowingList, usePostActions } from '@/hooks';
 import PostCard from '@/components/PostCard';
+import { CommentModal } from '@/components/CommentDrawer/CommentDrawer';
 import { ErrorMessage } from '@/components/ErrorMessage';
 import { Loading } from '@/components/Loading';
 import { FollowButton } from '@/components/FollowButton';
 import { UserListCard } from '@/components/UserListCard';
 import { pageVariants } from '@/animations/variants';
+import type { Post } from '@/domain/post';
 import styles from './ViewUserPage.module.css';
 
 const { Title, Text } = Typography;
@@ -31,6 +33,19 @@ export const ViewUserPage = () => {
   const { pets, loading: petsLoading } = useUserPets(parsedUserId);
   const { followers, loading: followersLoading } = useUserFollowersList(parsedUserId);
   const { following, loading: followingLoading } = useUserFollowingList(parsedUserId);
+  const { likePost } = usePostActions();
+
+  // State for comment modal
+  const [commentDrawerOpen, setCommentDrawerOpen] = useState(false);
+  const [activePostId, setActivePostId] = useState<number | null>(null);
+
+  // Optimistic posts state for immediate UI updates
+  const [optimisticPosts, setOptimisticPosts] = React.useState<Post[]>(posts);
+
+  // Sync optimistic posts with fetched posts
+  React.useEffect(() => {
+    setOptimisticPosts(posts);
+  }, [posts]);
 
   // Fetch user when userId changes
   React.useEffect(() => {
@@ -40,19 +55,69 @@ export const ViewUserPage = () => {
   }, [parsedUserId, fetchUser]);
 
   // Post action handlers
-  const handleLike = (postId: number) => {
-    console.log('Like post:', postId);
-    // TODO: Implement like functionality
+  const handleLike = async (postId: number) => {
+    try {
+      // Optimistic update
+      setOptimisticPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === postId
+            ? {
+                ...p,
+                isLiked: !p.isLiked,
+                likeCount: p.isLiked ? p.likeCount - 1 : p.likeCount + 1,
+              }
+            : p
+        )
+      );
+
+      // Call API
+      const result = await likePost(postId);
+
+      // Update with actual result from server
+      if (result) {
+        setOptimisticPosts((prevPosts) =>
+          prevPosts.map((p) =>
+            p.id === postId
+              ? {
+                  ...p,
+                  isLiked: result.liked,
+                  likeCount: result.likeCount,
+                }
+              : p
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Failed to toggle like:', error);
+      // Revert optimistic update on error
+      setOptimisticPosts(posts);
+      message.error('Failed to update like. Please try again.');
+    }
   };
 
   const handleComment = (postId: number) => {
-    console.log('Comment on post:', postId);
-    // TODO: Implement comment functionality
+    setActivePostId(postId);
+    setCommentDrawerOpen(true);
+  };
+
+  const handleCommentClose = (updatedCommentCount?: number) => {
+    if (updatedCommentCount !== undefined && activePostId) {
+      // Update comment count in optimistic posts
+      setOptimisticPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === activePostId
+            ? { ...p, commentCount: updatedCommentCount }
+            : p
+        )
+      );
+    }
+    setCommentDrawerOpen(false);
+    setActivePostId(null);
   };
 
   const handleShare = (postId: number) => {
     console.log('Share post:', postId);
-    // TODO: Implement share functionality
+    message.success('Post shared! (Feature coming soon)');
   };
 
   if (userLoading) {
@@ -174,7 +239,7 @@ export const ViewUserPage = () => {
             <div style={{ textAlign: 'center', padding: '48px 0' }}>
               <Spin size="large" />
             </div>
-          ) : posts.length === 0 ? (
+          ) : optimisticPosts.length === 0 ? (
             <Alert
               type="info"
               description={`${user.username} hasn't posted anything yet.`}
@@ -182,7 +247,7 @@ export const ViewUserPage = () => {
             />
           ) : (
             <Flex vertical gap="large" style={{ width: '100%' }}>
-              {posts.map((post) => (
+              {optimisticPosts.map((post) => (
                 <PostCard
                   key={post.id}
                   post={post}
@@ -298,6 +363,14 @@ export const ViewUserPage = () => {
           )}
         </TabPane>
       </Tabs>
+
+      {/* Comment Modal */}
+      <CommentModal
+        postId={activePostId}
+        open={commentDrawerOpen}
+        onClose={handleCommentClose}
+        title={activePostId ? `${user.username}'s Post` : 'Comments'}
+      />
     </motion.div>
   );
 };
