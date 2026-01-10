@@ -78,7 +78,7 @@ export const encyclopediaService = {
 
   async getSpeciesBySlug(slug: string): Promise<EncyclopediaSpeciesDetail> {
     // Search for species by slug using the search endpoint, then fetch detail by id
-    const res = await speciesApi.search({ q: slug, page: 0, size: 10 });
+    const res = await speciesApi.search1({ q: slug, page: 0, size: 10 });
     const items = res.data?.result?.items ?? [];
     const match = (items as any[]).find((it) => it.slug === slug || String(it.id) === slug);
     if (match?.id) {
@@ -96,7 +96,7 @@ export const encyclopediaService = {
   },
 
   async searchSpecies(q: string, params: ListSpeciesParams = {}): Promise<PagedResult<EncyclopediaSpeciesListItem>> {
-    const res = await speciesApi.search({ q, page: params.page, size: params.size });
+    const res = await speciesApi.search1({ q, page: params.page, size: params.size });
     return mapPagedSpecies(res.data?.result);
   },
 
@@ -147,7 +147,7 @@ export const encyclopediaService = {
   },
 
   async globalSearch(q: string): Promise<EncyclopediaSearchResult> {
-    const res = await searchApi.search1({ q });
+    const res = await searchApi.search2({ q });
     const dto = res.data?.result;
     return mapSearch(dto ?? { items: [] });
   },
@@ -158,5 +158,20 @@ export const encyclopediaService = {
 
   async addMediaToBreed(breedId: number, request: AddEncyclopediaMediaRequest): Promise<void> {
     await mediaApi.addMediaToBreed({ breedId, addEncyclopediaMediaRequest: request });
+  },
+
+  async deleteEncyclopediaMedia(mediaId: number): Promise<void> {
+    try {
+      await mediaApi.deleteEncyclopediaMedia({ mediaId });
+    } catch (error: unknown) {
+      console.error('Failed to delete encyclopedia media:', error);
+      const err = error as { response?: { status?: number; data?: { message?: string } } };
+      if (err.response?.status === 403) {
+        throw new Error('Only admins can delete encyclopedia media');
+      } else if (err.response?.status === 404) {
+        throw new Error('Media not found');
+      }
+      throw new Error(err.response?.data?.message || 'Failed to delete media');
+    }
   },
 };

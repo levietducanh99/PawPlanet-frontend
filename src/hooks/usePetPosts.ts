@@ -26,9 +26,10 @@ export const usePetPosts = (petId: number | null | undefined) => {
 
         console.log('🔵 usePetPosts: Posts loaded:', mappedPosts.length);
         setPosts(mappedPosts);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('🔴 usePetPosts: Error loading posts:', err);
-        setError(err.message || 'Failed to load posts');
+        const e = err as { message?: string };
+        setError(e?.message || 'Failed to load posts');
         setPosts([]);
       } finally {
         setLoading(false);
@@ -46,8 +47,9 @@ export const usePetPosts = (petId: number | null | undefined) => {
         const mappedPosts = mapPosts(postResponses);
         setPosts(mappedPosts);
         setError(null);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load posts');
+      } catch (err: unknown) {
+        const e = err as { message?: string };
+        setError(e?.message || 'Failed to load posts');
         setPosts([]);
       } finally {
         setLoading(false);
@@ -62,4 +64,3 @@ export const usePetPosts = (petId: number | null | undefined) => {
     refetch
   };
 };
-

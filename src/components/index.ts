@@ -14,6 +14,7 @@ export { InputField } from './InputField/InputField';
 export { SocialButton } from './SocialButton/SocialButton';
 export { AvatarUpload } from './AvatarUpload/AvatarUpload';
 export { SearchBar } from './SearchBar/SearchBar';
+export { GlobalSearchInput } from './GlobalSearchInput';
 export { PetCreationDebugComponent } from './PetCreationDebugComponent';
 
 // Post Components

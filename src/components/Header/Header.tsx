@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PlusOutlined, BellOutlined } from '@ant-design/icons';
-import { Badge, Input, Button } from 'antd';
+import { Badge, Button } from 'antd';
 import { useAuth } from '../../hooks/useAuth';
 import { useUserProfile } from '../../hooks';
 import { useUnreadCount } from '../../hooks/useNotifications';
 import { UserDropdown } from '../UserDropdown';
 import { CreatePostModal } from '../CreatePostModal';
 import { NotificationPopover } from '../NotificationPopover';
+import { GlobalSearchInput } from '../GlobalSearchInput';
 import styles from './Header.module.css';
 
 interface HeaderProps {
-  onSearch?: (value: string) => void;
+  // No props needed - GlobalSearchInput handles search internally
 }
 
-export const Header: React.FC<HeaderProps> = ({
-  onSearch,
-}) => {
+export const Header: React.FC<HeaderProps> = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { user, loading } = useUserProfile();
@@ -70,13 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
         {/* Center: Search Bar - only show when authenticated */}
         {isAuthenticated && (
           <div className={styles.searchContainer}>
-            <Input
-              className={styles.searchInput}
-              prefix={<span className={styles.searchIcon}>🔍</span>}
-              placeholder="Search for pets, friends, or paw-some moments..."
-              size="large"
-              onChange={(e) => onSearch?.(e.target.value)}
-            />
+            <GlobalSearchInput />
           </div>
         )}
 

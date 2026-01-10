@@ -30,7 +30,9 @@ export const useViewPet = (petId: number | null) => {
 
   // Computed properties for easier usage in components
   const isOwner = useMemo(() => {
-    return pet?.isOwner || (user?.id && pet?.ownerId === user.id);
+    // Ensure boolean return value and avoid JS truthy pitfalls
+    const ownerFlag = !!pet?.isOwner || (!!user?.id && pet?.ownerId === user?.id);
+    return Boolean(ownerFlag);
   }, [pet?.isOwner, pet?.ownerId, user?.id]);
 
   const canFollow = useMemo(() => {

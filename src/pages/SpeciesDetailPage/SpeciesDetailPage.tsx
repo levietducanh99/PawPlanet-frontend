@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Alert, Typography, Row, Col, Card } from 'antd';
+import { Alert, Typography, Row, Col, Card, message } from 'antd';
 import { pageVariants } from '@/animations/variants';
 import {
   HeroBanner,
@@ -80,6 +80,23 @@ export const SpeciesDetailPage: React.FC = () => {
   const galleryImages = useMemo(() => {
     return (species?.galleryPreview ?? []).map((m) => m.url).filter(Boolean);
   }, [species?.galleryPreview]);
+
+  const galleryMediaItems = useMemo(() => {
+    return (species?.galleryPreview ?? []).filter(Boolean).map((m) => ({ id: m.id, url: m.url }));
+  }, [species?.galleryPreview]);
+
+  const handleDeleteEncyclopediaImage = async (mediaId: number) => {
+    try {
+      const { encyclopediaService } = await import('@/services/encyclopedia.service');
+      await encyclopediaService.deleteEncyclopediaMedia(mediaId);
+      message.success('Media deleted');
+      window.location.reload();
+    } catch (err: unknown) {
+      console.error('Failed to delete encyclopedia media', err);
+      const e = err as { message?: string };
+      message.error(e?.message || 'Failed to delete media');
+    }
+  };
 
   const {
     data: breedsList,
@@ -216,12 +233,14 @@ export const SpeciesDetailPage: React.FC = () => {
             {/* Photo Gallery */}
             <PhotoGallery
               images={galleryImages}
+              mediaItems={galleryMediaItems}
               altPrefix={species.name}
               isAdmin={userIsAdmin}
               entityType="species"
               entityId={species.id}
               entitySlug={species.slug}
               onImageAdded={() => window.location.reload()}
+              onDeleteImage={handleDeleteEncyclopediaImage}
             />
 
             {/* Breeds */}
@@ -279,12 +298,14 @@ export const SpeciesDetailPage: React.FC = () => {
           >
             <PhotoGallery
               images={galleryImages}
+              mediaItems={galleryMediaItems}
               altPrefix={species.name}
               isAdmin={userIsAdmin}
               entityType="species"
               entityId={species.id}
               entitySlug={species.slug}
               onImageAdded={() => window.location.reload()}
+              onDeleteImage={handleDeleteEncyclopediaImage}
             />
           </motion.div>
         )}

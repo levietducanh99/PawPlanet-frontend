@@ -436,6 +436,29 @@ export const petService = {
         throw new Error(error.response?.data?.message || error.message || 'Failed to fetch following pets');
       }
     }
+  },
+
+  // Delete pet media (gallery image)
+  async deletePetMedia(petId: number, mediaId: number): Promise<void> {
+    try {
+      console.log('🔵 petService.deletePetMedia: Deleting media', mediaId, 'from pet', petId);
+
+      await petApi.deletePetMedia({ petId, mediaId });
+
+      console.log('🔵 petService.deletePetMedia: Success');
+    } catch (error: any) {
+      console.error('🔴 petService.deletePetMedia - ERROR:', error.response?.status, error.response?.data);
+
+      if (error.response?.status === 404) {
+        throw new Error('Pet or media not found');
+      } else if (error.response?.status === 401) {
+        throw new Error('Authentication required');
+      } else if (error.response?.status === 403) {
+        throw new Error('You do not have permission to delete this media');
+      } else {
+        throw new Error(error.response?.data?.message || error.message || 'Failed to delete media');
+      }
+    }
   }
 };
 
