@@ -39,15 +39,21 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
   const handleSubmit = async (values: RegisterCredentials) => {
     clearError();
 
-    const result = await register(values);
+    try {
+      const result = await register(values);
 
-    if (result?.success) {
-      message.success('Registration successful! Welcome to PawPlanet!');
-      form.resetFields();
-      navigate('/home');
-    } else {
-      // Show error message notification
-      message.error('Registration failed. Please check your information and try again.');
+      if (result?.success) {
+        message.success('Registration successful! Welcome to PawPlanet!');
+        form.resetFields();
+        navigate('/home');
+      } else {
+        // Error is already set in useRegister hook, show message
+        const errorMsg = error?.message || 'Registration failed. Please check your information and try again.';
+        message.error(errorMsg);
+      }
+    } catch (err) {
+      console.error('Registration error:', err);
+      message.error('An unexpected error occurred. Please try again.');
     }
   };
 

@@ -40,17 +40,29 @@ export const useRegister = () => {
 
       if (result.success) {
         setIsRegistered(true);
+        return {
+          success: result.success,
+          user: result.user!
+        };
+      } else {
+        const error: AuthError = { message: 'Registration failed', code: 'REGISTER_FAILED' };
+        setError(error);
+        setIsRegistered(false);
+        return {
+          success: false,
+          user: { id: 0, email: '', username: '' }
+        };
       }
 
-      return {
-        success: result.success,
-        user: result.user!
-      };
-
     } catch (authError) {
-      setError(authError as AuthError);
+      const error = authError as AuthError;
+      setError(error);
       setIsRegistered(false);
-      return null;
+      // Return failed result instead of null
+      return {
+        success: false,
+        user: { id: 0, email: '', username: '' }
+      };
     } finally {
       setLoading(false);
     }

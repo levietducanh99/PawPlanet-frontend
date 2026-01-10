@@ -6,7 +6,7 @@
 import { AuthenticationApi } from '@/services/api/api';
 import { apiClient } from '@/services/apiConfig';
 import type { LoginCredentials, LoginResult, AuthError, RegisterCredentials } from '@/domain/auth';
-import { mapToLoginRequest, mapLoginResult } from '@/mappers/auth.mapper';
+import { mapToLoginRequest, mapLoginResult, mapToRegisterRequest } from '@/mappers/auth.mapper';
 
 class AuthService {
   private authApi: AuthenticationApi;
@@ -115,26 +115,34 @@ class AuthService {
    */
   async register(credentials: RegisterCredentials): Promise<LoginResult> {
     try {
-      // For now, return mock response since register API might not be implemented
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Mock delay
+      const registerRequest = mapToRegisterRequest(credentials);
+      console.log('Sending register request:', { username: registerRequest.username, email: registerRequest.email });
 
-      return {
-        success: true,
-        token: {
-          token: 'mock_token_' + Date.now(),
-          authenticated: true
-        },
-        user: {
-          id: Date.now(),
-          username: credentials.username,
+      const response = await this.authApi.register({
+        registerRequest
+      });
+
+      console.log('Register API response received:', response.data);
+
+      // Register returns user entity, we need to login after successful registration
+      if (response.data.result) {
+        // Auto-login after successful registration
+        console.log('Registration successful, auto-login...');
+        const loginResult = await this.login({
           email: credentials.email,
-          avatarUrl: undefined,
-          bio: undefined
-        }
-      };
+          password: credentials.password
+        });
+
+        return loginResult;
+      }
+
+      throw new Error('Registration failed: no user data returned');
+
     } catch (error: any) {
+      console.error('Registration failed:', error);
+
       const authError: AuthError = {
-        message: error.response?.data?.message || 'Registration failed',
+        message: error.response?.data?.message || 'Registration failed. Please try again.',
         code: error.response?.status?.toString() || 'REGISTER_FAILED'
       };
 
