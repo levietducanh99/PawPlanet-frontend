@@ -1373,6 +1373,25 @@ export interface ForgotPasswordRequest {
 /**
  * 
  * @export
+ * @interface GlobalSearchResponse
+ */
+export interface GlobalSearchResponse {
+    /**
+     * 
+     * @type {Array<SearchUserDTO>}
+     * @memberof GlobalSearchResponse
+     */
+    'users'?: Array<SearchUserDTO>;
+    /**
+     * 
+     * @type {Array<SearchPetDTO>}
+     * @memberof GlobalSearchResponse
+     */
+    'pets'?: Array<SearchPetDTO>;
+}
+/**
+ * 
+ * @export
  * @interface IntrospectRequest
  */
 export interface IntrospectRequest {
@@ -2275,6 +2294,43 @@ export interface ResetPasswordRequest {
 /**
  * 
  * @export
+ * @interface SearchPetDTO
+ */
+export interface SearchPetDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchPetDTO
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchPetDTO
+     */
+    'name'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchPetDTO
+     */
+    'species'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchPetDTO
+     */
+    'breed'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchPetDTO
+     */
+    'avatarUrl'?: string;
+}
+/**
+ * 
+ * @export
  * @interface SearchResponse
  */
 export interface SearchResponse {
@@ -2325,6 +2381,37 @@ export interface SearchResultItem {
      * 
      * @type {string}
      * @memberof SearchResultItem
+     */
+    'avatarUrl'?: string;
+}
+/**
+ * 
+ * @export
+ * @interface SearchUserDTO
+ */
+export interface SearchUserDTO {
+    /**
+     * 
+     * @type {number}
+     * @memberof SearchUserDTO
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchUserDTO
+     */
+    'username'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchUserDTO
+     */
+    'fullName'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof SearchUserDTO
      */
     'avatarUrl'?: string;
 }
@@ -5134,6 +5221,44 @@ export const EncyclopediaMediaApiAxiosParamCreator = function (configuration?: C
             };
         },
         /**
+         * Chỉ admin mới có thể xóa ảnh/video khỏi encyclopedia (soft delete).
+         * @summary [ADMIN] Xóa media khỏi encyclopedia
+         * @param {number} mediaId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEncyclopediaMedia: async (mediaId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'mediaId' is not null or undefined
+            assertParamExists('deleteEncyclopediaMedia', 'mediaId', mediaId)
+            const localVarPath = `/api/v1/encyclopedia/media/{mediaId}`
+                .replace(`{${"mediaId"}}`, encodeURIComponent(String(mediaId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @summary Lấy gallery của breed với phân trang
          * @param {number} breedId 
@@ -5330,6 +5455,19 @@ export const EncyclopediaMediaApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
+         * Chỉ admin mới có thể xóa ảnh/video khỏi encyclopedia (soft delete).
+         * @summary [ADMIN] Xóa media khỏi encyclopedia
+         * @param {number} mediaId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deleteEncyclopediaMedia(mediaId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deleteEncyclopediaMedia(mediaId, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['EncyclopediaMediaApi.deleteEncyclopediaMedia']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
          * 
          * @summary Lấy gallery của breed với phân trang
          * @param {number} breedId 
@@ -5413,6 +5551,16 @@ export const EncyclopediaMediaApiFactory = function (configuration?: Configurati
          */
         addMediaToSpecies(requestParameters: EncyclopediaMediaApiAddMediaToSpeciesRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseAddEncyclopediaMediaResponse> {
             return localVarFp.addMediaToSpecies(requestParameters.speciesId, requestParameters.addEncyclopediaMediaRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Chỉ admin mới có thể xóa ảnh/video khỏi encyclopedia (soft delete).
+         * @summary [ADMIN] Xóa media khỏi encyclopedia
+         * @param {EncyclopediaMediaApiDeleteEncyclopediaMediaRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deleteEncyclopediaMedia(requestParameters: EncyclopediaMediaApiDeleteEncyclopediaMediaRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deleteEncyclopediaMedia(requestParameters.mediaId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -5508,6 +5656,20 @@ export interface EncyclopediaMediaApiAddMediaToSpeciesRequest {
      * @memberof EncyclopediaMediaApiAddMediaToSpecies
      */
     readonly addEncyclopediaMediaRequest: AddEncyclopediaMediaRequest
+}
+
+/**
+ * Request parameters for deleteEncyclopediaMedia operation in EncyclopediaMediaApi.
+ * @export
+ * @interface EncyclopediaMediaApiDeleteEncyclopediaMediaRequest
+ */
+export interface EncyclopediaMediaApiDeleteEncyclopediaMediaRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof EncyclopediaMediaApiDeleteEncyclopediaMedia
+     */
+    readonly mediaId: number
 }
 
 /**
@@ -5638,6 +5800,18 @@ export class EncyclopediaMediaApi extends BaseAPI {
     }
 
     /**
+     * Chỉ admin mới có thể xóa ảnh/video khỏi encyclopedia (soft delete).
+     * @summary [ADMIN] Xóa media khỏi encyclopedia
+     * @param {EncyclopediaMediaApiDeleteEncyclopediaMediaRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof EncyclopediaMediaApi
+     */
+    public deleteEncyclopediaMedia(requestParameters: EncyclopediaMediaApiDeleteEncyclopediaMediaRequest, options?: RawAxiosRequestConfig) {
+        return EncyclopediaMediaApiFp(this.configuration).deleteEncyclopediaMedia(requestParameters.mediaId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 
      * @summary Lấy gallery của breed với phân trang
      * @param {EncyclopediaMediaApiGetBreedGalleryRequest} requestParameters Request parameters.
@@ -5689,9 +5863,9 @@ export const EncyclopediaSearchApiAxiosParamCreator = function (configuration?: 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search1: async (q: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        search2: async (q: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'q' is not null or undefined
-            assertParamExists('search1', 'q', q)
+            assertParamExists('search2', 'q', q)
             const localVarPath = `/api/v1/encyclopedia/search`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5740,10 +5914,10 @@ export const EncyclopediaSearchApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async search1(q: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseSearchResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.search1(q, options);
+        async search2(q: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseSearchResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.search2(q, options);
             const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['EncyclopediaSearchApi.search1']?.[index]?.url;
+            const operationBasePath = operationServerMap['EncyclopediaSearchApi.search2']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
     }
@@ -5759,26 +5933,26 @@ export const EncyclopediaSearchApiFactory = function (configuration?: Configurat
         /**
          * 
          * @summary Tìm kiếm theo từ khoá across classes/species/breeds
-         * @param {EncyclopediaSearchApiSearch1Request} requestParameters Request parameters.
+         * @param {EncyclopediaSearchApiSearch2Request} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search1(requestParameters: EncyclopediaSearchApiSearch1Request, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseSearchResponse> {
-            return localVarFp.search1(requestParameters.q, options).then((request) => request(axios, basePath));
+        search2(requestParameters: EncyclopediaSearchApiSearch2Request, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseSearchResponse> {
+            return localVarFp.search2(requestParameters.q, options).then((request) => request(axios, basePath));
         },
     };
 };
 
 /**
- * Request parameters for search1 operation in EncyclopediaSearchApi.
+ * Request parameters for search2 operation in EncyclopediaSearchApi.
  * @export
- * @interface EncyclopediaSearchApiSearch1Request
+ * @interface EncyclopediaSearchApiSearch2Request
  */
-export interface EncyclopediaSearchApiSearch1Request {
+export interface EncyclopediaSearchApiSearch2Request {
     /**
      * 
      * @type {string}
-     * @memberof EncyclopediaSearchApiSearch1
+     * @memberof EncyclopediaSearchApiSearch2
      */
     readonly q: string
 }
@@ -5793,13 +5967,13 @@ export class EncyclopediaSearchApi extends BaseAPI {
     /**
      * 
      * @summary Tìm kiếm theo từ khoá across classes/species/breeds
-     * @param {EncyclopediaSearchApiSearch1Request} requestParameters Request parameters.
+     * @param {EncyclopediaSearchApiSearch2Request} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EncyclopediaSearchApi
      */
-    public search1(requestParameters: EncyclopediaSearchApiSearch1Request, options?: RawAxiosRequestConfig) {
-        return EncyclopediaSearchApiFp(this.configuration).search1(requestParameters.q, options).then((request) => request(this.axios, this.basePath));
+    public search2(requestParameters: EncyclopediaSearchApiSearch2Request, options?: RawAxiosRequestConfig) {
+        return EncyclopediaSearchApiFp(this.configuration).search2(requestParameters.q, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -5907,9 +6081,9 @@ export const EncyclopediaSpeciesApiAxiosParamCreator = function (configuration?:
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search: async (q: string, page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        search1: async (q: string, page?: number, size?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'q' is not null or undefined
-            assertParamExists('search', 'q', q)
+            assertParamExists('search1', 'q', q)
             const localVarPath = `/api/v1/encyclopedia/species/search`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -5996,10 +6170,10 @@ export const EncyclopediaSpeciesApiFp = function(configuration?: Configuration) 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async search(q: string, page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponsePagedResultSpeciesResponse>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.search(q, page, size, options);
+        async search1(q: string, page?: number, size?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponsePagedResultSpeciesResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.search1(q, page, size, options);
             const index = configuration?.serverIndex ?? 0;
-            const operationBasePath = operationServerMap['EncyclopediaSpeciesApi.search']?.[index]?.url;
+            const operationBasePath = operationServerMap['EncyclopediaSpeciesApi.search1']?.[index]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
     }
@@ -6035,12 +6209,12 @@ export const EncyclopediaSpeciesApiFactory = function (configuration?: Configura
         /**
          * 
          * @summary Tìm kiếm species theo từ khoá (name hoặc scientificName)
-         * @param {EncyclopediaSpeciesApiSearchRequest} requestParameters Request parameters.
+         * @param {EncyclopediaSpeciesApiSearch1Request} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        search(requestParameters: EncyclopediaSpeciesApiSearchRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponsePagedResultSpeciesResponse> {
-            return localVarFp.search(requestParameters.q, requestParameters.page, requestParameters.size, options).then((request) => request(axios, basePath));
+        search1(requestParameters: EncyclopediaSpeciesApiSearch1Request, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponsePagedResultSpeciesResponse> {
+            return localVarFp.search1(requestParameters.q, requestParameters.page, requestParameters.size, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -6088,29 +6262,29 @@ export interface EncyclopediaSpeciesApiListRequest {
 }
 
 /**
- * Request parameters for search operation in EncyclopediaSpeciesApi.
+ * Request parameters for search1 operation in EncyclopediaSpeciesApi.
  * @export
- * @interface EncyclopediaSpeciesApiSearchRequest
+ * @interface EncyclopediaSpeciesApiSearch1Request
  */
-export interface EncyclopediaSpeciesApiSearchRequest {
+export interface EncyclopediaSpeciesApiSearch1Request {
     /**
      * 
      * @type {string}
-     * @memberof EncyclopediaSpeciesApiSearch
+     * @memberof EncyclopediaSpeciesApiSearch1
      */
     readonly q: string
 
     /**
      * 
      * @type {number}
-     * @memberof EncyclopediaSpeciesApiSearch
+     * @memberof EncyclopediaSpeciesApiSearch1
      */
     readonly page?: number
 
     /**
      * 
      * @type {number}
-     * @memberof EncyclopediaSpeciesApiSearch
+     * @memberof EncyclopediaSpeciesApiSearch1
      */
     readonly size?: number
 }
@@ -6149,13 +6323,13 @@ export class EncyclopediaSpeciesApi extends BaseAPI {
     /**
      * 
      * @summary Tìm kiếm species theo từ khoá (name hoặc scientificName)
-     * @param {EncyclopediaSpeciesApiSearchRequest} requestParameters Request parameters.
+     * @param {EncyclopediaSpeciesApiSearch1Request} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof EncyclopediaSpeciesApi
      */
-    public search(requestParameters: EncyclopediaSpeciesApiSearchRequest, options?: RawAxiosRequestConfig) {
-        return EncyclopediaSpeciesApiFp(this.configuration).search(requestParameters.q, requestParameters.page, requestParameters.size, options).then((request) => request(this.axios, this.basePath));
+    public search1(requestParameters: EncyclopediaSpeciesApiSearch1Request, options?: RawAxiosRequestConfig) {
+        return EncyclopediaSpeciesApiFp(this.configuration).search1(requestParameters.q, requestParameters.page, requestParameters.size, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -6892,6 +7066,161 @@ export class FollowControllerApi extends BaseAPI {
      */
     public unfollow(requestParameters: FollowControllerApiUnfollowRequest, options?: RawAxiosRequestConfig) {
         return FollowControllerApiFp(this.configuration).unfollow(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * GlobalSearchApi - axios parameter creator
+ * @export
+ */
+export const GlobalSearchApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * Search for users by username and pets by name or breed. Keyword must be at least 2 characters. Use \'types\' parameter to filter results (user, pet, or both).
+         * @summary Global search for users and pets
+         * @param {string} q Search keyword (minimum 2 characters)
+         * @param {string} [types] Entity types to search (comma-separated: user, pet). If not specified, searches all types.
+         * @param {number} [limit] Maximum number of results per type (default: 10)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search: async (q: string, types?: string, limit?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'q' is not null or undefined
+            assertParamExists('search', 'q', q)
+            const localVarPath = `/api/v1/search`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+            if (q !== undefined) {
+                localVarQueryParameter['q'] = q;
+            }
+
+            if (types !== undefined) {
+                localVarQueryParameter['types'] = types;
+            }
+
+            if (limit !== undefined) {
+                localVarQueryParameter['limit'] = limit;
+            }
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * GlobalSearchApi - functional programming interface
+ * @export
+ */
+export const GlobalSearchApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = GlobalSearchApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * Search for users by username and pets by name or breed. Keyword must be at least 2 characters. Use \'types\' parameter to filter results (user, pet, or both).
+         * @summary Global search for users and pets
+         * @param {string} q Search keyword (minimum 2 characters)
+         * @param {string} [types] Entity types to search (comma-separated: user, pet). If not specified, searches all types.
+         * @param {number} [limit] Maximum number of results per type (default: 10)
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async search(q: string, types?: string, limit?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<GlobalSearchResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.search(q, types, limit, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['GlobalSearchApi.search']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * GlobalSearchApi - factory interface
+ * @export
+ */
+export const GlobalSearchApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = GlobalSearchApiFp(configuration)
+    return {
+        /**
+         * Search for users by username and pets by name or breed. Keyword must be at least 2 characters. Use \'types\' parameter to filter results (user, pet, or both).
+         * @summary Global search for users and pets
+         * @param {GlobalSearchApiSearchRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        search(requestParameters: GlobalSearchApiSearchRequest, options?: RawAxiosRequestConfig): AxiosPromise<GlobalSearchResponse> {
+            return localVarFp.search(requestParameters.q, requestParameters.types, requestParameters.limit, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * Request parameters for search operation in GlobalSearchApi.
+ * @export
+ * @interface GlobalSearchApiSearchRequest
+ */
+export interface GlobalSearchApiSearchRequest {
+    /**
+     * Search keyword (minimum 2 characters)
+     * @type {string}
+     * @memberof GlobalSearchApiSearch
+     */
+    readonly q: string
+
+    /**
+     * Entity types to search (comma-separated: user, pet). If not specified, searches all types.
+     * @type {string}
+     * @memberof GlobalSearchApiSearch
+     */
+    readonly types?: string
+
+    /**
+     * Maximum number of results per type (default: 10)
+     * @type {number}
+     * @memberof GlobalSearchApiSearch
+     */
+    readonly limit?: number
+}
+
+/**
+ * GlobalSearchApi - object-oriented interface
+ * @export
+ * @class GlobalSearchApi
+ * @extends {BaseAPI}
+ */
+export class GlobalSearchApi extends BaseAPI {
+    /**
+     * Search for users by username and pets by name or breed. Keyword must be at least 2 characters. Use \'types\' parameter to filter results (user, pet, or both).
+     * @summary Global search for users and pets
+     * @param {GlobalSearchApiSearchRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof GlobalSearchApi
+     */
+    public search(requestParameters: GlobalSearchApiSearchRequest, options?: RawAxiosRequestConfig) {
+        return GlobalSearchApiFp(this.configuration).search(requestParameters.q, requestParameters.types, requestParameters.limit, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -8292,6 +8621,47 @@ export const PetControllerApiAxiosParamCreator = function (configuration?: Confi
         },
         /**
          * 
+         * @param {number} petId 
+         * @param {number} mediaId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePetMedia: async (petId: number, mediaId: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'petId' is not null or undefined
+            assertParamExists('deletePetMedia', 'petId', petId)
+            // verify required parameter 'mediaId' is not null or undefined
+            assertParamExists('deletePetMedia', 'mediaId', mediaId)
+            const localVarPath = `/api/v1/pets/{petId}/gallery/{mediaId}`
+                .replace(`{${"petId"}}`, encodeURIComponent(String(petId)))
+                .replace(`{${"mediaId"}}`, encodeURIComponent(String(mediaId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -8489,6 +8859,19 @@ export const PetControllerApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
+         * @param {number} petId 
+         * @param {number} mediaId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async deletePetMedia(petId: number, mediaId: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.deletePetMedia(petId, mediaId, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['PetControllerApi.deletePetMedia']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -8571,6 +8954,15 @@ export const PetControllerApiFactory = function (configuration?: Configuration, 
          */
         deletePet(requestParameters: PetControllerApiDeletePetRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.deletePet(requestParameters.id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {PetControllerApiDeletePetMediaRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        deletePetMedia(requestParameters: PetControllerApiDeletePetMediaRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.deletePetMedia(requestParameters.petId, requestParameters.mediaId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -8660,6 +9052,27 @@ export interface PetControllerApiDeletePetRequest {
 }
 
 /**
+ * Request parameters for deletePetMedia operation in PetControllerApi.
+ * @export
+ * @interface PetControllerApiDeletePetMediaRequest
+ */
+export interface PetControllerApiDeletePetMediaRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof PetControllerApiDeletePetMedia
+     */
+    readonly petId: number
+
+    /**
+     * 
+     * @type {number}
+     * @memberof PetControllerApiDeletePetMedia
+     */
+    readonly mediaId: number
+}
+
+/**
  * Request parameters for getAllUserPets operation in PetControllerApi.
  * @export
  * @interface PetControllerApiGetAllUserPetsRequest
@@ -8746,6 +9159,17 @@ export class PetControllerApi extends BaseAPI {
      */
     public deletePet(requestParameters: PetControllerApiDeletePetRequest, options?: RawAxiosRequestConfig) {
         return PetControllerApiFp(this.configuration).deletePet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {PetControllerApiDeletePetMediaRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof PetControllerApi
+     */
+    public deletePetMedia(requestParameters: PetControllerApiDeletePetMediaRequest, options?: RawAxiosRequestConfig) {
+        return PetControllerApiFp(this.configuration).deletePetMedia(requestParameters.petId, requestParameters.mediaId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -9255,8 +9679,7 @@ export class PetFollowControllerApi extends BaseAPI {
 export const PostControllerApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
-         * Returns the total count of posts that have type set to \'urgent\'
-         * @summary Count all posts with type urgent
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9542,8 +9965,7 @@ export const PostControllerApiAxiosParamCreator = function (configuration?: Conf
             };
         },
         /**
-         * Returns all posts that have type set to \'urgent\', ordered by creation date descending
-         * @summary Get all posts with type urgent
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9629,8 +10051,7 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = PostControllerApiAxiosParamCreator(configuration)
     return {
         /**
-         * Returns the total count of posts that have type set to \'urgent\'
-         * @summary Count all posts with type urgent
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9723,8 +10144,7 @@ export const PostControllerApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
-         * Returns all posts that have type set to \'urgent\', ordered by creation date descending
-         * @summary Get all posts with type urgent
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9758,8 +10178,7 @@ export const PostControllerApiFactory = function (configuration?: Configuration,
     const localVarFp = PostControllerApiFp(configuration)
     return {
         /**
-         * Returns the total count of posts that have type set to \'urgent\'
-         * @summary Count all posts with type urgent
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9828,8 +10247,7 @@ export const PostControllerApiFactory = function (configuration?: Configuration,
             return localVarFp.getPostsByUserId(requestParameters.userId, options).then((request) => request(axios, basePath));
         },
         /**
-         * Returns all posts that have type set to \'urgent\', ordered by creation date descending
-         * @summary Get all posts with type urgent
+         * 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -9947,8 +10365,7 @@ export interface PostControllerApiUpdatePostRequest {
  */
 export class PostControllerApi extends BaseAPI {
     /**
-     * Returns the total count of posts that have type set to \'urgent\'
-     * @summary Count all posts with type urgent
+     * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostControllerApi
@@ -10033,8 +10450,7 @@ export class PostControllerApi extends BaseAPI {
     }
 
     /**
-     * Returns all posts that have type set to \'urgent\', ordered by creation date descending
-     * @summary Get all posts with type urgent
+     * 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof PostControllerApi

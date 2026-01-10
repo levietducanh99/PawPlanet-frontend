@@ -1,6 +1,6 @@
 import React from 'react';
-import { Modal, Image, Typography, Empty, Row, Col, Tag } from 'antd';
-import { CrownOutlined } from '@ant-design/icons';
+import { Modal, Image, Typography, Empty, Row, Col, Tag, Popconfirm, Button } from 'antd';
+import { CrownOutlined, DeleteOutlined } from '@ant-design/icons';
 import { PetMedia } from '@/domain/pet';
 import styles from './PhotoGalleryModal.module.css'; // Import the CSS module
 
@@ -11,13 +11,17 @@ interface PhotoGalleryModalProps {
   onClose: () => void;
   petName: string;
   media: PetMedia[];
+  isOwner?: boolean;
+  onDelete?: (mediaId: number) => Promise<void>;
 }
 
 export const PhotoGalleryModal: React.FC<PhotoGalleryModalProps> = ({
   visible,
   onClose,
   petName,
-  media
+  media,
+  isOwner = false,
+  onDelete,
 }) => {
   if (!media || media.length === 0) {
     return (
@@ -33,6 +37,15 @@ export const PhotoGalleryModal: React.FC<PhotoGalleryModalProps> = ({
       </Modal>
     );
   }
+
+  const handleDelete = async (mediaId: number) => {
+    if (!onDelete) return;
+    try {
+      await onDelete(mediaId);
+    } catch (e) {
+      // error handled by caller
+    }
+  };
 
   return (
     <Modal
@@ -78,6 +91,21 @@ export const PhotoGalleryModal: React.FC<PhotoGalleryModalProps> = ({
                 />
               )}
 
+              {/* Delete button for owner */}
+              {isOwner && onDelete && (
+                <div style={{ position: 'absolute', top: 8, right: 8 }} onClick={(e) => e.stopPropagation()}>
+                  <Popconfirm
+                    title="Delete this media?"
+                    onConfirm={() => handleDelete(item.id)}
+                    okText="Delete"
+                    okType="danger"
+                    cancelText="Cancel"
+                  >
+                    <Button danger shape="circle" icon={<DeleteOutlined />} />
+                  </Popconfirm>
+                </div>
+              )}
+
               {/* Tags below image */}
               <div style={{ marginTop: '8px', display: 'flex', gap: '4px', flexWrap: 'wrap', alignItems: 'center' }}>
                 {item.role === 'avatar' && (
@@ -106,4 +134,3 @@ export const PhotoGalleryModal: React.FC<PhotoGalleryModalProps> = ({
     </Modal>
   );
 };
-

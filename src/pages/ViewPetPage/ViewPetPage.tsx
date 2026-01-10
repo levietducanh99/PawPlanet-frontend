@@ -130,6 +130,21 @@ export const ViewPetPage: React.FC = () => {
   // Delete pet hook
   const { deletePet, loading: deleteLoading } = useDeletePet();
 
+  // Handler to delete a media item (owner only)
+  const handleDeleteMedia = async (mediaId: number) => {
+    if (!petIdNumber) return;
+    try {
+      await petService.deletePetMedia(petIdNumber, mediaId);
+      message.success('Photo deleted');
+      // Refresh pet data
+      refetch();
+    } catch (err: unknown) {
+      console.error('Delete media failed', err);
+      const e = err as { message?: string };
+      message.error(e?.message || 'Failed to delete media');
+    }
+  };
+
   // Handle follow button click
   const handleFollowClick = async () => {
     const success = await handleFollowToggle();
@@ -809,11 +824,27 @@ export const ViewPetPage: React.FC = () => {
                                     </div>
                                   </div>
                                 ) : (
-                                  <Image
-                                    src={media.url}
-                                    alt={`${pet.name} photo ${index + 1}`}
-                                    className={styles.photoThumbnail}
-                                  />
+                                  <div style={{ position: 'relative' }}>
+                                    <Image
+                                      src={media.url}
+                                      alt={`${pet.name} photo ${index + 1}`}
+                                      className={styles.photoThumbnail}
+                                    />
+
+                                    {isOwner && (
+                                      <div style={{ position: 'absolute', top: 8, right: 8 }}>
+                                        <Popconfirm
+                                          title="Delete this media?"
+                                          onConfirm={() => handleDeleteMedia(media.id)}
+                                          okText="Delete"
+                                          okType="danger"
+                                          cancelText="Cancel"
+                                        >
+                                          <Button danger shape="circle" icon={<DeleteOutlined />} />
+                                        </Popconfirm>
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
                                 {index === 3 && pet.media.length > 4 && (
                                   <div className={styles.photoOverlay}>
@@ -939,6 +970,8 @@ export const ViewPetPage: React.FC = () => {
           onClose={() => setShowGalleryModal(false)}
           petName={pet.name}
           media={pet.media || []}
+          isOwner={Boolean(isOwner)}
+           onDelete={handleDeleteMedia}
         />
       )}
 

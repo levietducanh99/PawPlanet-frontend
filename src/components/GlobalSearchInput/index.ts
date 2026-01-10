@@ -1,0 +1,2 @@
+export { GlobalSearchInput } from './GlobalSearchInput';
+

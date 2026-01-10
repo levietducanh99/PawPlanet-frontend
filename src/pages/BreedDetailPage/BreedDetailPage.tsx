@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Alert, Typography, Row, Col, Card } from 'antd';
+import { Alert, Typography, Row, Col, Card, message } from 'antd';
 import { pageVariants } from '@/animations/variants';
 import {
   HeroBanner,
@@ -49,6 +49,25 @@ export const BreedDetailPage: React.FC = () => {
   const galleryImages = useMemo(() => {
     return (breed?.galleryPreview ?? []).map((m) => m.url).filter(Boolean);
   }, [breed?.galleryPreview]);
+
+  const galleryMediaItems = useMemo(() => {
+    return (breed?.galleryPreview ?? []).filter(Boolean).map((m) => ({ id: m.id, url: m.url }));
+  }, [breed?.galleryPreview]);
+
+  const handleDeleteEncyclopediaImage = async (mediaId: number) => {
+    try {
+      // Lazy import service to avoid circular deps
+      const { encyclopediaService } = await import('@/services/encyclopedia.service');
+      await encyclopediaService.deleteEncyclopediaMedia(mediaId);
+      message.success('Media deleted');
+      // Refresh page by reloading or refetching the breed
+      window.location.reload();
+    } catch (err: unknown) {
+      console.error('Failed to delete encyclopedia media', err);
+      const e = err as { message?: string };
+      message.error(e?.message || 'Failed to delete media');
+    }
+  };
 
   // Build dynamic tabs based on breed sections + gallery
   const tabs: TabItem[] = useMemo(() => {
@@ -166,12 +185,14 @@ export const BreedDetailPage: React.FC = () => {
             {/* Photo Gallery */}
             <PhotoGallery
               images={galleryImages}
+              mediaItems={galleryMediaItems}
               altPrefix={breed.name}
               isAdmin={userIsAdmin}
               entityType="breed"
               entityId={breed.id}
               entitySlug={breed.slug}
               onImageAdded={() => window.location.reload()}
+              onDeleteImage={handleDeleteEncyclopediaImage}
             />
           </motion.div>
         )}
@@ -213,12 +234,14 @@ export const BreedDetailPage: React.FC = () => {
           >
             <PhotoGallery
               images={galleryImages}
+              mediaItems={galleryMediaItems}
               altPrefix={breed.name}
               isAdmin={userIsAdmin}
               entityType="breed"
               entityId={breed.id}
               entitySlug={breed.slug}
               onImageAdded={() => window.location.reload()}
+              onDeleteImage={handleDeleteEncyclopediaImage}
             />
           </motion.div>
         )}
