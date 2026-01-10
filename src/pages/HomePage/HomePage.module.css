@@ -1,84 +1,359 @@
 /* HomePage styles following PawPlanet Design System */
 
 .homePage {
-  padding: 40px 20px;
   width: 100%;
-  background: var(--bg-body);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F7FAFC 100%);
   min-height: 100vh;
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 48px;
-}
-
-.title {
-  color: var(--text-primary);
-  margin-bottom: 16px;
-}
-
-.subtitle {
-  font-size: 18px;
-  color: var(--text-secondary);
-}
-
-.iconContainer {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #E6F7FF;
+/* ========== Hero Section ========== */
+.heroSection {
+  position: relative;
+  padding: 80px 24px;
+  overflow: hidden;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
 }
 
-.icon {
-  font-size: 28px;
+.heroContainer {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  width: 100%;
+  min-height: 700px;
+  display: flex;
+  flex-direction: column; /* <-- new: stack logo then content */
+  align-items: center;
+  justify-content: center;
+}
+
+/* Central Logo */
+.centralLogoWrapper {
+  /* make logo participate in document flow instead of absolute positioning */
+  position: relative; /* was absolute */
+  margin-bottom: 40px; /* spacing between logo and content */
+  z-index: 20;
+}
+
+.centralLogo {
+  width: 400px;
+  height: auto;
+  filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.1));
+}
+
+/* Pet Bubbles */
+.petBubble {
+  position: absolute;
+  z-index: 10;
+}
+
+.petBubbleInner {
+  position: relative;
+}
+
+.petBubbleImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #FFFFFF;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  background: #FFFFFF;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.petBubbleImage:hover {
+  transform: scale(1.1);
+}
+
+.petBubbleImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.petBubbleIcon {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 16px;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Bubble Positions */
+.topLeft {
+  top: 5%;
+  left: 8%;
+}
+
+.topRight {
+  top: 5%;
+  right: 8%;
+}
+
+.middleLeft {
+  top: 50%;
+  left: 2%;
+  transform: translateY(-50%);
+}
+
+.middleRight {
+  top: 50%;
+  right: 2%;
+  transform: translateY(-50%);
+}
+
+.bottomLeft {
+  bottom: 15%;
+  left: 8%;
+}
+
+.bottomRight {
+  bottom: 15%;
+  right: 8%;
+}
+
+/* Hero Content - Centered Below Logo */
+.heroContentCenter {
+  /* make content relative and in normal flow below the logo */
+  position: relative; /* was absolute */
+  transform: none; /* remove centering transform */
+  left: auto;
+  bottom: auto;
+  text-align: center;
+  max-width: 900px;
+  width: 90%;
+  padding: 0 20px;
+  margin-top: 40px; /* space from the logo */
+}
+
+.heroTitle {
+  font-family: 'Inter', sans-serif;
+  font-size: 42px;
+  line-height: 1.3;
+  color: #2D3748;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.heroTitleHighlight {
   color: #1890FF;
 }
 
-.card {
-  border-radius: 16px;
-  height: 100%;
-  text-align: center;
+.heroDescription {
+  font-size: 17px;
+  line-height: 1.7;
+  color: #718096;
+  margin-bottom: 32px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.cardDescription {
-  color: var(--text-secondary);
-}
-
-.ctaSection {
-  text-align: center;
-  margin-top: 48px;
+.buttonGroup {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 48px;
 }
 
 .primaryButton {
-  margin-right: 12px;
+  height: 56px !important;
+  padding: 0 32px !important;
+  border-radius: 28px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  background: #1890FF !important;
+  box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3) !important;
 }
 
-/* Responsive adjustments */
+.secondaryButton {
+  height: 56px !important;
+  padding: 0 32px !important;
+  border-radius: 28px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  border: 2px solid #E2E8F0 !important;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+  margin-top: 48px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+}
+
+.statValue {
+  font-family: 'Inter', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #2D3748;
+  margin-bottom: 4px;
+}
+
+.statLabel {
+  font-size: 14px;
+  color: #718096;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .centralLogo {
+    width: 300px;
+  }
+
+  .petBubbleImage {
+    width: 90px;
+    height: 90px;
+  }
+
+  .petBubbleIcon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .topLeft, .topRight {
+    top: 8%;
+  }
+
+  .middleLeft {
+    left: 5%;
+  }
+
+  .middleRight {
+    right: 5%;
+  }
+
+  .bottomLeft, .bottomRight {
+    bottom: 20%;
+  }
+
+  .heroContentCenter {
+    max-width: 700px;
+    margin-top: 28px; /* slightly less top margin on smaller screens */
+    position: relative; /* ensure not absolute in overrides */
+  }
+}
+
 @media (max-width: 768px) {
-  .homePage {
-    padding: 24px 16px;
+  .heroSection {
+    padding: 60px 16px;
+    min-height: 100vh;
   }
 
-  .header {
-    margin-bottom: 32px;
+  .heroContainer {
+    min-height: 600px;
   }
 
-  .ctaSection {
+  .centralLogo {
+    width: 240px;
+  }
+
+  .centralLogoWrapper {
+    /* keep logo in flow and reduce spacing on small screens */
+    position: relative;
+    margin-bottom: 24px;
+  }
+
+  .petBubbleImage {
+    width: 70px;
+    height: 70px;
+  }
+
+  .petBubbleIcon {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    border-width: 2px;
+  }
+
+  .topLeft {
+    top: 10%;
+    left: 5%;
+  }
+
+  .topRight {
+    top: 10%;
+    right: 5%;
+  }
+
+  .middleLeft {
+    top: 45%;
+    left: 2%;
+  }
+
+  .middleRight {
+    top: 45%;
+    right: 2%;
+  }
+
+  .bottomLeft {
+    bottom: 30%;
+    left: 5%;
+  }
+
+  .bottomRight {
+    bottom: 30%;
+    right: 5%;
+  }
+
+  .heroContentCenter {
+    position: relative; /* ensure flow */
+    margin-top: 20px;
+    max-width: 100%;
+    width: 90%;
+  }
+
+  .heroTitle {
+    font-size: 28px;
+  }
+
+  .heroDescription {
+    font-size: 15px;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
+  }
+
+  .statsGrid {
+    gap: 20px;
     margin-top: 32px;
   }
 
-  .primaryButton {
-    margin-right: 0;
-    margin-bottom: 12px;
-    width: 100%;
-  }
-
-  .ctaSection .ant-btn {
-    width: 100%;
+  .statValue {
+    font-size: 22px;
   }
 }
 
+@media (max-width: 480px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+}
