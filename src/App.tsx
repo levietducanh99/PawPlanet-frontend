@@ -22,6 +22,12 @@ import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
 import { LandingPage } from '@/pages/LandingPage';
 import { ExplorePage } from '@/features/explore';
 import { CareSupportPage } from '@/pages/CareSupportPage';
+import { TimezoneDebug } from '@/components/TimezoneDebug';
+
+// Wrapper component for timezone debug page
+function TimezoneDebugPage() {
+  return <TimezoneDebug />;
+}
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -102,6 +108,8 @@ function App() {
                 <Route path="encyclopedia/species/:speciesId" element={<SpeciesDetailPage />} />
                 <Route path="encyclopedia/breed/:breedId" element={<BreedDetailPage />} />
                 <Route path="encyclopedia/class/:classId" element={<EncyclopediaClassPage />} />
+                {/* Debug route */}
+                <Route path="debug/timezone" element={<TimezoneDebugPage />} />
               </Route>
 
               {/* Fallback could be added here */}

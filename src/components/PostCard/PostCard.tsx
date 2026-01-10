@@ -13,6 +13,7 @@ import {
 import { motion } from 'motion/react';
 import type { Post } from '@/domain/post';
 import { PetTag } from '@/components/PetTag';
+import { formatTimeAgoShort } from '@/utils/dateUtils';
 import styles from './PostCard.module.css';
 import {useNavigate} from "react-router-dom";
 import LikesPopover from '@/components/LikesPopover/LikesPopover';
@@ -45,15 +46,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
     petDisplay?: string;
   };
 
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-
-    if (diffInHours < 1) return 'Just now';
-    if (diffInHours < 24) return `${diffInHours}h ago`;
-    return `${Math.floor(diffInHours / 24)}d ago`;
-  };
 
   const prev = () => {
     setCurrentIndex((i) => (i - 1 + (post.media?.length || 1)) % (post.media?.length || 1));
@@ -191,7 +183,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, onLike, onComment, onShare, o
               </div>
 
               <div className={styles.subline}>
-                <Text type="secondary">{formatTimeAgo(post.createdAt)}</Text>
+                <Text type="secondary">{formatTimeAgoShort(post.createdAt)}</Text>
 
               </div>
             </div>

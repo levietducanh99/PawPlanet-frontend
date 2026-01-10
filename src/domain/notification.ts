@@ -173,25 +173,7 @@ export const getNotificationIcon = (type: NotificationType): string => {
   }
 };
 
-// Format time ago
-export const formatTimeAgo = (dateString: string): string => {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+// Re-export formatTimeAgo from dateUtils for backward compatibility
+export { formatTimeAgo } from '@/utils/dateUtils';
 
-  if (diffInMinutes < 1) return 'Just now';
-  if (diffInMinutes < 60) return `${diffInMinutes} ${diffInMinutes === 1 ? 'minute' : 'minutes'} ago`;
-
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `${diffInHours} ${diffInHours === 1 ? 'hour' : 'hours'} ago`;
-
-  const diffInDays = Math.floor(diffInHours / 24);
-  if (diffInDays < 7) return `${diffInDays} ${diffInDays === 1 ? 'day' : 'days'} ago`;
-
-  const diffInWeeks = Math.floor(diffInDays / 7);
-  if (diffInWeeks < 4) return `${diffInWeeks} ${diffInWeeks === 1 ? 'week' : 'weeks'} ago`;
-
-  const diffInMonths = Math.floor(diffInDays / 30);
-  return `${diffInMonths} ${diffInMonths === 1 ? 'month' : 'months'} ago`;
-};
 

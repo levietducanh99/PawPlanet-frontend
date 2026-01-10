@@ -8,6 +8,7 @@ import { togglePostLike } from '@/services/like.service';
 import { PostCard } from '@/components';
 import { EditPostModal } from '@/components/EditPostModal';
 import { pageVariants } from '@/animations/variants';
+import { formatDateTime } from '@/utils/dateUtils';
 import type { Post } from '@/domain/post';
 import type { UpdatePostRequest } from '@/services/api';
 import styles from './PostDetailPage.module.css';
@@ -298,7 +299,7 @@ export const PostDetailPage: React.FC = () => {
                   </div>
                   <div className={styles.commentText}>{comment.content}</div>
                   <div className={styles.commentTime}>
-                    {new Date(comment.createdAt).toLocaleString()}
+                    {formatDateTime(comment.createdAt)}
                   </div>
                 </div>
               </motion.div>

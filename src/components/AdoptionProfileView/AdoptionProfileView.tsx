@@ -14,7 +14,7 @@ import {
   InfoCircleOutlined,
 } from '@ant-design/icons';
 import type { AdoptionProfile } from '@/domain/adoption';
-import dayjs from 'dayjs';
+import { formatDate } from '@/utils/dateUtils';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -169,7 +169,7 @@ export const AdoptionProfileView: React.FC<AdoptionProfileViewProps> = ({
         {profile.createdAt && (
           <div style={{ marginTop: '24px', textAlign: 'center' }}>
             <Text type="secondary" style={{ fontSize: '12px' }}>
-              Profile created on {dayjs(profile.createdAt).format('MMMM D, YYYY')}
+              Profile created on {formatDate(profile.createdAt)}
             </Text>
           </div>
         )}
