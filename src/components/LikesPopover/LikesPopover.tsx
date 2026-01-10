@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Popover, Avatar, Space, Spin, Empty, Button } from 'antd';
+import { Popover, Avatar, Spin, Empty, Button } from 'antd';
 import { getAllLikes } from '@/services/like.service';
 
 interface LikesPopoverProps {
