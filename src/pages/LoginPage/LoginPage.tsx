@@ -45,6 +45,9 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLogi
       message.success('Login successful!');
       form.resetFields();
       navigate('/home');
+    } else {
+      // Show error message notification
+      message.error('Login failed. Please check your credentials and try again.');
     }
   };
 

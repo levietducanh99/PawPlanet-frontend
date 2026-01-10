@@ -11,12 +11,14 @@ interface NotificationPopoverProps {
   children: React.ReactNode;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  onCountChange?: () => void; // Callback to refresh unread count immediately
 }
 
 export const NotificationPopover: React.FC<NotificationPopoverProps> = ({
   children,
   open: controlledOpen,
-  onOpenChange
+  onOpenChange,
+  onCountChange,
 }) => {
   const [internalOpen, setInternalOpen] = useState(false);
   const navigate = useNavigate();
@@ -37,6 +39,8 @@ export const NotificationPopover: React.FC<NotificationPopoverProps> = ({
     // Mark as read
     if (!notification.isRead) {
       await markAsRead(notification.id);
+      // Refresh unread count immediately
+      onCountChange?.();
     }
 
     // Navigate based on notification type and metadata
@@ -98,11 +102,14 @@ export const NotificationPopover: React.FC<NotificationPopoverProps> = ({
 
   const handleMarkAllAsRead = async () => {
     await markAllAsRead();
+    // Refresh unread count immediately
+    onCountChange?.();
   };
 
-  const handleDelete = async (notificationId: number, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent notification click
+  const handleDelete = async (notificationId: number) => {
     await deleteNotification(notificationId);
+    // Refresh unread count immediately (in case deleted notification was unread)
+    onCountChange?.();
   };
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
@@ -152,7 +159,7 @@ export const NotificationPopover: React.FC<NotificationPopoverProps> = ({
                   <NotificationItem
                     notification={notification}
                     onClick={handleNotificationClick}
-                    onDelete={(id) => handleDelete(id, {} as React.MouseEvent)}
+                    onDelete={handleDelete}
                   />
                 </motion.div>
               ))}

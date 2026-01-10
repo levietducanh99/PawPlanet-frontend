@@ -45,6 +45,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
       message.success('Registration successful! Welcome to PawPlanet!');
       form.resetFields();
       navigate('/home');
+    } else {
+      // Show error message notification
+      message.error('Registration failed. Please check your information and try again.');
     }
   };
 

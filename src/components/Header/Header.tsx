@@ -20,7 +20,7 @@ export const Header: React.FC<HeaderProps> = ({
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { user, loading } = useUserProfile();
-  const { unreadCount } = useUnreadCount(30000); // Poll every 30 seconds
+  const { unreadCount, refresh: refreshUnreadCount } = useUnreadCount(30000); // Poll every 30 seconds
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   const handleLogoClick = () => {
@@ -92,7 +92,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Actions */}
               <div className={styles.actions}>
                 {/* Notifications */}
-                <NotificationPopover>
+                <NotificationPopover onCountChange={refreshUnreadCount}>
                   <div className={styles.notificationButton}>
                     <Badge count={unreadCount} offset={[-5, 5]}>
                       <BellOutlined className={styles.bellIcon} />

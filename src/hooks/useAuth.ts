@@ -79,11 +79,22 @@ export const useLogin = (): UseLogin => {
   const [error, setError] = useState<AuthError | null>(null);
 
   const loginWrapper = useCallback(async (credentials: LoginCredentials): Promise<LoginResult | null> => {
+    setError(null); // Clear previous errors
     try {
       const result = await login(credentials);
-      // Nếu login trả về boolean (context), trả về LoginResult giả để không lỗi type
+      // Nếu login trả về boolean (context), trả về LoginResult
       if (typeof result === 'boolean') {
-        return result ? { success: true, user: undefined, token: { token: '', authenticated: true } } : { success: false, user: undefined, token: { token: '', authenticated: false } };
+        if (result) {
+          return { success: true, user: undefined, token: { token: '', authenticated: true } };
+        } else {
+          // Login failed
+          setError({ message: 'Invalid email or password', code: 'LOGIN_FAILED' });
+          return { success: false, user: undefined, token: { token: '', authenticated: false } };
+        }
+      }
+      // Check if login was successful
+      if (!result) {
+        setError({ message: 'Invalid email or password', code: 'LOGIN_FAILED' });
       }
       return result;
     } catch (authError) {
