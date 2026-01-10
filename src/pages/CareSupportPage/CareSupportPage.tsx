@@ -47,8 +47,8 @@ const CareSupportPage: React.FC = () => {
       // Call API to sync with server
       const result = await likePost(postId);
 
-      // Update with real data from server
-      const serverUpdatedPosts = optimisticPosts.map(p =>
+      // Update with real data from server using functional update
+      setOptimisticPosts(prev => prev.map(p =>
         p.id === postId
           ? {
               ...p,
@@ -56,8 +56,7 @@ const CareSupportPage: React.FC = () => {
               likeCount: result.likeCount,
             }
           : p
-      );
-      setOptimisticPosts(serverUpdatedPosts);
+      ));
     } catch (error) {
       console.error('Failed to toggle like:', error);
       // Revert optimistic update on error

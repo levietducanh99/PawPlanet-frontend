@@ -15,7 +15,7 @@ try {
   // ignore
 }
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+   
   postService = require('./post.service');
 } catch (e) {
   // ignore

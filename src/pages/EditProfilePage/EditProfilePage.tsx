@@ -34,7 +34,7 @@ export const EditProfilePage: React.FC = () => {
   });
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     refreshProfile();
   }, []);
 
