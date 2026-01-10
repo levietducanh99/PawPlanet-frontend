@@ -93,7 +93,7 @@ export const PhotoGalleryModal: React.FC<PhotoGalleryModalProps> = ({
 
               {/* Delete button for owner */}
               {isOwner && onDelete && (
-                <div style={{ position: 'absolute', top: 8, right: 8 }}>
+                <div style={{ position: 'absolute', top: 8, right: 8 }} onClick={(e) => e.stopPropagation()}>
                   <Popconfirm
                     title="Delete this media?"
                     onConfirm={() => handleDelete(item.id)}

@@ -10,7 +10,7 @@ import { useGlobalSearch } from '@/hooks/useGlobalSearch';
 import { motion, AnimatePresence } from 'motion/react';
 import styles from './GlobalSearchInput.module.css';
 
-export const GlobalSearchInput: React.FC = () => {
+export const GlobalSearchInput: React.FC<{ onSearch?: (value: string) => void }> = ({ onSearch }) => {
   const navigate = useNavigate();
   const { loading, results, search, clearResults } = useGlobalSearch();
   const [query, setQuery] = useState('');
@@ -47,9 +47,10 @@ export const GlobalSearchInput: React.FC = () => {
     // Debounce search
     timeoutRef.current = setTimeout(() => {
       search(value);
+      if (onSearch) onSearch(value);
       setShowDropdown(true);
     }, 300);
-  }, [search, clearResults]);
+  }, [search, clearResults, onSearch]);
 
   const handleUserClick = (userId: number) => {
     // Navigate to user profile route

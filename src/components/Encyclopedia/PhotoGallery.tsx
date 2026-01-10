@@ -80,7 +80,7 @@ export const PhotoGallery: React.FC<PhotoGalleryProps> = ({
 
                 {/* Admin delete overlay */}
                 {isAdmin && mediaObj && onDeleteImage && (
-                  <div style={{ position: 'absolute', top: 8, right: 8 }}>
+                  <div className={styles.deleteOverlay} onClick={(e) => e.stopPropagation()}>
                     <Popconfirm
                       title="Delete this media?"
                       onConfirm={() => handleDelete(mediaObj.id)}

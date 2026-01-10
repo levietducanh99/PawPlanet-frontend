@@ -12,10 +12,10 @@ import { GlobalSearchInput } from '../GlobalSearchInput';
 import styles from './Header.module.css';
 
 interface HeaderProps {
-  // No props needed - GlobalSearchInput handles search internally
+  onSearch?: (value: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = () => {
+export const Header: React.FC<HeaderProps> = ({ onSearch }) => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { user, loading } = useUserProfile();
@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = () => {
         {/* Center: Search Bar - only show when authenticated */}
         {isAuthenticated && (
           <div className={styles.searchContainer}>
-            <GlobalSearchInput />
+            <GlobalSearchInput onSearch={onSearch} />
           </div>
         )}
 

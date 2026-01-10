@@ -1,4 +1,4 @@
-ll/* Photo Gallery Styles */
+/* Photo Gallery Styles */
 
 .section {
   margin-bottom: 40px;
@@ -64,10 +64,19 @@ ll/* Photo Gallery Styles */
   padding: 20px;
   opacity: 0;
   transition: opacity 0.3s ease;
+  pointer-events: none; /* allow clicks to pass through overlay */
 }
 
 .masonryItem:hover .overlay {
   opacity: 1;
+}
+
+/* Delete overlay (admin) - ensure it's above the general overlay */
+.deleteOverlay {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 20;
 }
 
 .overlayText {
