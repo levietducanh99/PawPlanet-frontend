@@ -24,7 +24,9 @@ export const Header: React.FC<HeaderProps> = ({
   const [showCreatePost, setShowCreatePost] = useState(false);
 
   const handleLogoClick = () => {
-    navigate('/');
+    // If authenticated go to in-app home, otherwise go to landing
+    if (isAuthenticated) navigate('/home');
+    else navigate('/');
   };
 
   const handleCreatePost = () => {

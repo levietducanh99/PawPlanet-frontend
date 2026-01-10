@@ -25,7 +25,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
   // Redirect authenticated users away from register page to home (/)
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate('/home');
     }
   }, [isAuthenticated, navigate]);
 
@@ -44,7 +44,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
     if (result?.success) {
       message.success('Registration successful! Welcome to PawPlanet!');
       form.resetFields();
-      navigate('/');
+      navigate('/home');
     }
   };
 
@@ -53,7 +53,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
   };
 
   return (
-    <AuthLayout title="Create Account" subtitle="Join PawPlanet and start managing your pets' health">
+    <AuthLayout title="Create Account" subtitle="Join PawPlanet and start your adventure today">
       <div className="register-page">
         <SimpleAvatar />
 

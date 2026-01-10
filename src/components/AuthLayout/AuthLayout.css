@@ -67,6 +67,7 @@
   align-items: center;
   justify-content: center;
   padding: 32px 0;
+
 }
 
 .auth-layout__illustration img {
@@ -75,6 +76,7 @@
   border-radius: 16px;
   object-fit: cover;
   box-shadow: var(--shadow-soft);
+  transform: translateY(-75px); /* chỉnh số px theo ý */
 }
 
 .auth-layout__decor {

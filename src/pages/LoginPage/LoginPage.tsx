@@ -44,7 +44,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLogi
     if (result?.success) {
       message.success('Login successful!');
       form.resetFields();
-      navigate('/');
+      navigate('/home');
     }
   };
 
@@ -53,7 +53,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLogi
   };
 
   return (
-    <AuthLayout title="Welcome Back" subtitle="Sign in to manage your pets' health records">
+    <AuthLayout title="Welcome Back" subtitle="Sign in to manage your pets and connect with others">
       <div className="login-page">
         <SimpleAvatar />
 

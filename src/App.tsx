@@ -17,7 +17,7 @@ import { BreedDetailPage } from './pages/BreedDetailPage';
 import { ViewPetPage } from './pages/ViewPetPage';
 import { EditPetPage } from './pages/EditPetPage';
 import { ViewUserPage } from './pages/ViewUserPage';
-import { AuthProvider } from '@/context/AuthContext';
+import { AuthProvider, useAuthContext } from '@/context/AuthContext';
 import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
 import { LandingPage } from '@/pages/LandingPage';
 import { ExplorePage } from '@/features/explore';
@@ -28,7 +28,7 @@ function LoginRouteWrapper() {
   return (
     <LoginPage
       onSwitchToRegister={() => navigate('/register')}
-      onLoginSuccess={() => navigate('/')}
+      onLoginSuccess={() => navigate('/home')}
     />
   );
 }
@@ -38,7 +38,7 @@ function RegisterRouteWrapper() {
   return (
     <RegisterPage
       onSwitchToLogin={() => navigate('/login')}
-      onRegisterSuccess={() => navigate('/')}
+      onRegisterSuccess={() => navigate('/home')}
     />
   );
 }
@@ -52,6 +52,22 @@ function LandingPageWrapper() {
   );
 }
 
+// RootIndexWrapper: landing for unauthenticated users, redirect authenticated users into main app
+function RootIndexWrapper() {
+  const { isAuthenticated, loading } = useAuthContext();
+  const navigate = useNavigate();
+
+  if (loading) return null; // or render a spinner
+
+  if (isAuthenticated) {
+    // Redirect authenticated users into the app home (inside MainLayout)
+    navigate('/home', { replace: true });
+    return null;
+  }
+
+  return <LandingPageWrapper />;
+}
+
 function App() {
   return (
     <AuthProvider>
@@ -59,16 +75,19 @@ function App() {
         <AntdApp>
           <BrowserRouter>
             <Routes>
-              {/* Landing Page */}
+              {/* Root: landing or redirect to app */}
+              <Route path="/" element={<RootIndexWrapper />} />
+
+              {/* Landing explicit path (optional) */}
               <Route path="/landing" element={<LandingPageWrapper />} />
 
               {/* Auth pages without layout */}
               <Route path="/login" element={<LoginRouteWrapper />} />
               <Route path="/register" element={<RegisterRouteWrapper />} />
 
-              {/* Main app pages with unified layout */}
-              <Route path="/" element={<MainLayout />}>
-                <Route index element={<HomePage />} />
+              {/* Main app pages with unified layout (Header + Sidebar) */}
+              <Route element={<MainLayout />}>
+                <Route path="home" element={<HomePage />} />
                 <Route path="feed" element={<MainFeedPage />} />
                 <Route path="explore" element={<ExplorePage />} />
                 <Route path="care-support" element={<CareSupportPage />} />
@@ -84,6 +103,8 @@ function App() {
                 <Route path="encyclopedia/breed/:breedId" element={<BreedDetailPage />} />
                 <Route path="encyclopedia/class/:classId" element={<EncyclopediaClassPage />} />
               </Route>
+
+              {/* Fallback could be added here */}
             </Routes>
           </BrowserRouter>
         </AntdApp>
