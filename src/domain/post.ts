@@ -34,7 +34,7 @@ export interface Post {
   isLiked: boolean;
   media: PostMedia[];
   tags?: string[];
-  type: 'general' | 'adoption' | 'lost' | 'found' | 'story';
+  type: 'general' | 'adoption' | 'lost' | 'found' | 'story' | 'urgent';
   location?: string;
   contactInfo?: string;
 }
