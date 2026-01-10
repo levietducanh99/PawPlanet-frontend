@@ -4,6 +4,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Badge } from 'antd';
 import styles from './Sidebar.module.css';
 import { useUserPets } from '@/hooks/useUserPets';
+import { useUrgentPostCount } from '@/hooks/useUrgentPosts';
+import { useAuth } from '@/hooks/useAuth';
 
 interface SidebarProps {
   // No longer accepting props - using hooks for data
@@ -41,9 +43,12 @@ const menuItems = [
 export const Sidebar: React.FC<SidebarProps> = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const { pets, loading: petsLoading, error: petsError } = useUserPets();
+  const { isAuthenticated } = useAuth();
+  
+  const { pets = [], loading: petsLoading, error: petsError } = useUserPets();
 
- const { pets = [], loading: petsLoading, error: petsError } = useUserPets();
+  // Poll urgent post count every 30 seconds, only when user is authenticated
+  const { count: urgentCount } = useUrgentPostCount(30000, isAuthenticated);
 
   const handleMenuClick = (path: string) => {
     navigate(path);
@@ -56,9 +61,6 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   const isActive = (path: string) => {
     return location.pathname === path;
   };
-
-  // Notifications count - this would come from a notifications API
-  const notificationCount = 3;
 
   console.log(pets);
 
@@ -81,8 +83,8 @@ export const Sidebar: React.FC<SidebarProps> = () => {
               )}
             </div>
             <span className={styles.menuLabel}>{item.label}</span>
-            {item.hasBadge && notificationCount > 0 && (
-              <Badge count={notificationCount} className={styles.badge} />
+            {item.hasBadge && urgentCount > 0 && (
+              <Badge count={urgentCount} className={styles.badge} />
             )}
           </div>
         ))}
