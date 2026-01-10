@@ -107,6 +107,103 @@
   font-style: normal !important;
 }
 
+/* Urgent Toggle Section */
+.urgentSection {
+  margin: 16px 32px 0 32px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #F9FAFB;
+  border: 1.5px solid #E5E7EB;
+  transition: all 0.3s ease;
+}
+
+.urgentSection.urgentActive {
+  background: linear-gradient(135deg, #FFF9F5 0%, #FFFFFF 100%);
+  border-color: #F2994A;
+  box-shadow: 0 4px 12px rgba(242, 153, 74, 0.1);
+}
+
+.urgentToggleContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.urgentLabel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.urgentIcon {
+  font-size: 20px;
+  color: #F2994A;
+}
+
+.urgentTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1F2937;
+  display: block;
+}
+
+.urgentSubtitle {
+  font-size: 13px;
+  color: #6B7280;
+  display: block;
+  margin-top: 2px;
+}
+
+.urgentSwitch {
+  background-color: #E5E7EB !important;
+}
+
+.urgentSwitch.ant-switch-checked {
+  background: linear-gradient(135deg, #F2994A 0%, #EB5757 100%) !important;
+}
+
+.urgentPreview {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #F2994A;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.urgentBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #F2994A 0%, #EB5757 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(242, 153, 74, 0.3);
+}
+
+.urgentPreviewText {
+  font-size: 13px;
+  color: #6B7280;
+  flex: 1;
+}
+
+.textAreaUrgent {
+  border-color: #F2994A !important;
+  background: linear-gradient(to bottom, #FFF9F5 0%, #FFFFFF 100%) !important;
+}
+
+.textAreaUrgent:focus,
+.textAreaUrgent:focus-within {
+  border-color: #EB5757 !important;
+  box-shadow: 0 0 0 2px rgba(242, 153, 74, 0.2) !important;
+}
+
 .mediaUpload {
   margin: 24px 32px 0 32px;
   background: #F9FAFB !important;
@@ -245,6 +342,7 @@
 @media (max-width: 600px) {
   .header,
   .textArea,
+  .urgentSection,
   .mediaUpload,
   .petSection,
   .footer {
