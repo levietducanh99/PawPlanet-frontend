@@ -38,7 +38,7 @@ export const ProfilePage: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     refreshProfile();
   }, []);
 

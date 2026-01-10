@@ -21,6 +21,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
 import { LandingPage } from '@/pages/LandingPage';
 import { ExplorePage } from '@/features/explore';
+import { CareSupportPage } from '@/pages/CareSupportPage';
 
 function LoginRouteWrapper() {
   const navigate = useNavigate();
@@ -70,6 +71,7 @@ function App() {
                 <Route index element={<HomePage />} />
                 <Route path="feed" element={<MainFeedPage />} />
                 <Route path="explore" element={<ExplorePage />} />
+                <Route path="care-support" element={<CareSupportPage />} />
                 <Route path="profile" element={<ProfilePage />} />
                 <Route path="profile/edit" element={<EditProfilePage />} />
                 <Route path="user/:userId" element={<ViewUserPage />} />

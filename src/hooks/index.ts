@@ -19,6 +19,7 @@ export {
   usePostDetail,
   useUserPosts,
 } from './usePost';
+export { useUrgentPosts, useUrgentPostCount } from './useUrgentPosts';
 export { useUserPets } from './useUserPets';
 export { usePetProfile } from './usePetProfile';
 export {

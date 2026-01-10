@@ -71,3 +71,19 @@ export const deletePost = async (id: number): Promise<void> => {
   await api.deletePost({ id });
 };
 
+/**
+ * Lấy danh sách urgent posts
+ */
+export const getUrgentPosts = async (): Promise<Post[]> => {
+  const res = await api.getUrgentPosts();
+  return mapPosts(res.data);
+};
+
+/**
+ * Đếm số lượng urgent posts
+ */
+export const countUrgentPosts = async (): Promise<number> => {
+  const res = await api.countUrgentPosts();
+  return res.data;
+};
+

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Modal, Input, Select, Button, Avatar, Upload, message } from 'antd';
+import { Modal, Input, Select, Button, Avatar, Upload, message, Switch } from 'antd';
 import { motion } from 'framer-motion';
-import { UploadOutlined, CloseOutlined } from '@ant-design/icons';
+import { UploadOutlined, CloseOutlined, AlertOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { useCreatePost } from '@/hooks/useCreatePost';
 import { useUserProfile } from '@/hooks/useUser';
@@ -37,6 +37,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
   const [selectedPets, setSelectedPets] = useState<number[]>([]);
   const [mediaList, setMediaList] = useState<UploadFile[]>([]);
   const [posting, setPosting] = useState(false);
+  const [isUrgent, setIsUrgent] = useState(false);
   const { submit, loading: apiLoading, error } = useCreatePost();
   const navigate = useNavigate();
   const { user, loading: userLoading } = useUserProfile();
@@ -101,7 +102,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
       const data = {
         content,
         hashtags,
-        type,
+        type: isUrgent ? 'urgent' : type,
         petIds: selectedPets,
         mediaUrls, // No need to cast - already correct type
       };
@@ -113,6 +114,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
         setContent('');
         setMediaList([]);
         setSelectedPets([]);
+        setIsUrgent(false);
         onClose();
       } else if (error) {
         message.error(error);
@@ -185,9 +187,40 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
         />
       </div>
 
+      {/* Urgent Toggle Section */}
+      <div className={`${styles.urgentSection} ${isUrgent ? styles.urgentActive : ''}`}>
+        <div className={styles.urgentToggleContainer}>
+          <div className={styles.urgentLabel}>
+            <AlertOutlined className={styles.urgentIcon} />
+            <div>
+              <span className={styles.urgentTitle}>Mark as Urgent</span>
+              <span className={styles.urgentSubtitle}>This post requires immediate attention</span>
+            </div>
+          </div>
+          <Switch
+            checked={isUrgent}
+            onChange={setIsUrgent}
+            className={styles.urgentSwitch}
+          />
+        </div>
+        {isUrgent && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className={styles.urgentPreview}
+          >
+            <div className={styles.urgentBadge}>
+              <AlertOutlined /> URGENT
+            </div>
+            <span className={styles.urgentPreviewText}>Your post will be highlighted to get faster responses</span>
+          </motion.div>
+        )}
+      </div>
+
       {/* Content Input */}
       <Input.TextArea
-        className={styles.textArea}
+        className={`${styles.textArea} ${isUrgent ? styles.textAreaUrgent : ''}`}
         placeholder="What's on your furry friend's mind today?"
         autoSize={{ minRows: 4, maxRows: 8 }}
         value={content}
