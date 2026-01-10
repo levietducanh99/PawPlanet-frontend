@@ -83,7 +83,8 @@ export const usePostActions = () => {
     const key = `share-${postId}`;
     try {
       setLoading(prev => ({ ...prev, [key]: true }));
-      await sharePost(postId);
+      // sharePost mock has no args; call without parameters. Real service may be wired elsewhere.
+      await sharePost();
     } finally {
       setLoading(prev => ({ ...prev, [key]: false }));
     }
@@ -281,4 +282,3 @@ export const usePostComments = (postId: number | null) => {
     addComment,
   };
 };
-

@@ -20,6 +20,7 @@ const userApi = new UserControllerApi(apiConfiguration, undefined, apiClient);
 export interface UserService {
   getMyProfile(): Promise<User>;
   getUserProfile(userId: number): Promise<User>;
+  updateMyProfile(request: UpdateProfileRequest): Promise<User>;
 }
 
 export const userService: UserService = {
@@ -48,5 +49,17 @@ export const userService: UserService = {
       throw error;
     }
   },
-};
 
+  /**
+   * Update current user's profile
+   */
+  async updateMyProfile(request: UpdateProfileRequest): Promise<User> {
+    try {
+      const response = await userApi.updateMyInfo({ updateProfileRequestDTO: request });
+      return mapUserProfileDTOToUser(response.data);
+    } catch (error) {
+      console.error('Error updating my profile:', error);
+      throw error;
+    }
+  },
+};
