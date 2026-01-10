@@ -1,3 +1,3 @@
-export { RefreshTokenDemo } from './RefreshTokenDemo';
-export { default } from './RefreshTokenDemo';
+// RefreshTokenDemo component has been removed
+// This file is kept for backwards compatibility
 

@@ -37,8 +37,8 @@ export const MyPetsPage: React.FC = () => {
 
   // For demo, we'll use the first pet or default to pet ID 1
   const currentPetId = userPets && userPets.length > 0 ? userPets[0].id : 1;
-  const { profile, loading: profileLoading } = usePetProfile(currentPetId);
-  const { timeline, loading: timelineLoading } = usePetTimeline(currentPetId);
+  const { profile, loading: profileLoading } = usePetProfile(currentPetId ?? null);
+  const { timeline, loading: timelineLoading } = usePetTimeline(currentPetId ?? null);
 
   const [profileVisibility, setProfileVisibility] = useState(profile?.status === 'Public');
   const [lookingForAdoption, setLookingForAdoption] = useState(profile?.status === 'For Adoption');

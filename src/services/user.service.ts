@@ -6,7 +6,7 @@
 
 import { UserControllerApi, Configuration } from './api';
 import apiClient from './apiConfig';
-import type { User } from '@/domain/auth';
+import type { User, UpdateProfileRequest } from '@/domain/auth';
 import { mapUserProfileDTOToUser } from '@/mappers/user.mapper';
 
 // Create API configuration

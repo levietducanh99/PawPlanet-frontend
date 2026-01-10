@@ -35,7 +35,7 @@ export const getCommentsByPostId = async (postId: number): Promise<Comment[]> =>
     createdAt: dto.createdAt ?? new Date().toISOString(),
     likeCount: 0,
     liked: false,
-    parentId: dto.parentId ?? null,
+    parentId: (dto as any).parentId ?? null,
     replies: ((dto as any).replies || (dto as any).children || []).map((r: CommentDetailResponse) => mapDtoToComment(r)),
   });
 
