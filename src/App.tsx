@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { ConfigProvider, App as AntdApp } from 'antd';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { theme } from './theme/antdConfig';
 import './styles/App.css';
 import { LoginPage } from './pages/LoginPage/LoginPage.tsx';
@@ -76,12 +77,15 @@ function RootIndexWrapper() {
 }
 
 function App() {
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   return (
-    <AuthProvider>
-      <BackgroundProvider>
-        <ConfigProvider theme={theme}>
-          <AntdApp>
-            <BrowserRouter>
+    <GoogleOAuthProvider clientId={googleClientId}>
+      <AuthProvider>
+        <BackgroundProvider>
+          <ConfigProvider theme={theme}>
+            <AntdApp>
+              <BrowserRouter>
             <Routes>
               {/* Root: landing or redirect to app */}
               <Route path="/" element={<RootIndexWrapper />} />
@@ -121,6 +125,7 @@ function App() {
       </ConfigProvider>
       </BackgroundProvider>
     </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 

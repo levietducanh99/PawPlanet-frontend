@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Form, Input, Button, Checkbox, Divider, message, Alert } from 'antd';
-import { UserOutlined, MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined } from '@ant-design/icons';
+import { UserOutlined, MailOutlined, LockOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
+import { GoogleLoginButton } from '@/components/GoogleLoginButton';
 import { fadeInUp } from '@/animations/variants.ts';
 import '../LoginPage/auth.css';
 import './register.css';
@@ -57,9 +58,6 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
     }
   };
 
-  const handleSocialSignup = (provider: string) => {
-    message.info(`${provider} signup coming soon!`);
-  };
 
   return (
     <AuthLayout title="Create Account" subtitle="Join PawPlanet and start your adventure today">
@@ -185,23 +183,16 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ onSwitchToLogin, onR
 
             <Divider plain className="register-form__divider">OR CONTINUE WITH</Divider>
 
-            <div className="register-form__socials">
-              <Button
-                icon={<GoogleOutlined />}
-                onClick={() => handleSocialSignup('Google')}
-                size="large"
-                className="social-btn"
-              >
-                Google
-              </Button>
-              <Button
-                icon={<FacebookOutlined />}
-                onClick={() => handleSocialSignup('Facebook')}
-                size="large"
-                className="social-btn"
-              >
-                Facebook
-              </Button>
+            <div className="register-form__socials-center">
+              <GoogleLoginButton
+                onSuccess={() => {
+                  message.success('Successfully signed up with Google!');
+                  navigate('/home');
+                }}
+                onError={(error) => {
+                  message.error(error);
+                }}
+              />
             </div>
 
             <div className="register-form__signin">

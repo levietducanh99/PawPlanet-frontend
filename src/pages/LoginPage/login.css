@@ -144,6 +144,16 @@
   margin-top: 6px;
 }
 
+/* Single centered social button (Google only) */
+.login-form__socials-center {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .login-form__socials .social-btn,
 .login-form__socials .ant-btn {
   border-radius: 12px;

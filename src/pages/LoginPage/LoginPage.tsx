@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Form, Input, Button, Checkbox, Divider, message, Alert } from 'antd';
-import { MailOutlined, LockOutlined, GoogleOutlined, FacebookOutlined, LoginOutlined } from '@ant-design/icons';
+import { MailOutlined, LockOutlined, LoginOutlined } from '@ant-design/icons';
 import { AuthLayout } from '@/components';
 import { SimpleAvatar } from '@/components';
+import { GoogleLoginButton } from '@/components/GoogleLoginButton';
 import { fadeInUp } from '@/animations/variants.ts';
 import { useLogin, useAuth } from '@/hooks';
 import type { LoginCredentials } from '@/domain/auth';
@@ -49,10 +50,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLogi
       // Show error message notification
       message.error('Login failed. Please check your credentials and try again.');
     }
-  };
-
-  const handleSocialLogin = (provider: string) => {
-    message.info(`${provider} login coming soon!`);
   };
 
   return (
@@ -133,23 +130,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onSwitchToRegister, onLogi
 
             <Divider plain className="login-form__divider">OR CONTINUE WITH</Divider>
 
-            <div className="login-form__socials">
-              <Button
-                icon={<GoogleOutlined />}
-                onClick={() => handleSocialLogin('Google')}
-                size="large"
-                className="social-btn"
-              >
-                Google
-              </Button>
-              <Button
-                icon={<FacebookOutlined />}
-                onClick={() => handleSocialLogin('Facebook')}
-                size="large"
-                className="social-btn"
-              >
-                Facebook
-              </Button>
+            <div className="login-form__socials-center">
+              <GoogleLoginButton
+                onSuccess={() => {
+                  message.success('Successfully logged in with Google!');
+                  navigate('/home');
+                }}
+                onError={(error) => {
+                  message.error(error);
+                }}
+              />
             </div>
 
             <div className="login-form__signup">

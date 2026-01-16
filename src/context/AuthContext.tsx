@@ -9,6 +9,7 @@ interface AuthContextType {
   loading: boolean;
   isRefreshing: boolean;
   login: (credentials: LoginCredentials) => Promise<boolean>;
+  loginWithToken: (token: string, user?: User) => void;
   logout: () => Promise<void>;
   verify: () => Promise<void>;
   refreshToken: () => Promise<boolean>;
@@ -91,6 +92,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  // Login with token (for Google OAuth): directly set authenticated state
+  const loginWithToken = useCallback((token: string, userData?: User) => {
+    localStorage.setItem('authToken', token);
+    setIsAuthenticated(true);
+    if (userData) {
+      setUser(userData);
+    }
+  }, []);
+
   // Logout: clear state ngay, không verify lại
   const logout = useCallback(async () => {
     setLoading(true);
@@ -115,6 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loading,
       isRefreshing,
       login,
+      loginWithToken,
       logout,
       verify,
       refreshToken: refreshTokenFn

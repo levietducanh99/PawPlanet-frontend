@@ -793,6 +793,12 @@ export interface AuthResponse {
     'token'?: string;
     /**
      * 
+     * @type {string}
+     * @memberof AuthResponse
+     */
+    'refreshToken'?: string;
+    /**
+     * 
      * @type {boolean}
      * @memberof AuthResponse
      */
@@ -1388,6 +1394,19 @@ export interface GlobalSearchResponse {
      * @memberof GlobalSearchResponse
      */
     'pets'?: Array<SearchPetDTO>;
+}
+/**
+ * 
+ * @export
+ * @interface GoogleLoginRequest
+ */
+export interface GoogleLoginRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof GoogleLoginRequest
+     */
+    'idToken': string;
 }
 /**
  * 
@@ -2769,12 +2788,6 @@ export interface UpdatePostRequest {
      * @memberof UpdatePostRequest
      */
     'petIds'?: Array<number>;
-    /**
-     * 
-     * @type {Array<MediaUrlRequest>}
-     * @memberof UpdatePostRequest
-     */
-    'mediaUrls'?: Array<MediaUrlRequest>;
 }
 /**
  * 
@@ -2843,6 +2856,24 @@ export interface UserEntity {
      * @memberof UserEntity
      */
     'role'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEntity
+     */
+    'authProvider'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserEntity
+     */
+    'providerUserId'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof UserEntity
+     */
+    'emailVerified'?: boolean;
     /**
      * 
      * @type {string}
@@ -3254,6 +3285,46 @@ export const AuthenticationApiAxiosParamCreator = function (configuration?: Conf
             };
         },
         /**
+         * Xác thực Google ID token và tạo/đăng nhập người dùng
+         * @summary Đăng nhập với Google
+         * @param {GoogleLoginRequest} googleLoginRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        loginWithGoogle: async (googleLoginRequest: GoogleLoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'googleLoginRequest' is not null or undefined
+            assertParamExists('loginWithGoogle', 'googleLoginRequest', googleLoginRequest)
+            const localVarPath = `/api/v1/auth/google`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication bearerAuth required
+            // http bearer authentication required
+            await setBearerAuthToObject(localVarHeaderParameter, configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(googleLoginRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @param {LogoutRequest} logoutRequest 
          * @param {*} [options] Override http request option.
@@ -3531,6 +3602,19 @@ export const AuthenticationApiFp = function(configuration?: Configuration) {
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
         },
         /**
+         * Xác thực Google ID token và tạo/đăng nhập người dùng
+         * @summary Đăng nhập với Google
+         * @param {GoogleLoginRequest} googleLoginRequest 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async loginWithGoogle(googleLoginRequest: GoogleLoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ApiResponseAuthResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.loginWithGoogle(googleLoginRequest, options);
+            const index = configuration?.serverIndex ?? 0;
+            const operationBasePath = operationServerMap['AuthenticationApi.loginWithGoogle']?.[index]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, operationBasePath || basePath);
+        },
+        /**
          * 
          * @param {LogoutRequest} logoutRequest 
          * @param {*} [options] Override http request option.
@@ -3651,6 +3735,16 @@ export const AuthenticationApiFactory = function (configuration?: Configuration,
             return localVarFp.login(requestParameters.loginRequest, options).then((request) => request(axios, basePath));
         },
         /**
+         * Xác thực Google ID token và tạo/đăng nhập người dùng
+         * @summary Đăng nhập với Google
+         * @param {AuthenticationApiLoginWithGoogleRequest} requestParameters Request parameters.
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        loginWithGoogle(requestParameters: AuthenticationApiLoginWithGoogleRequest, options?: RawAxiosRequestConfig): AxiosPromise<ApiResponseAuthResponse> {
+            return localVarFp.loginWithGoogle(requestParameters.googleLoginRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @param {AuthenticationApiLogoutRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
@@ -3767,6 +3861,20 @@ export interface AuthenticationApiLoginRequest {
      * @memberof AuthenticationApiLogin
      */
     readonly loginRequest: LoginRequest
+}
+
+/**
+ * Request parameters for loginWithGoogle operation in AuthenticationApi.
+ * @export
+ * @interface AuthenticationApiLoginWithGoogleRequest
+ */
+export interface AuthenticationApiLoginWithGoogleRequest {
+    /**
+     * 
+     * @type {GoogleLoginRequest}
+     * @memberof AuthenticationApiLoginWithGoogle
+     */
+    readonly googleLoginRequest: GoogleLoginRequest
 }
 
 /**
@@ -3909,6 +4017,18 @@ export class AuthenticationApi extends BaseAPI {
      */
     public login(requestParameters: AuthenticationApiLoginRequest, options?: RawAxiosRequestConfig) {
         return AuthenticationApiFp(this.configuration).login(requestParameters.loginRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Xác thực Google ID token và tạo/đăng nhập người dùng
+     * @summary Đăng nhập với Google
+     * @param {AuthenticationApiLoginWithGoogleRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthenticationApi
+     */
+    public loginWithGoogle(requestParameters: AuthenticationApiLoginWithGoogleRequest, options?: RawAxiosRequestConfig) {
+        return AuthenticationApiFp(this.configuration).loginWithGoogle(requestParameters.googleLoginRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

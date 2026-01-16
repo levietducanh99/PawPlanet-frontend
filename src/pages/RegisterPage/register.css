@@ -128,6 +128,16 @@
   margin-top: 6px;
 }
 
+/* Single centered social button (Google only) */
+.register-form__socials-center {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .register-form__socials .social-btn,
 .register-form__socials .ant-btn {
   border-radius: 12px;

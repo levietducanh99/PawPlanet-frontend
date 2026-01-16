@@ -1106,6 +1106,38 @@
         }
       }
     },
+    "/api/v1/auth/google": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Đăng nhập với Google",
+        "description": "Xác thực Google ID token và tạo/đăng nhập người dùng",
+        "operationId": "loginWithGoogle",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GoogleLoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/v1/auth/forgot-password": {
       "post": {
         "tags": [
@@ -2839,17 +2871,6 @@
           }
         }
       },
-      "MediaUrlRequest": {
-        "type": "object",
-        "properties": {
-          "publicId": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          }
-        }
-      },
       "UpdatePostRequest": {
         "type": "object",
         "properties": {
@@ -2873,12 +2894,6 @@
             "items": {
               "type": "integer",
               "format": "int64"
-            }
-          },
-          "mediaUrls": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MediaUrlRequest"
             }
           }
         }
@@ -3171,6 +3186,17 @@
             "items": {
               "$ref": "#/components/schemas/MediaUrlRequest"
             }
+          }
+        }
+      },
+      "MediaUrlRequest": {
+        "type": "object",
+        "properties": {
+          "publicId": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
           }
         }
       },
@@ -3591,6 +3617,15 @@
           "role": {
             "type": "string"
           },
+          "authProvider": {
+            "type": "string"
+          },
+          "providerUserId": {
+            "type": "string"
+          },
+          "emailVerified": {
+            "type": "boolean"
+          },
           "fullName": {
             "type": "string"
           },
@@ -3651,6 +3686,9 @@
           "token": {
             "type": "string"
           },
+          "refreshToken": {
+            "type": "string"
+          },
           "authenticated": {
             "type": "boolean"
           }
@@ -3695,6 +3733,17 @@
         "properties": {
           "valid": {
             "type": "boolean"
+          }
+        }
+      },
+      "GoogleLoginRequest": {
+        "required": [
+          "idToken"
+        ],
+        "type": "object",
+        "properties": {
+          "idToken": {
+            "type": "string"
           }
         }
       },

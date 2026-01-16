@@ -149,6 +149,41 @@ class AuthService {
       throw authError;
     }
   }
+  /**
+   * Login user with Google OAuth
+   * @param googleToken - Google credential token (JWT)
+   * @returns Promise with login result
+   */
+  async loginWithGoogle(googleToken: string): Promise<LoginResult> {
+    try {
+      console.log('Sending Google login request');
+
+      const response = await this.authApi.loginWithGoogle({
+        googleLoginRequest: { idToken: googleToken }
+      });
+
+      console.log('Google login API response received:', response.data);
+
+      const loginResult = mapLoginResult(response.data);
+      console.log('Google login result mapped:', {
+        success: loginResult.success,
+        hasToken: !!loginResult.token?.token,
+        authenticated: loginResult.token?.authenticated
+      });
+
+      return loginResult;
+
+    } catch (error: any) {
+      console.error('Google login failed:', error);
+
+      const authError: AuthError = {
+        message: error.response?.data?.message || 'Google login failed. Please try again.',
+        code: error.response?.status?.toString() || 'GOOGLE_LOGIN_FAILED'
+      };
+
+      throw authError;
+    }
+  }
 }
 
 // Export singleton instance
