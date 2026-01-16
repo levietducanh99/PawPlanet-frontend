@@ -186,7 +186,7 @@ export const EditProfilePage: React.FC = () => {
             className={styles.form}
           >
             <Form.Item
-              label="User Name"
+              label="Full Name"
               name="fullName"
               rules={[
                 { min: 2, message: 'Name must be at least 2 characters' },
@@ -194,7 +194,7 @@ export const EditProfilePage: React.FC = () => {
             >
               <Input
                 size="large"
-                placeholder="Enter your user name"
+                placeholder="Enter your full name"
                 className={styles.input}
               />
             </Form.Item>

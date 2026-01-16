@@ -16,7 +16,6 @@ import { Loading, ErrorMessage } from '../../components';
 import { PetPhotoUpload } from '../../components/PetPhotoUpload';
 import { PetBasicForm } from '../../components/PetBasicForm';
 import { PetImportantDates } from '../../components/PetImportantDates';
-import { PetAppearanceForm } from '../../components/PetAppearanceForm';
 import { PetProfileSettings } from '../../components/PetProfileSettings';
 import { usePetDetail, useUpdatePet } from '../../hooks';
 import { uploadMediaForPet } from '../../services/media.service';
@@ -35,7 +34,6 @@ export const EditPetPage: React.FC = () => {
 
   const [basicForm] = Form.useForm();
   const [datesForm] = Form.useForm();
-  const [appearanceForm] = Form.useForm();
   const [settingsForm] = Form.useForm();
 
   const [saving, setSaving] = useState(false);
@@ -85,19 +83,13 @@ export const EditPetPage: React.FC = () => {
 
       datesForm.setFieldsValue(dateValues);
 
-      // Appearance
-      appearanceForm.setFieldsValue({
-        appearance: '', // Color not in Pet domain
-        additionalNotes: profile.description || '',
-      });
-
       // Settings - map from Pet domain to form values
       settingsForm.setFieldsValue({
         profileVisibility: profile.status === 'Public',
         lookingForAdoption: profile.status === 'For Adoption',
       });
     }
-  }, [profile, basicForm, datesForm, appearanceForm, settingsForm]);
+  }, [profile, basicForm, datesForm, settingsForm]);
 
   const handleAvatarChange = (file: File | null) => {
     console.log('🖼️ Avatar changed:', file?.name);
@@ -113,10 +105,9 @@ export const EditPetPage: React.FC = () => {
       setSaving(true);
 
       // Validate all forms
-      const [basicValues, datesValues, appearanceValues, settingsValues] = await Promise.all([
+      const [basicValues, datesValues, settingsValues] = await Promise.all([
         basicForm.validateFields(),
         datesForm.validateFields(),
-        appearanceForm.validateFields(),
         settingsForm.validateFields(),
       ]);
 
@@ -147,7 +138,7 @@ export const EditPetPage: React.FC = () => {
         name: basicValues.petName,
         gender: basicValues.gender,
         birthDate: datesValues.birthDate ? datesValues.birthDate.format('YYYY-MM-DD') : undefined,
-        description: appearanceValues.additionalNotes,
+        description: profile?.description || '', // Keep existing description since we removed appearance form
         status: settingsValues.profileVisibility ? 'PUBLIC' : 'HIDDEN',
         weight: basicValues.weight ? parseFloat(basicValues.weight) : undefined,
         height: basicValues.height ? parseFloat(basicValues.height) : undefined,
@@ -253,10 +244,6 @@ export const EditPetPage: React.FC = () => {
                       form={datesForm}
                     />
 
-                    {/* Appearance */}
-                    <PetAppearanceForm
-                      form={appearanceForm}
-                    />
 
                     {/* Profile Settings */}
                     <PetProfileSettings

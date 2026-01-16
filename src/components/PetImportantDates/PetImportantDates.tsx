@@ -26,7 +26,7 @@ export const PetImportantDates: React.FC<PetImportantDatesProps> = ({
   return (
     <div className={styles.datesForm}>
       <Title level={4} className={styles.sectionTitle}>
-        Important Dates
+        Date of Birth
       </Title>
 
       <Form
@@ -36,7 +36,7 @@ export const PetImportantDates: React.FC<PetImportantDatesProps> = ({
         className={styles.form}
       >
         <Row gutter={16}>
-          <Col xs={24} md={12}>
+          <Col xs={24}>
             <Form.Item
               label={
                 <span className={styles.labelWithIcon}>
@@ -53,69 +53,7 @@ export const PetImportantDates: React.FC<PetImportantDatesProps> = ({
                 format="DD/MM/YYYY"
                 disabledDate={(current) => current && current > dayjs().endOf('day')}
                 disabled={disabled}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
-              label={
-                <span className={styles.labelWithIcon}>
-                  <CalendarOutlined className={styles.icon} />
-                  Adoption Day
-                </span>
-              }
-              name="adoptionDate"
-              className={styles.formItem}
-            >
-              <DatePicker
-                className={styles.datePicker}
-                placeholder="Select adoption date"
-                format="DD/MM/YYYY"
-                disabledDate={(current) => current && current > dayjs().endOf('day')}
-                disabled={disabled}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col xs={24} md={12}>
-            <Form.Item
-              label={
-                <span className={styles.labelWithIcon}>
-                  <CalendarOutlined className={styles.icon} />
-                  Vaccination Date
-                </span>
-              }
-              name="vaccinationDate"
-              className={styles.formItem}
-            >
-              <DatePicker
-                className={styles.datePicker}
-                placeholder="Select vaccination date"
-                format="DD/MM/YYYY"
-                disabled={disabled}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col xs={24} md={12}>
-            <Form.Item
-              label={
-                <span className={styles.labelWithIcon}>
-                  <CalendarOutlined className={styles.icon} />
-                  Microchip Date
-                </span>
-              }
-              name="microchipDate"
-              className={styles.formItem}
-            >
-              <DatePicker
-                className={styles.datePicker}
-                placeholder="Select microchip date"
-                format="DD/MM/YYYY"
-                disabled={disabled}
+                style={{ width: '100%' }}
               />
             </Form.Item>
           </Col>

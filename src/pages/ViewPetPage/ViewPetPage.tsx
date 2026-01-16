@@ -766,14 +766,30 @@ export const ViewPetPage: React.FC = () => {
                     <Card
                       bordered={false}
                       className={styles.photoLibraryCard}
-                      title="Pet Library"
-                      extra={
+                    >
+                      <div style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: 16,
+                        paddingBottom: 12,
+                        borderBottom: '1px solid #F0F0F0'
+                      }}>
+                        <div>
+                          <Title level={4} style={{ margin: 0, fontSize: 18, fontWeight: 600, color: '#1F2937' }}>
+                            Pet Library
+                          </Title>
+                          <Text type="secondary" style={{ fontSize: 14 }}>
+                            {pet.media?.length || 0} {(pet.media?.length || 0) === 1 ? 'item' : 'items'}
+                          </Text>
+                        </div>
                         <Space size="small">
                           {pet.media && pet.media.length > 0 && (
                             <Button
-                              type="link"
+                              type="text"
                               size="small"
                               onClick={() => setShowGalleryModal(true)}
+                              style={{ color: '#1890FF', fontWeight: 500 }}
                             >
                               View all ({pet.media.length})
                             </Button>
@@ -784,13 +800,13 @@ export const ViewPetPage: React.FC = () => {
                               size="small"
                               icon={<PlusOutlined />}
                               onClick={() => setShowUploadModal(true)}
+                              style={{ borderRadius: 8 }}
                             >
                               Upload
                             </Button>
                           )}
                         </Space>
-                      }
-                    >
+                      </div>
                       {pet.media && pet.media.length > 0 ? (
                         <div className={styles.photoGrid}>
                           {pet.media.slice(0, 4).map((media, index) => {
