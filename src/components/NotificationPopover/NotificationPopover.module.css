@@ -98,8 +98,21 @@
 /* Mobile responsive */
 @media (max-width: 768px) {
   .popoverContent {
-    width: calc(100vw - 32px);
-    max-width: 360px;
+    width: 280px; /* Smaller width on mobile */
+    max-width: calc(100vw - 48px); /* More padding from edges */
+  }
+
+  .header {
+    padding: 10px 12px 6px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .markAllBtn {
+    font-size: 13px;
+    padding: 2px 6px;
   }
 }
 

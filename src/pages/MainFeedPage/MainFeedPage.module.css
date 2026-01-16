@@ -23,9 +23,27 @@
   margin: 0;
 }
 
+.feedLogo {
+  height: 80px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.feedLogo:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
 .feedActions {
   display: flex;
   gap: 12px;
+}
+
+.bgButton {
+  border-radius: 8px;
+  height: 40px;
+  font-weight: 500;
 }
 
 .refreshButton {
@@ -151,6 +169,30 @@
     margin: 24px 0 0;
     padding: 32px 16px;
   }
+
+  /* Feed header responsive */
+  .feedHeader {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 0 12px;
+    margin-bottom: 16px;
+  }
+
+  .feedLogo {
+    height: 48px;
+  }
+
+  .feedActions {
+    gap: 8px;
+  }
+
+  .bgButton,
+  .refreshButton {
+    font-size: 13px;
+    padding: 0 12px !important;
+    height: 36px !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -165,6 +207,48 @@
 
   .endMessage p {
     font-size: 15px;
+  }
+
+  /* Mobile specific - hide logo, show only buttons */
+  .feedHeader {
+    padding: 0 8px;
+    margin-bottom: 12px;
+  }
+
+  .feedLogo {
+    display: none; /* Hide logo on small mobile screens */
+  }
+
+  .feedActions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  .bgButton {
+    flex: 0 0 auto;
+    padding: 0 10px !important;
+    height: 36px !important;
+  }
+
+  .bgButton span {
+    font-size: 12px;
+  }
+
+  .refreshButton {
+    flex: 0 0 auto;
+    padding: 0 10px !important;
+    height: 36px !important;
+  }
+
+  .refreshButton span {
+    font-size: 12px;
+  }
+
+  /* Create Post button */
+  .feedActions button[type="primary"] {
+    flex: 1 1 auto;
+    min-width: 100px;
   }
 }
 

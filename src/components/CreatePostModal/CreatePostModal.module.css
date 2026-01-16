@@ -229,6 +229,107 @@
   padding: 16px !important;
 }
 
+/* Media Gallery - Grid Layout */
+.mediaGallery {
+  margin: 16px 32px 0 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  padding: 0;
+}
+
+.galleryItem {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #F3F4F6;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.galleryItem:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.galleryItem:hover .galleryRemoveBtn {
+  opacity: 1;
+}
+
+.galleryMedia {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.videoIndicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.galleryItem:hover .videoIndicator {
+  background: rgba(24, 144, 255, 0.8);
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.galleryRemoveBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(4px);
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.2s ease;
+  padding: 0 !important;
+  min-width: unset !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.galleryRemoveBtn:hover {
+  background: rgba(239, 68, 68, 0.85) !important;
+  transform: scale(1.15);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+.galleryRemoveBtn .anticon {
+  color: white !important;
+  font-size: 11px;
+}
+
+/* Old media preview styles - REMOVED */
+.mediaPreviewItem,
+.mediaPreviewWrapper,
+.mediaPreview,
+.mediaInfo,
+.mediaName,
+.mediaType,
+.removeBtn {
+  display: none; /* Deprecated - using gallery layout now */
+}
+
 .petSection {
   margin: 24px 32px 0 32px;
 }
@@ -344,6 +445,7 @@
   .textArea,
   .urgentSection,
   .mediaUpload,
+  .mediaGallery,
   .petSection,
   .footer {
     margin-left: 16px;
@@ -360,5 +462,28 @@
 
   .petTagList {
     justify-content: center;
+  }
+
+  .mediaGallery {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+  }
+
+  .galleryRemoveBtn {
+    opacity: 1; /* Always visible on mobile */
+    width: 20px;
+    height: 20px;
+    top: 4px;
+    right: 4px;
+  }
+
+  .galleryRemoveBtn .anticon {
+    font-size: 10px;
+  }
+
+  .videoIndicator {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
   }
 }

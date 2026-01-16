@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Input, Button, message, Avatar, Alert } from 'antd';
 import { UserOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { Post } from '@/domain/post';
-import type { UpdatePostRequest, PetProfileDTO, MediaUrlRequest } from '@/services/api';
+import type { UpdatePostRequest, PetProfileDTO } from '@/services/api';
 import { useUserPets } from '@/hooks';
 import styles from './EditPostModal.module.css';
 
@@ -56,18 +56,15 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
     }
 
     try {
-      // Preserve existing media by including mediaUrls in update request
-      // Convert PostMedia[] to MediaUrlRequest[] format that backend expects
-      const mediaUrls: MediaUrlRequest[] = post.media?.map(media => ({
-        publicId: extractPublicIdFromUrl(media.url),
-        type: media.type as 'image' | 'video'
-      })) || [];
-
+      // ❌ KHÔNG GỬI mediaUrls khi edit post
+      // Vì EditPost không cho phép sửa ảnh/video
+      // Nếu gửi mediaUrls đi, backend có thể cập nhật lại publicId/url
+      // Chỉ gửi: content, hashtags, petIds
       const updateData: UpdatePostRequest = {
         content: content.trim(),
         hashtags: hashtags.trim(),
-        petIds: selectedPets, // Include pet tags
-        mediaUrls, // Include existing media to preserve it
+        petIds: selectedPets,
+        // mediaUrls: KHÔNG GỬI - để backend giữ nguyên media hiện tại
       };
 
       await onSave(post.id, updateData);
@@ -79,30 +76,6 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
     }
   };
 
-  // Helper function to extract publicId from Cloudinary URL
-  const extractPublicIdFromUrl = (url: string): string => {
-    try {
-      // Cloudinary URL format: https://res.cloudinary.com/{cloud_name}/{resource_type}/upload/{transformations}/{version}/{publicId}.{format}
-      // We need to extract the publicId part
-      const urlParts = url.split('/');
-      const uploadIndex = urlParts.findIndex(part => part === 'upload');
-
-      if (uploadIndex !== -1 && uploadIndex < urlParts.length - 1) {
-        // Get everything after 'upload/' and remove file extension
-        const pathAfterUpload = urlParts.slice(uploadIndex + 1).join('/');
-        // Remove version if present (v1234567890)
-        const withoutVersion = pathAfterUpload.replace(/^v\d+\//, '');
-        // Remove file extension and return
-        return withoutVersion.replace(/\.[^/.]+$/, '');
-      }
-
-      // Fallback: return the URL as-is if we can't parse it
-      return url;
-    } catch (error) {
-      console.error('Error extracting publicId from URL:', error);
-      return url;
-    }
-  };
 
   const handleCancel = () => {
     // Reset form to original values
@@ -155,6 +128,8 @@ export const EditPostModal: React.FC<EditPostModalProps> = ({
             onChange={(e) => setContent(e.target.value)}
             placeholder="What's on your mind?"
             autoSize={{ minRows: 4, maxRows: 10 }}
+            maxLength={2000}
+            showCount
             className={styles.textarea}
           />
         </div>

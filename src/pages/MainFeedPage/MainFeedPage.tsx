@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Row, Col, Button, message, Spin, Empty } from 'antd';
-import { PlusOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, ReloadOutlined, BgColorsOutlined } from '@ant-design/icons';
 import { motion } from 'motion/react';
 import PostCard from '@/components/PostCard/PostCard';
 import { CreatePostModal } from '@/components/CreatePostModal/CreatePostModal';
 import CommentModal from '@/components/CommentDrawer/CommentDrawer';
 import LikesModal from '@/components/LikesModal/LikesModal';
+import { BackgroundSelector } from '@/components/BackgroundSelector';
 import { pageVariants } from '@/animations/variants';
 import { useNewsFeed, usePostActions } from '@/hooks';
 import styles from './MainFeedPage.module.css';
@@ -16,6 +17,7 @@ const MainFeedPage: React.FC = () => {
   const [activePostId, setActivePostId] = useState<number | null>(null);
   const [likesModalOpen, setLikesModalOpen] = useState(false);
   const [activeLikesPostId, setActiveLikesPostId] = useState<number | null>(null);
+
 
   // Sử dụng hooks API thực thay vì mock
   const { posts, loading, error, refreshing, refresh } = useNewsFeed();
@@ -100,27 +102,39 @@ const MainFeedPage: React.FC = () => {
       exit="exit"
       className={styles.feedContainer}
     >
-      {/* Header với nút Refresh */}
-      <div className={styles.feedHeader}>
-        <h1 className={styles.feedTitle}>News Feed</h1>
-        <div className={styles.feedActions}>
-          <Button
-            icon={<ReloadOutlined />}
-            onClick={refresh}
-            loading={refreshing}
-            className={styles.refreshButton}
-          >
-            Refresh
-          </Button>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setCreatePostModalVisible(true)}
-          >
-            Create Post
-          </Button>
+        {/* Header với nút Refresh */}
+        <div className={styles.feedHeader}>
+          <img
+            src="/image/newfeed.png"
+            alt="News Feed"
+            className={styles.feedLogo}
+          />
+          <div className={styles.feedActions}>
+            <BackgroundSelector
+              mode="feed"
+              trigger={
+                <Button icon={<BgColorsOutlined />} className={styles.bgButton}>
+                  Background
+                </Button>
+              }
+            />
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={refresh}
+              loading={refreshing}
+              className={styles.refreshButton}
+            >
+              Refresh
+            </Button>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setCreatePostModalVisible(true)}
+            >
+              Create Post
+            </Button>
+          </div>
         </div>
-      </div>
 
       {/* Error State */}
       {error && (

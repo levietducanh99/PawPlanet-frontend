@@ -221,10 +221,23 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+  .header {
+    height: 60px;
+  }
+
   .headerContainer {
-    padding: 0 16px;
-    gap: 12px;
+    padding: 0 12px;
+    gap: 8px;
+    display: grid;
     grid-template-columns: auto 1fr auto;
+  }
+
+  .logo {
+    gap: 6px;
+  }
+
+  .logoImage {
+    height: 48px;
   }
 
   .brandName {
@@ -233,34 +246,56 @@
 
   .searchContainer {
     max-width: none;
-    min-width: 0; /* Cho phép search container co lại */
+    min-width: 0;
+    justify-self: center;
   }
 
   .searchInput {
-    height: 40px !important;
+    height: 36px !important;
+    padding: 0 12px !important;
+    border-radius: 18px !important;
+    font-size: 14px !important;
+  }
+
+  .searchInput input {
+    font-size: 14px !important;
   }
 
   .searchInput input::placeholder {
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .rightSection {
-    gap: 8px;
+    gap: 6px;
   }
 
   .actions {
-    gap: 8px;
+    gap: 6px;
   }
 
   .createButton,
-  .notificationButton,
+  .notificationButton {
+    width: 36px;
+    height: 36px;
+  }
+
   .userAvatar {
-    width: 40px;
-    height: 40px;
+    width: 36px !important;
+    height: 36px !important;
   }
 
   .plusIcon,
   .bellIcon {
-    font-size: 18px;
+    font-size: 16px;
+  }
+
+  .badge {
+    font-size: 10px !important;
+  }
+
+  .loginButton {
+    height: 36px !important;
+    padding: 0 16px !important;
+    font-size: 13px !important;
   }
 }

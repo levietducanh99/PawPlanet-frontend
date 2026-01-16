@@ -12,10 +12,10 @@
 .mainContent {
   flex: 1;
   margin-left: 340px; /* Sidebar width */
-  padding: 32px 24px;
+  padding: 0; /* Remove padding to allow full background */
   min-height: calc(100vh - 72px);
   overflow-y: auto;
-  background: #F3F4F6;
+  /* background removed - BackgroundWrapper handles this */
 
   /* Center content horizontally and provide flex container */
   display: flex;
@@ -28,18 +28,19 @@
   width: 100%;
   max-width: 1200px; /* Max width for content */
   margin: 0 auto;
-  padding: 0; /* Remove padding as MainContent already has padding */
+  padding: 32px 24px; /* Move padding here from mainContent */
 }
 
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .mainContent {
     margin-left: 280px; /* Reduce sidebar width on smaller screens */
-    padding: 24px 20px;
+    padding: 0;
   }
 
   .contentWrapper {
     max-width: 900px; /* Smaller max-width for medium screens */
+    padding: 24px 20px;
   }
 }
 
@@ -50,14 +51,14 @@
 
   .mainContent {
     margin-left: 0;
-    padding: 20px 16px;
+    padding: 0;
     padding-bottom: 80px; /* Space for bottom navigation */
     min-height: calc(100vh - 72px - 60px); /* Account for header and bottom nav */
   }
 
   .contentWrapper {
     max-width: 100%; /* Full width on mobile */
-    padding: 0;
+    padding: 20px 16px;
   }
 
   /* Hide sidebar on mobile - could be toggled via state later */

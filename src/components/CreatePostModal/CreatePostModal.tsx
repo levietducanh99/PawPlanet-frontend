@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Input, Select, Button, Avatar, Upload, message, Switch } from 'antd';
 import { motion } from 'framer-motion';
-import { UploadOutlined, CloseOutlined, AlertOutlined } from '@ant-design/icons';
+import { UploadOutlined, CloseOutlined, AlertOutlined, PlayCircleOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { useCreatePost } from '@/hooks/useCreatePost';
 import { useUserProfile } from '@/hooks/useUser';
@@ -225,10 +225,62 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
         autoSize={{ minRows: 4, maxRows: 8 }}
         value={content}
         onChange={e => setContent(e.target.value)}
-        maxLength={500}
+        maxLength={2000}
         showCount
         variant="borderless"
       />
+
+      {/* Media Preview Gallery */}
+      {mediaList.length > 0 && (
+        <div className={styles.mediaGallery}>
+          {mediaList.map((file) => {
+            const isVideo = file.type?.startsWith('video/');
+            const previewUrl = file.url || (file.originFileObj ? URL.createObjectURL(file.originFileObj) : '');
+
+            return (
+              <motion.div
+                key={file.uid}
+                className={styles.galleryItem}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+              >
+                {isVideo ? (
+                  <>
+                    <video
+                      src={previewUrl}
+                      className={styles.galleryMedia}
+                      muted
+                      loop
+                      playsInline
+                    />
+                    <div className={styles.videoIndicator}>
+                      <PlayCircleOutlined />
+                    </div>
+                  </>
+                ) : (
+                  <img
+                    src={previewUrl}
+                    alt="Preview"
+                    className={styles.galleryMedia}
+                  />
+                )}
+                <Button
+                  type="text"
+                  danger
+                  icon={<CloseOutlined />}
+                  className={styles.galleryRemoveBtn}
+                  onClick={() => {
+                    const newList = mediaList.filter(item => item.uid !== file.uid);
+                    setMediaList(newList);
+                  }}
+                />
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
 
       {/* Media Upload */}
       <Upload.Dragger
@@ -238,7 +290,7 @@ export const CreatePostModal: React.FC<CreatePostModalProps> = ({ open, onClose 
         beforeUpload={() => false}
         multiple
         accept="image/*,video/*"
-        showUploadList={{ showRemoveIcon: true, showPreviewIcon: false }}
+        showUploadList={false}
       >
         <UploadOutlined style={{ fontSize: 24, color: '#1890FF', marginBottom: 8 }} />
         <div style={{ color: '#6B7280', fontSize: 16, fontWeight: 500 }}>

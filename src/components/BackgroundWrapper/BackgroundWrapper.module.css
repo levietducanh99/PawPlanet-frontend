@@ -1,0 +1,54 @@
+/* BackgroundWrapper.module.css */
+
+.wrapper {
+  position: relative;
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  transition: background-image 0.5s ease;
+}
+
+/* Lighter overlay for better background visibility */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.4); /* Reduced from 0.85 to 0.4 */
+  backdrop-filter: blur(0px); /* Removed blur for clarity */
+  z-index: 0;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Optional: Add subtle vignette effect for better focus on content */
+.wrapper::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Dark mode overlay alternative (optional) */
+@media (prefers-color-scheme: dark) {
+  .overlay {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+

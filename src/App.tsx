@@ -18,6 +18,7 @@ import { ViewPetPage } from './pages/ViewPetPage';
 import { EditPetPage } from './pages/EditPetPage';
 import { ViewUserPage } from './pages/ViewUserPage';
 import { AuthProvider, useAuthContext } from '@/context/AuthContext';
+import { BackgroundProvider } from '@/context/BackgroundContext';
 import { EncyclopediaClassPage } from './pages/EncyclopediaClassPage';
 import { LandingPage } from '@/pages/LandingPage';
 import { ExplorePage } from '@/features/explore';
@@ -77,9 +78,10 @@ function RootIndexWrapper() {
 function App() {
   return (
     <AuthProvider>
-      <ConfigProvider theme={theme}>
-        <AntdApp>
-          <BrowserRouter>
+      <BackgroundProvider>
+        <ConfigProvider theme={theme}>
+          <AntdApp>
+            <BrowserRouter>
             <Routes>
               {/* Root: landing or redirect to app */}
               <Route path="/" element={<RootIndexWrapper />} />
@@ -117,6 +119,7 @@ function App() {
           </BrowserRouter>
         </AntdApp>
       </ConfigProvider>
+      </BackgroundProvider>
     </AuthProvider>
   );
 }
