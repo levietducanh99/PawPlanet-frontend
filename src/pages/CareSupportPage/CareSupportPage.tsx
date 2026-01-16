@@ -96,13 +96,11 @@ const CareSupportPage: React.FC = () => {
       {/* Header */}
       <div className={styles.pageHeader}>
         <div className={styles.headerContent}>
-          <div className={styles.titleSection}>
-            <AlertOutlined className={styles.urgentIcon} />
-            <h1 className={styles.pageTitle}>Care & Support</h1>
-          </div>
-          <p className={styles.pageSubtitle}>
-            Urgent posts from the community that need immediate attention
-          </p>
+          <img
+            src="/image/care.png"
+            alt="Care & Support"
+            className={styles.careImage}
+          />
         </div>
         <Button
           icon={<ReloadOutlined />}
